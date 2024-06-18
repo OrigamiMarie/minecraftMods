@@ -1,0 +1,6 @@
+{
+  "parent": "origamimarie_mod:block/candles/template/template_pad_with_one_candle_270",
+  "textures": {
+    "candle_texture": "origamimarie_mod:block/candles/lime_candle"
+  }
+}

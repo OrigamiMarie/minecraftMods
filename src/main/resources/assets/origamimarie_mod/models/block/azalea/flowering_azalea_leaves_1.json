@@ -1,0 +1,6 @@
+{
+  "parent": "minecraft:block/cube_all",
+  "textures": {
+    "all": "origamimarie_mod:block/azalea/flowering_azalea_leaves_1"
+  }
+}

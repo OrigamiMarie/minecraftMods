@@ -1,0 +1,10 @@
+{
+  "pack": {
+    "pack_format": 22,
+    "description": "Override Textures from OrigamiMarieMod",
+    "supported_formats": {
+      "min_inclusive": 16,
+      "max_inclusive": 22
+    }
+  }
+}

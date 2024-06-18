@@ -1,0 +1,6 @@
+{
+  "parent": "minecraft:block/leaves",
+  "textures": {
+    "all": "origamimarie_mod:block/fir_tree/fir_leaves"
+  }
+}

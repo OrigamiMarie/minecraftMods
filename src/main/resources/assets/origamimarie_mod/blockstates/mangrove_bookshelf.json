@@ -1,0 +1,10 @@
+{
+  "variants": {
+    "": [
+      { "model": "origamimarie_mod:block/mangrove_bookshelf/0" },
+      { "model": "origamimarie_mod:block/mangrove_bookshelf/1" },
+      { "model": "origamimarie_mod:block/mangrove_bookshelf/2" },
+      { "model": "origamimarie_mod:block/mangrove_bookshelf/3" }
+    ]
+  }
+}

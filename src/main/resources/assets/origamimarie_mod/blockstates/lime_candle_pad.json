@@ -1,0 +1,116 @@
+{
+  "variants": {
+    "candles=1,lit=false": [
+      {
+        "model": "origamimarie_mod:block/candles/lime_candle_pad_one_candle_0"
+      },
+      {
+        "model": "origamimarie_mod:block/candles/lime_candle_pad_one_candle_90"
+      },
+      {
+        "model": "origamimarie_mod:block/candles/lime_candle_pad_one_candle_180"
+      },
+      {
+        "model": "origamimarie_mod:block/candles/lime_candle_pad_one_candle_270"
+      }
+    ],
+    "candles=1,lit=true": [
+      {
+        "model": "origamimarie_mod:block/candles/lime_candle_pad_one_candle_0_lit"
+      },
+      {
+        "model": "origamimarie_mod:block/candles/lime_candle_pad_one_candle_90_lit"
+      },
+      {
+        "model": "origamimarie_mod:block/candles/lime_candle_pad_one_candle_180_lit"
+      },
+      {
+        "model": "origamimarie_mod:block/candles/lime_candle_pad_one_candle_270_lit"
+      }
+    ],
+    "candles=2,lit=false": [
+      {
+        "model": "origamimarie_mod:block/candles/lime_candle_pad_two_candles_0"
+      },
+      {
+        "model": "origamimarie_mod:block/candles/lime_candle_pad_two_candles_90"
+      },
+      {
+        "model": "origamimarie_mod:block/candles/lime_candle_pad_two_candles_180"
+      },
+      {
+        "model": "origamimarie_mod:block/candles/lime_candle_pad_two_candles_270"
+      }
+    ],
+    "candles=2,lit=true": [
+      {
+        "model": "origamimarie_mod:block/candles/lime_candle_pad_two_candles_0_lit"
+      },
+      {
+        "model": "origamimarie_mod:block/candles/lime_candle_pad_two_candles_90_lit"
+      },
+      {
+        "model": "origamimarie_mod:block/candles/lime_candle_pad_two_candles_180_lit"
+      },
+      {
+        "model": "origamimarie_mod:block/candles/lime_candle_pad_two_candles_270_lit"
+      }
+    ],
+    "candles=3,lit=false": [
+      {
+        "model": "origamimarie_mod:block/candles/lime_candle_pad_three_candles_0"
+      },
+      {
+        "model": "origamimarie_mod:block/candles/lime_candle_pad_three_candles_90"
+      },
+      {
+        "model": "origamimarie_mod:block/candles/lime_candle_pad_three_candles_180"
+      },
+      {
+        "model": "origamimarie_mod:block/candles/lime_candle_pad_three_candles_270"
+      }
+    ],
+    "candles=3,lit=true": [
+      {
+        "model": "origamimarie_mod:block/candles/lime_candle_pad_three_candles_0_lit"
+      },
+      {
+        "model": "origamimarie_mod:block/candles/lime_candle_pad_three_candles_90_lit"
+      },
+      {
+        "model": "origamimarie_mod:block/candles/lime_candle_pad_three_candles_180_lit"
+      },
+      {
+        "model": "origamimarie_mod:block/candles/lime_candle_pad_three_candles_270_lit"
+      }
+    ],
+    "candles=4,lit=false": [
+      {
+        "model": "origamimarie_mod:block/candles/lime_candle_pad_four_candles_0"
+      },
+      {
+        "model": "origamimarie_mod:block/candles/lime_candle_pad_four_candles_90"
+      },
+      {
+        "model": "origamimarie_mod:block/candles/lime_candle_pad_four_candles_180"
+      },
+      {
+        "model": "origamimarie_mod:block/candles/lime_candle_pad_four_candles_270"
+      }
+    ],
+    "candles=4,lit=true": [
+      {
+        "model": "origamimarie_mod:block/candles/lime_candle_pad_four_candles_0_lit"
+      },
+      {
+        "model": "origamimarie_mod:block/candles/lime_candle_pad_four_candles_90_lit"
+      },
+      {
+        "model": "origamimarie_mod:block/candles/lime_candle_pad_four_candles_180_lit"
+      },
+      {
+        "model": "origamimarie_mod:block/candles/lime_candle_pad_four_candles_270_lit"
+      }
+    ]
+  }
+}

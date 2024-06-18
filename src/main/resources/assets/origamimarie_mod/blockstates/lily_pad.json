@@ -1,0 +1,18 @@
+{
+  "variants": {
+    "": [
+      {
+        "model": "origamimarie_mod:block/lily_pad_0"
+      },
+      {
+        "model": "origamimarie_mod:block/lily_pad_90"
+      },
+      {
+        "model": "origamimarie_mod:block/lily_pad_180"
+      },
+      {
+        "model": "origamimarie_mod:block/lily_pad_270"
+      }
+    ]
+  }
+}

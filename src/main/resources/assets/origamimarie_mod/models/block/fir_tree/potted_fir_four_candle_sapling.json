@@ -1,0 +1,6 @@
+{
+  "parent": "minecraft:block/flower_pot_cross",
+  "textures": {
+    "plant": "origamimarie_mod:block/fir_tree/fir_four_candle_sapling"
+  }
+}

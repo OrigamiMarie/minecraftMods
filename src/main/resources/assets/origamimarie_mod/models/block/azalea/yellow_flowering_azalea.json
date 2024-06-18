@@ -1,0 +1,7 @@
+{
+  "parent": "minecraft:block/template_azalea",
+  "textures": {
+    "side": "origamimarie_mod:block/azalea/yellow_flowering_azalea_side",
+    "top": "origamimarie_mod:block/azalea/yellow_flowering_azalea_top"
+  }
+}

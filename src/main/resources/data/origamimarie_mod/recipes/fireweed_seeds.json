@@ -1,0 +1,12 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "ingredients": [
+    {
+      "item": "origamimarie_mod:fireweed"
+    }
+  ],
+  "result": {
+    "count": 5,
+    "item": "origamimarie_mod:fireweed_seeds"
+  }
+}

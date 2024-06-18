@@ -1,0 +1,8 @@
+{
+  "parent": "minecraft:block/template_potted_azalea_bush",
+  "textures": {
+    "plant": "origamimarie_mod:block/azalea/potted_purple_flowering_azalea_bush_plant",
+    "side": "origamimarie_mod:block/azalea/potted_purple_flowering_azalea_bush_side",
+    "top": "origamimarie_mod:block/azalea/potted_purple_flowering_azalea_bush_top"
+  }
+}

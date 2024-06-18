@@ -1,0 +1,6 @@
+{
+  "parent": "minecraft:block/cross",
+  "textures": {
+    "cross": "origamimarie_mod:block/ornament/green_ornament"
+  }
+}
