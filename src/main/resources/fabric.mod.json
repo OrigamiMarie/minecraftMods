@@ -1,0 +1,40 @@
+{
+  "schemaVersion": 1,
+  "id": "origamimarie_mod",
+  "version": "${version}",
+
+  "name": "OrigamiMarie Mod",
+  "description": "This is an example description! Tell everyone what your mod is about!",
+  "authors": [
+    "OrigamiMarie"
+  ],
+  "contact": {
+    "homepage": "https://fabricmc.net/",
+    "sources": "https://github.com/FabricMC/fabric-example-mod"
+  },
+
+  "license": "CC0-1.0",
+  "icon": "assets/origamimarie_mod/icon.png",
+
+  "environment": "*",
+  "entrypoints": {
+    "main": [
+      "net.origamimarie.minecraft.OrigamiMarieMod"
+    ]
+  },
+  "mixins": [
+    "origamimarie_mod.mixins.json"
+  ],
+
+  "depends": {
+    "fabricloader": ">=0.15.3-1.20.4",
+    "fabric": "*",
+    "minecraft": "1.20.4",
+    "java": ">=17"
+  },
+  "suggests": {
+    "another-mod": "*"
+  },
+
+  "accessWidener" : "origamimarie_mod.accesswidener"
+}

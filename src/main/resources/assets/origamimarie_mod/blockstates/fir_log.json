@@ -1,0 +1,16 @@
+{
+  "variants": {
+    "axis=x": {
+      "model": "origamimarie_mod:block/fir_tree/fir_log_horizontal",
+      "x": 90,
+      "y": 90
+    },
+    "axis=y": {
+      "model": "origamimarie_mod:block/fir_tree/fir_log"
+    },
+    "axis=z": {
+      "model": "origamimarie_mod:block/fir_tree/fir_log_horizontal",
+      "x": 90
+    }
+  }
+}
