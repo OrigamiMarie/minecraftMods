@@ -34,7 +34,6 @@ import java.util.Map;
 
 import static net.origamimarie.minecraft.OrigamiMarieMod.ORIGAMIMARIE_MOD;
 
-// Give everything nice names
 // Make the crystals waxable
 // Update shader settings
 
