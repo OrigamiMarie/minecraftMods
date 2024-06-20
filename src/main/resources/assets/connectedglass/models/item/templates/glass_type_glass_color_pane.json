@@ -1,0 +1,7 @@
+{
+  "parent": "connectedglass:pane_item_template",
+  "textures": {
+    "all": "connectedglass:glass_type_glass/glass_type_glass_color",
+    "edge": "connectedglass:glass_type_glass/glass_type_glass_color_edge"
+  }
+}
