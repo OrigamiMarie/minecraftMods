@@ -7,6 +7,7 @@ import org.apache.commons.lang3.tuple.Pair;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.charset.Charset;
 import java.util.*;
 
 /*
@@ -15,89 +16,52 @@ import java.util.*;
  */
 public class ResourceCopyTransformer {
 
-    private static final String RESOURCES_DIR = "C:\\Users\\origa\\java\\minecraftMods\\src\\main\\resources\\";
+    private static final Charset UTF_8 = Charsets.UTF_8;
+    private static final String RESOURCES_DIR = "C:/Users/origa/java/minecraftMods/src/main/resources/";
     private static final List<String> RAINBOW_CRYSTAL_COLORS = List.of("magenta", "red", "orange", "yellow", "lime", "cyan", "blue", "purple");
     private static final List<String> RAINBOW_CRYSTAL_TYPES = List.of("rainbow_crystal_cluster", "large_rainbow_crystal_bud", "medium_rainbow_crystal_bud", "small_rainbow_crystal_bud");
-    private static final List<String> ALL_MINECRAFT_COLORS = List.of("pink", "magenta", "red", "orange", "yellow", "lime", "green", "cyan", "light_blue", "blue", "purple", "white", "light_gray", "gray", "black", "brown");
-    private static final List<String> ALL_MINECRAFT_COLORS_WITH_EMPTY = new ArrayList<>();
 
-    static {
-        for (String color : ALL_MINECRAFT_COLORS) {
-            ALL_MINECRAFT_COLORS_WITH_EMPTY.add("_" + color);
-        }
-        ALL_MINECRAFT_COLORS_WITH_EMPTY.add("");
-    }
-
-    private static final List<TransformParameters> transforms = List.of(
-            new TransformParameters("assets\\origamimarie_mod\\blockstates\\templates\\color_crystal_type.json",
-                    "assets\\origamimarie_mod\\blockstates\\",
-                    Map.of("color", RAINBOW_CRYSTAL_COLORS,
-                            "crystal_type", RAINBOW_CRYSTAL_TYPES)),
-            new TransformParameters("assets\\origamimarie_mod\\models\\block\\rainbow_crystal\\templates\\color_crystal_type.json",
-                    "assets\\origamimarie_mod\\models\\block\\rainbow_crystal\\",
-                    Map.of("color", RAINBOW_CRYSTAL_COLORS,
-                            "crystal_type", RAINBOW_CRYSTAL_TYPES)),
-            new TransformParameters("assets\\origamimarie_mod\\models\\item\\templates\\color_crystal_type.json",
-                    "assets\\origamimarie_mod\\models\\item\\",
-                    Map.of("color", RAINBOW_CRYSTAL_COLORS,
-                            "crystal_type", RAINBOW_CRYSTAL_TYPES)),
-            new TransformParameters("data\\origamimarie_mod\\loot_tables\\blocks\\templates\\color_crystal_type.json",
-                    "data\\origamimarie_mod\\loot_tables\\blocks\\",
-                    Map.of("color", RAINBOW_CRYSTAL_COLORS,
-                            "crystal_type", RAINBOW_CRYSTAL_TYPES)),
-
-            new TransformParameters("assets\\origamimarie_mod\\textures\\block\\rainbow_crystal\\templates\\magenta_crystal_type.png.mcmeta",
-                    "assets\\origamimarie_mod\\textures\\block\\rainbow_crystal\\",
-                    Map.of("crystal_type", RAINBOW_CRYSTAL_TYPES)),
-            new TransformParameters("assets\\origamimarie_mod\\textures\\block\\rainbow_crystal\\templates\\red_crystal_type.png.mcmeta",
-                    "assets\\origamimarie_mod\\textures\\block\\rainbow_crystal\\",
-                    Map.of("crystal_type", RAINBOW_CRYSTAL_TYPES)),
-            new TransformParameters("assets\\origamimarie_mod\\textures\\block\\rainbow_crystal\\templates\\orange_crystal_type.png.mcmeta",
-                    "assets\\origamimarie_mod\\textures\\block\\rainbow_crystal\\",
-                    Map.of("crystal_type", RAINBOW_CRYSTAL_TYPES)),
-            new TransformParameters("assets\\origamimarie_mod\\textures\\block\\rainbow_crystal\\templates\\yellow_crystal_type.png.mcmeta",
-                    "assets\\origamimarie_mod\\textures\\block\\rainbow_crystal\\",
-                    Map.of("crystal_type", RAINBOW_CRYSTAL_TYPES)),
-            new TransformParameters("assets\\origamimarie_mod\\textures\\block\\rainbow_crystal\\templates\\lime_crystal_type.png.mcmeta",
-                    "assets\\origamimarie_mod\\textures\\block\\rainbow_crystal\\",
-                    Map.of("crystal_type", RAINBOW_CRYSTAL_TYPES)),
-            new TransformParameters("assets\\origamimarie_mod\\textures\\block\\rainbow_crystal\\templates\\cyan_crystal_type.png.mcmeta",
-                    "assets\\origamimarie_mod\\textures\\block\\rainbow_crystal\\",
-                    Map.of("crystal_type", RAINBOW_CRYSTAL_TYPES)),
-            new TransformParameters("assets\\origamimarie_mod\\textures\\block\\rainbow_crystal\\templates\\blue_crystal_type.png.mcmeta",
-                    "assets\\origamimarie_mod\\textures\\block\\rainbow_crystal\\",
-                    Map.of("crystal_type", RAINBOW_CRYSTAL_TYPES)),
-            new TransformParameters("assets\\origamimarie_mod\\textures\\block\\rainbow_crystal\\templates\\purple_crystal_type.png.mcmeta",
-                    "assets\\origamimarie_mod\\textures\\block\\rainbow_crystal\\",
-                    Map.of("crystal_type", RAINBOW_CRYSTAL_TYPES)),
-
-            new TransformParameters("assets\\connectedglass\\blockstates\\templates\\type_glass_color.json",
-                    "assets\\connectedglass\\blockstates\\",
-                    Map.of("type", List.of("borderless", "clear", "scratched", "tinted_borderless"),
-                            "_color", ALL_MINECRAFT_COLORS_WITH_EMPTY)),
-            new TransformParameters("assets\\connectedglass\\blockstates\\templates\\type_glass_color_pane.json",
-                    "assets\\connectedglass\\blockstates\\",
-                    Map.of("type", List.of("borderless", "clear", "scratched", "tinted_borderless"),
-                            "_color", ALL_MINECRAFT_COLORS_WITH_EMPTY))
-    );
+    private static final List<String> transformFiles = List.of(
+            "assets/connectedglass/blockstates/templates/copier.csv",
+            "assets/connectedglass/models/templates/copier.csv",
+            "assets/connectedglass/models/item/templates/copier.csv",
+            "assets/connectedglass/textures/borderless_glass/templates/copier.csv",
+            "assets/connectedglass/textures/clear_glass/templates/copier.csv",
+            "assets/connectedglass/textures/scratched_glass/templates/copier.csv",
+            "assets/connectedglass/textures/tinted_borderless_glass/templates/copier.csv",
+            "assets/origamimarie_mod/blockstates/templates/copier.csv",
+            "assets/origamimarie_mod/models/block/candles/template/copier.csv",
+            "assets/origamimarie_mod/models/block/ornament/templates/copier.csv",
+            "assets/origamimarie_mod/models/block/rainbow_crystal/templates/copier.csv",
+            "assets/origamimarie_mod/models/item/templates/copier.csv",
+            "assets/origamimarie_mod/textures/block/rainbow_crystal/templates/copier.csv",
+            "data/origamimarie_mod/loot_tables/blocks/templates/copier.csv",
+            "data/origamimarie_mod/recipes/templates/copier.csv"
+            );
 
     public static void main(String[] args) throws IOException {
-        doTransforms();
+        doTransformsFromFiles();
     }
 
-    private static void doTransforms() throws IOException {
+    private static void doTransformsFromFiles() throws IOException {
+        List<TransformParameters> transforms = new ArrayList<>();
+        for (String transformFile : transformFiles) {
+            transforms.addAll(TransformParameters.readFromFile(new File(RESOURCES_DIR, transformFile)));
+        }
+        doTransforms(transforms);
+    }
+
+    private static void doTransforms(List<TransformParameters> transforms) throws IOException {
         for (TransformParameters transform : transforms) {
-            String originalFilename = StringUtils.substringAfterLast(transform.sourceFile, "\\");
-            File originalFile = new File(RESOURCES_DIR + transform.sourceFile);
-            String originalFileContents = FileUtils.readFileToString(originalFile, Charsets.UTF_8);
+            String originalFilename = transform.sourceFile.getName();
+            String originalFileContents = FileUtils.readFileToString(transform.sourceFile, UTF_8);
             List<Set<Pair<String, String>>> replacementSets = transform.calculateAllStringReplacementSets();
-            File destinationDir = transform.calculateFullDestinationDir();
 
             for (Set<Pair<String, String>> replacementSet : replacementSets) {
                 String newFileName = performAllReplacements(originalFilename, replacementSet);
                 String newFileContents =performAllReplacements(originalFileContents, replacementSet);
-                File newFile = new File(destinationDir, newFileName);
-                FileUtils.write(newFile, newFileContents, Charsets.UTF_8);
+                File newFile = new File(transform.destinationDir, newFileName);
+                FileUtils.write(newFile, newFileContents, UTF_8);
             }
         }
     }
@@ -122,41 +86,76 @@ public class ResourceCopyTransformer {
         return s;
     }
 
-    private static class TransformParameters {
-        public final String sourceFile;
-        public final String destinationDir;
-        public final Map<String, List<String>> replacements;
 
-        public TransformParameters(String sourceFile, String destinationDir, Map<String, List<String>> replacements) {
-            this.sourceFile = sourceFile;
-            this.destinationDir = destinationDir;
-            this.replacements = replacements;
-        }
+    public record TransformParameters(File sourceFile, File destinationDir,
+                                      Map<String, List<String>> replacements) {
+            public static final String COMMENT = "#";
+            public static final String DOUBLE_DOT = "..";
+            public static final String LINE_SEPARATOR = "\r\n";
+            public static final String COMMA_SEPARATOR = ", ";
 
         public List<Set<Pair<String, String>>> calculateAllStringReplacementSets() {
-            List<Set<Pair<String, String>>> allReplacementSets = new ArrayList<>();
-            allReplacementSets.add(new HashSet<>());
-            List<Set<Pair<String, String>>> replacementSetsTemp = new ArrayList<>();
+                List<Set<Pair<String, String>>> allReplacementSets = new ArrayList<>();
+                allReplacementSets.add(new HashSet<>());
+                List<Set<Pair<String, String>>> replacementSetsTemp = new ArrayList<>();
 
-            for (String originalString : replacements.keySet()) {
-                replacementSetsTemp.clear();
-                replacementSetsTemp.addAll(allReplacementSets);
-                allReplacementSets.clear();
-                List<String> replacementStrings = replacements.get(originalString);
-                for (String replacementString : replacementStrings) {
-                    Pair<String, String> originalAndReplacement = Pair.of(originalString, replacementString);
-                    for (Set<Pair<String, String>> setOfReplacements : replacementSetsTemp) {
-                        Set<Pair<String, String>> setCopy = new HashSet<>(setOfReplacements);
-                        setCopy.add(originalAndReplacement);
-                        allReplacementSets.add(setCopy);
+                for (String originalString : replacements.keySet()) {
+                    replacementSetsTemp.clear();
+                    replacementSetsTemp.addAll(allReplacementSets);
+                    allReplacementSets.clear();
+                    List<String> replacementStrings = replacements.get(originalString);
+                    for (String replacementString : replacementStrings) {
+                        Pair<String, String> originalAndReplacement = Pair.of(originalString, replacementString);
+                        for (Set<Pair<String, String>> setOfReplacements : replacementSetsTemp) {
+                            Set<Pair<String, String>> setCopy = new HashSet<>(setOfReplacements);
+                            setCopy.add(originalAndReplacement);
+                            allReplacementSets.add(setCopy);
+                        }
                     }
                 }
+                return allReplacementSets;
             }
-            return allReplacementSets;
-        }
 
-        public File calculateFullDestinationDir() {
-            return new File(RESOURCES_DIR, destinationDir);
+            public static List<TransformParameters> readFromFile(File file) throws IOException {
+                List<TransformParameters> result = new ArrayList<>();
+                String fileContents = FileUtils.readFileToString(file, UTF_8);
+                String[] lines = fileContents.split(LINE_SEPARATOR);
+                File parentFile = file.getParentFile();
+                for (int i = 0; i < lines.length; i++) {
+                    // Skip over the comment lines and empty lines
+                    String currentLine = lines[i].strip();
+                    if (currentLine.length() == 0 || currentLine.startsWith(COMMENT)) {
+                        continue;
+                    }
+                    // Now we have a transform definition
+                    String[] sourceAndDestFiles = currentLine.split(", ");
+                    File sourceFile = mashFileParts(new File(parentFile, sourceAndDestFiles[0]));
+                    File destinationDir = mashFileParts(new File(parentFile, sourceAndDestFiles[1]));
+                    Map<String, List<String>> replacements = new HashMap<>();
+                    i++;
+                    while (i < lines.length && lines[i].strip().length() > 0) {
+                        currentLine = lines[i];
+                        i++;
+                        if (currentLine.strip().startsWith(COMMENT)) {
+                            continue;
+                        }
+                        List<String> replementTokens = new ArrayList<>(Arrays.asList(currentLine.split(COMMA_SEPARATOR)));
+                        String key = replementTokens.remove(0);
+                        replacements.put(key, replementTokens);
+                    }
+                    result.add(new TransformParameters(sourceFile, destinationDir, replacements));
+                }
+                return result;
+            }
+
+            private static File mashFileParts(File file) {
+                String fullFile = file.getAbsolutePath();
+                while (fullFile.contains(DOUBLE_DOT)) {
+                    int location = fullFile.indexOf(DOUBLE_DOT);
+                    int startOfFileAbove = StringUtils.lastIndexOf(fullFile, "\\", location - 2);
+                    fullFile = fullFile.substring(0, startOfFileAbove) + fullFile.substring(location + 2);
+                }
+                return new File(fullFile);
+            }
         }
-    }
 }

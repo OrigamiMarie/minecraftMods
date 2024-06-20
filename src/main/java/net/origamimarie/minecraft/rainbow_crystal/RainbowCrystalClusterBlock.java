@@ -35,7 +35,6 @@ import java.util.Map;
 import static net.origamimarie.minecraft.OrigamiMarieMod.ORIGAMIMARIE_MOD;
 
 // Make the crystals waxable
-// Update shader settings
 
 public class RainbowCrystalClusterBlock extends AmethystBlock
         implements Waterloggable {
