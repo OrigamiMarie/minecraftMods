@@ -1,6 +1,7 @@
-color_crystal_type.json, ../
+color_coating_crystal_type.json, ../
 color, magenta, red, orange, yellow, lime, cyan, blue, purple
 crystal_type, rainbow_crystal_cluster, large_rainbow_crystal_bud, medium_rainbow_crystal_bud, small_rainbow_crystal_bud
+coating_, , waxed_
 
 color_candle_pad.json, ../
 color_, , pink_, magenta_, red_, orange_, yellow_, lime_, green_, cyan_, light_blue_, blue_, purple_, white_, light_gray_, gray_, black_, brown_
