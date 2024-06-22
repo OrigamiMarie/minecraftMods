@@ -1,0 +1,6 @@
+{
+  "parent": "minecraft:item/generated",
+  "textures": {
+    "layer0": "origamimarie_mod:block/rainbow_crystal/magenta_waxed_large_rainbow_crystal_bud"
+  }
+}

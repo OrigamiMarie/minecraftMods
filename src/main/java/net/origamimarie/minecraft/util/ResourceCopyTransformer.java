@@ -9,6 +9,7 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.charset.Charset;
 import java.util.*;
+import java.util.stream.Collectors;
 
 /*
  * This reads a file from the resources directory,
@@ -21,26 +22,20 @@ public class ResourceCopyTransformer {
     private static final List<String> RAINBOW_CRYSTAL_COLORS = List.of("magenta", "red", "orange", "yellow", "lime", "cyan", "blue", "purple");
     private static final List<String> RAINBOW_CRYSTAL_TYPES = List.of("rainbow_crystal_cluster", "large_rainbow_crystal_bud", "medium_rainbow_crystal_bud", "small_rainbow_crystal_bud");
 
-    private static final List<String> transformFiles = List.of(
-            "assets/connectedglass/blockstates/templates/copier.csv",
-            "assets/connectedglass/models/templates/copier.csv",
-            "assets/connectedglass/models/item/templates/copier.csv",
-            "assets/connectedglass/textures/borderless_glass/templates/copier.csv",
-            "assets/connectedglass/textures/clear_glass/templates/copier.csv",
-            "assets/connectedglass/textures/scratched_glass/templates/copier.csv",
-            "assets/connectedglass/textures/tinted_borderless_glass/templates/copier.csv",
-            "assets/origamimarie_mod/blockstates/templates/copier.csv",
-            "assets/origamimarie_mod/models/block/candles/template/copier.csv",
-            "assets/origamimarie_mod/models/block/ornament/templates/copier.csv",
-            "assets/origamimarie_mod/models/block/rainbow_crystal/templates/copier.csv",
-            "assets/origamimarie_mod/models/item/templates/copier.csv",
-            "assets/origamimarie_mod/textures/block/rainbow_crystal/templates/copier.csv",
-            "data/origamimarie_mod/loot_tables/blocks/templates/copier.csv",
-            "data/origamimarie_mod/recipes/templates/copier.csv"
-            );
+    private static List<String> transformFiles;
+
+    // I know, a static try/catch is probably not great form.
+    // But this is just a file generator, it's not part of the minecraft mod runtime.
+    static {
+        try {
+            transformFiles = FileUtils.readLines(new File(RESOURCES_DIR, "copierControllerFile"), UTF_8);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
 
     public static void main(String[] args) throws IOException {
-        doTransformsFromFiles();
+        prettyNamesPrinter();
     }
 
     private static void doTransformsFromFiles() throws IOException {

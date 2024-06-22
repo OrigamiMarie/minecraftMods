@@ -57,8 +57,8 @@ public class BuddingRainbowCrystalBlock extends AmethystBlock {
             int crystalColorIndex = Math.abs(("" + pos.hashCode()).hashCode() & 31);
             String color = COLOR_ORDER.get(crystalColorIndex);
             block = RainbowCrystalClusterBlock.SMALL_RAINBOW_CRYSTAL_BUD_MAP.get(color);
-        } else if (RainbowCrystalClusterBlock.RAINBOW_CRYSTAL_TRANSITION_MAP.containsKey(blockState.getBlock()) && blockState.get(RainbowCrystalClusterBlock.FACING) == direction) {
-            block = RainbowCrystalClusterBlock.RAINBOW_CRYSTAL_TRANSITION_MAP.get(blockState.getBlock());
+        } else if (RainbowCrystalClusterBlock.RAINBOW_CRYSTAL_GROW_MAP.containsKey(blockState.getBlock()) && blockState.get(RainbowCrystalClusterBlock.FACING) == direction) {
+            block = RainbowCrystalClusterBlock.RAINBOW_CRYSTAL_GROW_MAP.get(blockState.getBlock());
         }
         if (block != null) {
             BlockState blockState2 = block.getDefaultState().with(RainbowCrystalClusterBlock.FACING, direction).with(RainbowCrystalClusterBlock.WATERLOGGED, blockState.getFluidState().getFluid() == Fluids.WATER);
