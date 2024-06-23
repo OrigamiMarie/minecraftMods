@@ -9,7 +9,6 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.charset.Charset;
 import java.util.*;
-import java.util.stream.Collectors;
 
 /*
  * This reads a file from the resources directory,
@@ -35,7 +34,7 @@ public class ResourceCopyTransformer {
     }
 
     public static void main(String[] args) throws IOException {
-        prettyNamesPrinter();
+        doTransformsFromFiles();
     }
 
     private static void doTransformsFromFiles() throws IOException {
