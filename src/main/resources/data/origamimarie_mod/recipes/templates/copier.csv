@@ -1,6 +1,7 @@
-color_waxed_crystal_type.json, ../
-crystal_type, rainbow_crystal_cluster, large_rainbow_crystal_bud, medium_rainbow_crystal_bud, small_rainbow_crystal_bud
-color, magenta, red, orange, yellow, lime, cyan, blue, purple
+color_waxed_brightness_crystal_type.json; ../
+crystal_type; rainbow_crystal_cluster; large_rainbow_crystal_bud; medium_rainbow_crystal_bud; small_rainbow_crystal_bud
+color; magenta; red; orange; yellow; lime; cyan; blue; purple
+brightness_; ; dim_
 
-color_ornament.json, ../
-color, pink, magenta, red, orange, yellow, lime, green, cyan, light_blue, blue, purple, white, light_gray, gray, black, brown
+color_ornament.json; ../
+color; pink; magenta; red; orange; yellow; lime; green; cyan; light_blue; blue; purple; white; light_gray; gray; black; brown

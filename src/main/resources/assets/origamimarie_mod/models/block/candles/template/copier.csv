@@ -1,5 +1,5 @@
-color_candle_pad_count_angle_state.json, ../
-color_, , pink_, magenta_, red_, orange_, yellow_, lime_, green_, cyan_, light_blue_, blue_, purple_, white_, light_gray_, gray_, black_, brown_
-count, one_candle, two_candles, three_candles, four_candles
-angle, 0, 90, 180, 270
-_state, , _lit
+color_candle_pad_count_angle_state.json; ../
+color_; ; pink_; magenta_; red_; orange_; yellow_; lime_; green_; cyan_; light_blue_; blue_; purple_; white_; light_gray_; gray_; black_; brown_
+count; one_candle; two_candles; three_candles; four_candles
+angle; 0; 90; 180; 270
+_state; ; _lit

@@ -1,0 +1,6 @@
+{
+  "parent": "minecraft:block/cross",
+  "textures": {
+    "cross": "origamimarie_mod:block/rainbow_crystal/lime_waxed_dim_medium_rainbow_crystal_bud"
+  }
+}

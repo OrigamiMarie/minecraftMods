@@ -8,36 +8,52 @@ import org.apache.commons.lang3.tuple.Pair;
 import java.io.File;
 import java.io.IOException;
 import java.nio.charset.Charset;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 /*
- * This reads a file from the resources directory,
- * and multiplexes it out to many other files based on requested string replacements.
+ * This utility automates the creation of all the similar asset & data files required for block variants.
+ * 1. A controller file is read, which points to each copier file.
+ * 2. Each copier file contains one or more sections that describe how to multiplex a file.
+ * 3. Each section has these "; " lines:
+ *   a. original filename, and destination directory
+ *   b. one or more lines with an initial key to replace, and one or more values to use to replace it.
+ *
+ * All modifications described on each line, are multiplexed against all other lines.  So if your lines look like:
+ *   animal; cat; dog; elephant
+ *   color; brown; white
+ *   age; 9; 12
+ * this would result in 12 files, ranging from cat/brown/9 to cat/white/12 to elephant/white/12.
+ *
+ * Strings are replaced both in the file text and in the filename.
+ *
+ * Variants with no string in a slot can be made, with syntax like this:
+ *   thing; alpha; beta
+ *   property_; ; shiny_
+ * which would result in variants like "alpha", "beta", "shiny_alpha", and "shiny_beta"
+ *
+ * If you want to make correlated changes that aren't multiplexed, use pipes like this:
+ *   color|phase; red|10; orange|20
+ *   shape; square; circle
+ * which would result in variants like "red square 10", "red circle 10", "orange square 20", and "orange circle 20"
  */
 public class ResourceCopyTransformer {
 
     private static final Charset UTF_8 = Charsets.UTF_8;
     private static final String RESOURCES_DIR = "C:/Users/origa/java/minecraftMods/src/main/resources/";
-    private static final List<String> RAINBOW_CRYSTAL_COLORS = List.of("magenta", "red", "orange", "yellow", "lime", "cyan", "blue", "purple");
-    private static final List<String> RAINBOW_CRYSTAL_TYPES = List.of("rainbow_crystal_cluster", "large_rainbow_crystal_bud", "medium_rainbow_crystal_bud", "small_rainbow_crystal_bud");
-
-    private static List<String> transformFiles;
-
-    // I know, a static try/catch is probably not great form.
-    // But this is just a file generator, it's not part of the minecraft mod runtime.
-    static {
-        try {
-            transformFiles = FileUtils.readLines(new File(RESOURCES_DIR, "copierControllerFile"), UTF_8);
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
-    }
+    private static final File COPIER_CONTROLLER_FILE = new File(RESOURCES_DIR, "copierControllerFile");
 
     public static void main(String[] args) throws IOException {
-        doTransformsFromFiles();
+        readControllerFileAndPerformCopierTransforms();
     }
 
-    private static void doTransformsFromFiles() throws IOException {
+    private static void readControllerFileAndPerformCopierTransforms() throws IOException {
+        List<String> transformFiles = FileUtils.readLines(COPIER_CONTROLLER_FILE, UTF_8);
         List<TransformParameters> transforms = new ArrayList<>();
         for (String transformFile : transformFiles) {
             transforms.addAll(TransformParameters.readFromFile(new File(RESOURCES_DIR, transformFile)));
@@ -60,19 +76,7 @@ public class ResourceCopyTransformer {
         }
     }
 
-    private static void prettyNamesPrinter() {
-        for (String color : RAINBOW_CRYSTAL_COLORS) {
-            for (String type : RAINBOW_CRYSTAL_TYPES) {
-                String blockName = color + "_" + type;
-//                String prettyBlockName = Arrays.stream(blockName.split("_")).map(s -> s.substring(0, 1).toUpperCase() + s.substring(1)).collect(Collectors.joining(" "));
-//                String output = ("  'block.origamimarie_mod." + blockName + "': '" + prettyBlockName + "'").replace("'", "\"");
-                String output = " origamimarie_mod:" + blockName;
-                System.out.print(output);
-            }
-        }
-
-    }
-
+    // Perform each requested string substitution.
     private static String performAllReplacements(String s, Set<Pair<String, String>> replacements) {
         for (Pair<String, String> replacement : replacements) {
             s = s.replaceAll(replacement.getLeft(), replacement.getRight());
@@ -83,73 +87,87 @@ public class ResourceCopyTransformer {
 
     public record TransformParameters(File sourceFile, File destinationDir,
                                       Map<String, List<String>> replacements) {
-            public static final String COMMENT = "#";
-            public static final String DOUBLE_DOT = "..";
-            public static final String LINE_SEPARATOR = "\r\n";
-            public static final String COMMA_SEPARATOR = ", ";
+        public static final String COMMENT = "#";
+        public static final String DOUBLE_DOT = "..";
+        public static final String LINE_SEPARATOR = "\r\n";
+        public static final String FIELD_SEPARATOR = "; ";
+        public static final String ESCAPED_CORRELATED_FIELD_SEPARATOR = "\\|";
 
+        // Multiplex all the replacements against each other, to get all combinations.
+        // Split apart any correlated fields, and don't multiplex them against each other.
         public List<Set<Pair<String, String>>> calculateAllStringReplacementSets() {
-                List<Set<Pair<String, String>>> allReplacementSets = new ArrayList<>();
-                allReplacementSets.add(new HashSet<>());
-                List<Set<Pair<String, String>>> replacementSetsTemp = new ArrayList<>();
+            List<Set<Pair<String, String>>> allReplacementSets = new ArrayList<>();
+            allReplacementSets.add(new HashSet<>());
+            List<Set<Pair<String, String>>> replacementSetsTemp = new ArrayList<>();
 
-                for (String originalString : replacements.keySet()) {
-                    replacementSetsTemp.clear();
-                    replacementSetsTemp.addAll(allReplacementSets);
-                    allReplacementSets.clear();
-                    List<String> replacementStrings = replacements.get(originalString);
-                    for (String replacementString : replacementStrings) {
-                        Pair<String, String> originalAndReplacement = Pair.of(originalString, replacementString);
-                        for (Set<Pair<String, String>> setOfReplacements : replacementSetsTemp) {
-                            Set<Pair<String, String>> setCopy = new HashSet<>(setOfReplacements);
-                            setCopy.add(originalAndReplacement);
-                            allReplacementSets.add(setCopy);
-                        }
+            for (String originalString : replacements.keySet()) {
+                replacementSetsTemp.clear();
+                replacementSetsTemp.addAll(allReplacementSets);
+                allReplacementSets.clear();
+                List<String> replacementStrings = replacements.get(originalString);
+                for (String replacementString : replacementStrings) {
+                    List<Pair<String, String>> originalAndReplacementPairs = makeReplacementPairs(originalString, replacementString);
+                    for (Set<Pair<String, String>> setOfReplacements : replacementSetsTemp) {
+                        Set<Pair<String, String>> setCopy = new HashSet<>(setOfReplacements);
+                        setCopy.addAll(originalAndReplacementPairs);
+                        allReplacementSets.add(setCopy);
                     }
                 }
-                return allReplacementSets;
             }
+            return allReplacementSets;
+        }
 
-            public static List<TransformParameters> readFromFile(File file) throws IOException {
-                List<TransformParameters> result = new ArrayList<>();
-                String fileContents = FileUtils.readFileToString(file, UTF_8);
-                String[] lines = fileContents.split(LINE_SEPARATOR);
-                File parentFile = file.getParentFile();
-                for (int i = 0; i < lines.length; i++) {
-                    // Skip over the comment lines and empty lines
-                    String currentLine = lines[i].strip();
-                    if (currentLine.length() == 0 || currentLine.startsWith(COMMENT)) {
+        private static List<Pair<String, String>> makeReplacementPairs(String originalString, String replacementString) {
+            String[] originalStrings = originalString.split(ESCAPED_CORRELATED_FIELD_SEPARATOR);
+            String[] replacementStrings = replacementString.split(ESCAPED_CORRELATED_FIELD_SEPARATOR);
+            List<Pair<String, String>> pairs = new ArrayList<>(originalStrings.length);
+            for (int i = 0; i < originalStrings.length; i++) {
+                pairs.add(Pair.of(originalStrings[i], replacementStrings[i]));
+            }
+            return pairs;
+        }
+
+        // Read a copier file and make a list of TransformParameters objects, one object for each section.
+        public static List<TransformParameters> readFromFile(File file) throws IOException {
+            List<TransformParameters> result = new ArrayList<>();
+            String fileContents = FileUtils.readFileToString(file, UTF_8);
+            String[] lines = fileContents.split(LINE_SEPARATOR);
+            File parentFile = file.getParentFile();
+            for (int i = 0; i < lines.length; i++) {
+                // Skip over the comment lines and empty lines
+                String currentLine = lines[i].strip();
+                if (currentLine.length() == 0 || currentLine.startsWith(COMMENT)) {
+                    continue;
+                }
+                // Now we have a transform definition
+                String[] sourceAndDestFiles = currentLine.split(FIELD_SEPARATOR);
+                File sourceFile = mashFileParts(new File(parentFile, sourceAndDestFiles[0]));
+                File destinationDir = mashFileParts(new File(parentFile, sourceAndDestFiles[1]));
+                Map<String, List<String>> replacements = new HashMap<>();
+                i++;
+                while (i < lines.length && lines[i].strip().length() > 0) {
+                    currentLine = lines[i];
+                    i++;
+                    if (currentLine.strip().startsWith(COMMENT)) {
                         continue;
                     }
-                    // Now we have a transform definition
-                    String[] sourceAndDestFiles = currentLine.split(", ");
-                    File sourceFile = mashFileParts(new File(parentFile, sourceAndDestFiles[0]));
-                    File destinationDir = mashFileParts(new File(parentFile, sourceAndDestFiles[1]));
-                    Map<String, List<String>> replacements = new HashMap<>();
-                    i++;
-                    while (i < lines.length && lines[i].strip().length() > 0) {
-                        currentLine = lines[i];
-                        i++;
-                        if (currentLine.strip().startsWith(COMMENT)) {
-                            continue;
-                        }
-                        List<String> replementTokens = new ArrayList<>(Arrays.asList(currentLine.split(COMMA_SEPARATOR)));
-                        String key = replementTokens.remove(0);
-                        replacements.put(key, replementTokens);
-                    }
-                    result.add(new TransformParameters(sourceFile, destinationDir, replacements));
+                    List<String> replacementTokens = new ArrayList<>(Arrays.asList(currentLine.split(FIELD_SEPARATOR)));
+                    String key = replacementTokens.remove(0);
+                    replacements.put(key, replacementTokens);
                 }
-                return result;
+                result.add(new TransformParameters(sourceFile, destinationDir, replacements));
             }
-
-            private static File mashFileParts(File file) {
-                String fullFile = file.getAbsolutePath();
-                while (fullFile.contains(DOUBLE_DOT)) {
-                    int location = fullFile.indexOf(DOUBLE_DOT);
-                    int startOfFileAbove = StringUtils.lastIndexOf(fullFile, "\\", location - 2);
-                    fullFile = fullFile.substring(0, startOfFileAbove) + fullFile.substring(location + 2);
-                }
-                return new File(fullFile);
-            }
+            return result;
         }
+
+        private static File mashFileParts(File file) {
+            String fullFile = file.getAbsolutePath();
+            while (fullFile.contains(DOUBLE_DOT)) {
+                int location = fullFile.indexOf(DOUBLE_DOT);
+                int startOfFileAbove = StringUtils.lastIndexOf(fullFile, "\\", location - 2);
+                fullFile = fullFile.substring(0, startOfFileAbove) + fullFile.substring(location + 2);
+            }
+            return new File(fullFile);
+        }
+    }
 }

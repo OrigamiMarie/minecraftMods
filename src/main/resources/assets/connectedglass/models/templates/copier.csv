@@ -1,8 +1,8 @@
-glass_type_glass_color.json, ../
-glass_type, borderless, clear, scratched, tinted_borderless
-_color, , _pink, _magenta, _red, _orange, _yellow, _lime, _green, _cyan, _light_blue, _blue, _purple, _white, _light_gray, _gray, _black, _brown
+glass_type_glass_color.json; ../
+glass_type; borderless; clear; scratched; tinted_borderless
+_color; ; _pink; _magenta; _red; _orange; _yellow; _lime; _green; _cyan; _light_blue; _blue; _purple; _white; _light_gray; _gray; _black; _brown
 
-glass_type_glass_color_pane_shape.json, ../
-glass_type, borderless, clear, scratched, tinted_borderless
-_color, , _pink, _magenta, _red, _orange, _yellow, _lime, _green, _cyan, _light_blue, _blue, _purple, _white, _light_gray, _gray, _black, _brown
-shape, noside, noside_alt, post, side, side_alt
+glass_type_glass_color_pane_shape.json; ../
+glass_type; borderless; clear; scratched; tinted_borderless
+_color; ; _pink; _magenta; _red; _orange; _yellow; _lime; _green; _cyan; _light_blue; _blue; _purple; _white; _light_gray; _gray; _black; _brown
+shape; noside; noside_alt; post; side; side_alt

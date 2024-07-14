@@ -1,6 +1,6 @@
 package net.origamimarie.minecraft.mixin;
 
-import net.minecraft.block.*;
+import net.minecraft.block.BlockState;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.FlintAndSteelItem;
 import net.minecraft.item.ItemUsageContext;
@@ -12,7 +12,6 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraft.world.event.GameEvent;
 import net.origamimarie.minecraft.CandlePadBlock;
-import net.origamimarie.minecraft.OrigamiMarieMod;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;

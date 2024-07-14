@@ -5,16 +5,21 @@ import net.fabricmc.fabric.api.blockrenderlayer.v1.BlockRenderLayerMap;
 import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback;
 import net.fabricmc.fabric.api.item.v1.FabricItemSettings;
 import net.fabricmc.fabric.api.itemgroup.v1.ItemGroupEvents;
-import net.minecraft.block.*;
+import net.minecraft.block.AbstractBlock;
+import net.minecraft.block.Block;
+import net.minecraft.block.Blocks;
 import net.minecraft.client.render.RenderLayer;
 import net.minecraft.item.BlockItem;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemGroups;
 import net.minecraft.item.Items;
-import net.minecraft.registry.*;
+import net.minecraft.registry.Registries;
+import net.minecraft.registry.Registry;
+import net.minecraft.registry.RegistryKeys;
 import net.minecraft.registry.tag.TagKey;
 import net.minecraft.util.Identifier;
 import net.origamimarie.minecraft.azalea.ModdedAzaleaBlock;
+import net.origamimarie.minecraft.biome.IceSpikeWithCrystalsFeature;
 import net.origamimarie.minecraft.firtree.FirTree;
 import net.origamimarie.minecraft.flowers.CustomFlowers;
 import net.origamimarie.minecraft.rainbow_crystal.BuddingRainbowCrystalBlock;
@@ -46,6 +51,7 @@ public class OrigamiMarieMod implements ModInitializer {
         CustomFlowers.registerFlowers();
         registerRainbowCrystals();
         CommandRegistrationCallback.EVENT.register((dispatcher, registryAccess, environment) -> register(dispatcher, registryAccess));
+        IceSpikeWithCrystalsFeature.register();
     }
 
     private void registerRainbowCrystals() {

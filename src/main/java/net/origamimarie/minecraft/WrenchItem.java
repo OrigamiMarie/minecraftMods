@@ -1,6 +1,15 @@
 package net.origamimarie.minecraft;
 
-import net.minecraft.block.*;
+import net.minecraft.block.AmethystClusterBlock;
+import net.minecraft.block.Block;
+import net.minecraft.block.BlockState;
+import net.minecraft.block.DoorBlock;
+import net.minecraft.block.FacingBlock;
+import net.minecraft.block.HopperBlock;
+import net.minecraft.block.HorizontalFacingBlock;
+import net.minecraft.block.PillarBlock;
+import net.minecraft.block.SlabBlock;
+import net.minecraft.block.StairsBlock;
 import net.minecraft.block.enums.BlockHalf;
 import net.minecraft.block.enums.SlabType;
 import net.minecraft.block.enums.StairShape;
@@ -16,6 +25,7 @@ import org.apache.commons.lang3.tuple.Pair;
 import java.util.List;
 
 import static net.minecraft.block.StairsBlock.*;
+import static net.origamimarie.minecraft.rainbow_crystal.RainbowCrystalClusterBlock.FACING;
 
 public class WrenchItem extends Item {
     private static final List<SlabType> SLAB_TYPES = List.of(SlabType.TOP, SlabType.BOTTOM, SlabType.TOP);

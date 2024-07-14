@@ -1,0 +1,14 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "ingredients": [
+    {
+      "item": "minecraft:honeycomb"
+    },
+    {
+      "item": "origamimarie_mod:lime_dim_small_rainbow_crystal_bud"
+    }
+  ],
+  "result": {
+    "item": "origamimarie_mod:lime_waxed_dim_small_rainbow_crystal_bud"
+  }
+}

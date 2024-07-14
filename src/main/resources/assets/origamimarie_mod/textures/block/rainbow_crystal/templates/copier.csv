@@ -1,23 +1,4 @@
-magenta_crystal_type.png.mcmeta, ../
-crystal_type, rainbow_crystal_cluster, large_rainbow_crystal_bud, medium_rainbow_crystal_bud, small_rainbow_crystal_bud
-
-red_crystal_type.png.mcmeta, ../
-crystal_type, rainbow_crystal_cluster, large_rainbow_crystal_bud, medium_rainbow_crystal_bud, small_rainbow_crystal_bud
-
-orange_crystal_type.png.mcmeta, ../
-crystal_type, rainbow_crystal_cluster, large_rainbow_crystal_bud, medium_rainbow_crystal_bud, small_rainbow_crystal_bud
-
-yellow_crystal_type.png.mcmeta, ../
-crystal_type, rainbow_crystal_cluster, large_rainbow_crystal_bud, medium_rainbow_crystal_bud, small_rainbow_crystal_bud
-
-lime_crystal_type.png.mcmeta, ../
-crystal_type, rainbow_crystal_cluster, large_rainbow_crystal_bud, medium_rainbow_crystal_bud, small_rainbow_crystal_bud
-
-cyan_crystal_type.png.mcmeta, ../
-crystal_type, rainbow_crystal_cluster, large_rainbow_crystal_bud, medium_rainbow_crystal_bud, small_rainbow_crystal_bud
-
-blue_crystal_type.png.mcmeta, ../
-crystal_type, rainbow_crystal_cluster, large_rainbow_crystal_bud, medium_rainbow_crystal_bud, small_rainbow_crystal_bud
-
-purple_crystal_type.png.mcmeta, ../
-crystal_type, rainbow_crystal_cluster, large_rainbow_crystal_bud, medium_rainbow_crystal_bud, small_rainbow_crystal_bud
+color_brightness_crystal_type.png.mcmeta; ../
+crystal_type; rainbow_crystal_cluster; large_rainbow_crystal_bud; medium_rainbow_crystal_bud; small_rainbow_crystal_bud
+brightness_; ; dim_
+color|sequence; magenta|0,1,2,3,4,5,6,7; red|1,2,3,4,5,6,7,0; orange|2,3,4,5,6,7,0,1; yellow|3,4,5,6,7,0,1,2; lime|4,5,6,7,0,1,2,3; cyan|5,6,7,0,1,2,3,4; blue|6,7,0,1,2,3,4,5; purple|7,0,1,2,3,4,5,6

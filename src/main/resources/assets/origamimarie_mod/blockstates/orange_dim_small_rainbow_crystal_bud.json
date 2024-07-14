@@ -1,0 +1,30 @@
+{
+  "variants": {
+    "facing=down": {
+      "model": "origamimarie_mod:block/rainbow_crystal/orange_dim_small_rainbow_crystal_bud",
+      "x": 180
+    },
+    "facing=east": {
+      "model": "origamimarie_mod:block/rainbow_crystal/orange_dim_small_rainbow_crystal_bud",
+      "x": 90,
+      "y": 90
+    },
+    "facing=north": {
+      "model": "origamimarie_mod:block/rainbow_crystal/orange_dim_small_rainbow_crystal_bud",
+      "x": 90
+    },
+    "facing=south": {
+      "model": "origamimarie_mod:block/rainbow_crystal/orange_dim_small_rainbow_crystal_bud",
+      "x": 90,
+      "y": 180
+    },
+    "facing=up": {
+      "model": "origamimarie_mod:block/rainbow_crystal/orange_dim_small_rainbow_crystal_bud"
+    },
+    "facing=west": {
+      "model": "origamimarie_mod:block/rainbow_crystal/orange_dim_small_rainbow_crystal_bud",
+      "x": 90,
+      "y": 270
+    }
+  }
+}

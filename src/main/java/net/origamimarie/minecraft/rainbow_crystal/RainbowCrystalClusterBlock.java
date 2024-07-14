@@ -3,13 +3,25 @@ package net.origamimarie.minecraft.rainbow_crystal;
 import com.mojang.serialization.MapCodec;
 import net.fabricmc.fabric.api.blockrenderlayer.v1.BlockRenderLayerMap;
 import net.fabricmc.fabric.api.item.v1.FabricItemSettings;
-import net.minecraft.block.*;
+import net.minecraft.block.AbstractBlock;
+import net.minecraft.block.AmethystBlock;
+import net.minecraft.block.Block;
+import net.minecraft.block.BlockState;
+import net.minecraft.block.Blocks;
+import net.minecraft.block.MapColor;
+import net.minecraft.block.ShapeContext;
+import net.minecraft.block.Waterloggable;
 import net.minecraft.block.piston.PistonBehavior;
 import net.minecraft.client.render.RenderLayer;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.fluid.FluidState;
 import net.minecraft.fluid.Fluids;
-import net.minecraft.item.*;
+import net.minecraft.item.AxeItem;
+import net.minecraft.item.BlockItem;
+import net.minecraft.item.Item;
+import net.minecraft.item.ItemPlacementContext;
+import net.minecraft.item.ItemStack;
+import net.minecraft.item.Items;
 import net.minecraft.registry.Registries;
 import net.minecraft.registry.Registry;
 import net.minecraft.sound.BlockSoundGroup;
@@ -20,7 +32,11 @@ import net.minecraft.state.StateManager;
 import net.minecraft.state.property.BooleanProperty;
 import net.minecraft.state.property.DirectionProperty;
 import net.minecraft.state.property.Properties;
-import net.minecraft.util.*;
+import net.minecraft.util.ActionResult;
+import net.minecraft.util.BlockMirror;
+import net.minecraft.util.BlockRotation;
+import net.minecraft.util.Hand;
+import net.minecraft.util.Identifier;
 import net.minecraft.util.hit.BlockHitResult;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
@@ -38,7 +54,6 @@ import java.util.Map;
 
 import static net.origamimarie.minecraft.OrigamiMarieMod.ORIGAMIMARIE_MOD;
 
-// Names!
 
 public class RainbowCrystalClusterBlock extends AmethystBlock
         implements Waterloggable {
@@ -48,52 +63,80 @@ public class RainbowCrystalClusterBlock extends AmethystBlock
 
     public MapCodec<RainbowCrystalClusterBlock> CODEC = createCodec(RainbowCrystalClusterBlock::new);
 
+    public static final String MAGENTA = "magenta_";
+    public static final String RED = "red_";
+    public static final String ORANGE = "orange_";
+    public static final String YELLOW = "yellow_";
+    public static final String LIME = "lime_";
+    public static final String CYAN = "cyan_";
+    public static final String BLUE = "blue_";
+    public static final String PURPLE = "purple_";
+    public static final String WAXED = "waxed_";
+    public static final String UNWAXED = "";
+    public static final String BRIGHT = "";
+    public static final String DIM = "dim_";
+    public static final String SMALL = "small_rainbow_crystal_bud";
+    public static final String MEDIUM = "medium_rainbow_crystal_bud";
+    public static final String LARGE = "large_rainbow_crystal_bud";
+    public static final String CLUSTER = "rainbow_crystal_cluster";
     public static final DirectionProperty FACING = Properties.FACING;
-    public static Map<String, RainbowCrystalClusterBlock> RAINBOW_CRYSTAL_CLUSTER_MAP = new HashMap<>();
-    public static Map<String, RainbowCrystalClusterBlock> LARGE_RAINBOW_CRYSTAL_BUD_MAP = new HashMap<>();
-    public static Map<String, RainbowCrystalClusterBlock> MEDIUM_RAINBOW_CRYSTAL_BUD_MAP = new HashMap<>();
-    public static Map<String, RainbowCrystalClusterBlock> SMALL_RAINBOW_CRYSTAL_BUD_MAP = new HashMap<>();
-    public static Map<String, RainbowCrystalClusterBlock> WAXED_RAINBOW_CRYSTAL_CLUSTER_MAP = new HashMap<>();
-    public static Map<String, RainbowCrystalClusterBlock> WAXED_LARGE_RAINBOW_CRYSTAL_BUD_MAP = new HashMap<>();
-    public static Map<String, RainbowCrystalClusterBlock> WAXED_MEDIUM_RAINBOW_CRYSTAL_BUD_MAP = new HashMap<>();
-    public static Map<String, RainbowCrystalClusterBlock> WAXED_SMALL_RAINBOW_CRYSTAL_BUD_MAP = new HashMap<>();
 
-    public static Map<Block, RainbowCrystalClusterBlock> RAINBOW_CRYSTAL_GROW_MAP = new HashMap<>();
-    public static Map<Block, RainbowCrystalClusterBlock> RAINBOW_CRYSTAL_WAX_ON_MAP = new HashMap<>();
-    public static Map<Block, RainbowCrystalClusterBlock> RAINBOW_CRYSTAL_WAX_OFF_MAP = new HashMap<>();
+    // This map is needed for starting crystal growth from bud blocks
+    public static final Map<String, RainbowCrystalClusterBlock> SMALL_RAINBOW_CRYSTAL_BUD_MAP = new HashMap<>();
+    public static final Map<String, RainbowCrystalClusterBlock> DIM_SMALL_RAINBOW_CRYSTAL_BUD_MAP = new HashMap<>();
+    private static final Map<String, Map<String, Map<String, Map<String, RainbowCrystalClusterBlock>>>> ALL_CRYSTALS_MAP = new HashMap<>();
+
+    public static final Map<Block, RainbowCrystalClusterBlock> RAINBOW_CRYSTAL_GROW_MAP = new HashMap<>();
+    private static final Map<Block, RainbowCrystalClusterBlock> RAINBOW_CRYSTAL_WAX_ON_MAP = new HashMap<>();
+    private static final Map<Block, RainbowCrystalClusterBlock> RAINBOW_CRYSTAL_WAX_OFF_MAP = new HashMap<>();
 
 
-    public static final List<String> COLOR_PREFIXES = List.of("magenta", "red", "orange", "yellow", "lime", "cyan", "blue", "purple");
+    public static final List<String> COLOR_PREFIXES = List.of(MAGENTA, RED, ORANGE, YELLOW, LIME, CYAN, BLUE, PURPLE);
     static {
-        AbstractBlock.Settings crystalClusterSettings = AbstractBlock.Settings.create().mapColor(MapColor.MAGENTA).solid().nonOpaque().sounds(BlockSoundGroup.AMETHYST_CLUSTER).strength(0.0f, 0.0f).luminance(state -> 5).pistonBehavior(PistonBehavior.DESTROY);
-        AbstractBlock.Settings largeCrystalBudSettings = AbstractBlock.Settings.create().mapColor(MapColor.MAGENTA).solid().nonOpaque().sounds(BlockSoundGroup.LARGE_AMETHYST_BUD).strength(0.0f, 0.0f).luminance(state -> 4).pistonBehavior(PistonBehavior.DESTROY);
-        AbstractBlock.Settings mediumCrystalBudSettings = AbstractBlock.Settings.create().mapColor(MapColor.MAGENTA).solid().nonOpaque().sounds(BlockSoundGroup.MEDIUM_AMETHYST_BUD).strength(0.0f, 0.0f).luminance(state -> 2).pistonBehavior(PistonBehavior.DESTROY);
-        AbstractBlock.Settings smallCrystalBudSettings = AbstractBlock.Settings.create().mapColor(MapColor.MAGENTA).solid().nonOpaque().sounds(BlockSoundGroup.SMALL_AMETHYST_BUD).strength(0.0f, 0.0f).luminance(state -> 1).pistonBehavior(PistonBehavior.DESTROY);
+        List<String> coatings = List.of(UNWAXED, WAXED);
+        List<String> brightnesses = List.of(BRIGHT, DIM);
+        List<String> sizes = List.of(SMALL, MEDIUM, LARGE, CLUSTER);
+
+        Map<String, Float> sizeHeight = Map.of(SMALL, 3.0f, MEDIUM, 4.0f, LARGE, 5.0f, CLUSTER, 7.0f);
+        Map<String, Float> sizeXzOffset = Map.of(SMALL, 4.0f, MEDIUM, 3.0f, LARGE, 3.0f, CLUSTER, 3.0f);
+        Map<String, AbstractBlock.Settings> brightSizeSettings = Map.of(
+                SMALL, AbstractBlock.Settings.create().mapColor(MapColor.MAGENTA).solid().nonOpaque().sounds(BlockSoundGroup.SMALL_AMETHYST_BUD).strength(0.0f, 0.0f).luminance(state -> 1).pistonBehavior(PistonBehavior.DESTROY),
+                MEDIUM, AbstractBlock.Settings.create().mapColor(MapColor.MAGENTA).solid().nonOpaque().sounds(BlockSoundGroup.MEDIUM_AMETHYST_BUD).strength(0.0f, 0.0f).luminance(state -> 2).pistonBehavior(PistonBehavior.DESTROY),
+                LARGE, AbstractBlock.Settings.create().mapColor(MapColor.MAGENTA).solid().nonOpaque().sounds(BlockSoundGroup.LARGE_AMETHYST_BUD).strength(0.0f, 0.0f).luminance(state -> 4).pistonBehavior(PistonBehavior.DESTROY),
+                CLUSTER, AbstractBlock.Settings.create().mapColor(MapColor.MAGENTA).solid().nonOpaque().sounds(BlockSoundGroup.AMETHYST_CLUSTER).strength(0.0f, 0.0f).luminance(state -> 5).pistonBehavior(PistonBehavior.DESTROY)
+        );
+        Map<String, AbstractBlock.Settings> dimSizeSettings = Map.of(
+                SMALL, AbstractBlock.Settings.create().mapColor(MapColor.MAGENTA).solid().nonOpaque().sounds(BlockSoundGroup.SMALL_AMETHYST_BUD).strength(0.0f, 0.0f).pistonBehavior(PistonBehavior.DESTROY),
+                MEDIUM, AbstractBlock.Settings.create().mapColor(MapColor.MAGENTA).solid().nonOpaque().sounds(BlockSoundGroup.MEDIUM_AMETHYST_BUD).strength(0.0f, 0.0f).pistonBehavior(PistonBehavior.DESTROY),
+                LARGE, AbstractBlock.Settings.create().mapColor(MapColor.MAGENTA).solid().nonOpaque().sounds(BlockSoundGroup.LARGE_AMETHYST_BUD).strength(0.0f, 0.0f).pistonBehavior(PistonBehavior.DESTROY),
+                CLUSTER, AbstractBlock.Settings.create().mapColor(MapColor.MAGENTA).solid().nonOpaque().sounds(BlockSoundGroup.AMETHYST_CLUSTER).strength(0.0f, 0.0f).pistonBehavior(PistonBehavior.DESTROY)
+        );
+        Map<String, Map<String, AbstractBlock.Settings>> brightnessSizeSettings = Map.of(BRIGHT, brightSizeSettings, DIM, dimSizeSettings);
         for (String color : COLOR_PREFIXES) {
-            SMALL_RAINBOW_CRYSTAL_BUD_MAP.put(color, new RainbowCrystalClusterBlock(false, 3.0f, 4.0f, smallCrystalBudSettings));
-            MEDIUM_RAINBOW_CRYSTAL_BUD_MAP.put(color, new RainbowCrystalClusterBlock(false, 4.0f, 3.0f, mediumCrystalBudSettings));
-            LARGE_RAINBOW_CRYSTAL_BUD_MAP.put(color, new RainbowCrystalClusterBlock(false, 5.0f, 3.0f, largeCrystalBudSettings));
-            RAINBOW_CRYSTAL_CLUSTER_MAP.put(color, new RainbowCrystalClusterBlock(false, 7.0f, 3.0f, crystalClusterSettings));
-            WAXED_SMALL_RAINBOW_CRYSTAL_BUD_MAP.put(color, new RainbowCrystalClusterBlock(true, 3.0f, 4.0f, smallCrystalBudSettings));
-            WAXED_MEDIUM_RAINBOW_CRYSTAL_BUD_MAP.put(color, new RainbowCrystalClusterBlock(true, 4.0f, 3.0f, mediumCrystalBudSettings));
-            WAXED_LARGE_RAINBOW_CRYSTAL_BUD_MAP.put(color, new RainbowCrystalClusterBlock(true, 5.0f, 3.0f, largeCrystalBudSettings));
-            WAXED_RAINBOW_CRYSTAL_CLUSTER_MAP.put(color, new RainbowCrystalClusterBlock(true, 7.0f, 3.0f, crystalClusterSettings));
+            for (String coating : coatings) {
+                for (String brightness : brightnesses) {
+                    for (String size : sizes) {
+                        addToAllCrystals(color, coating, brightness, size, new RainbowCrystalClusterBlock(coating.equals(WAXED), sizeHeight.get(size), sizeXzOffset.get(size), brightnessSizeSettings.get(brightness).get(size)));
+                    }
+                }
+            }
+        }
+        for (String color : COLOR_PREFIXES) {
+            SMALL_RAINBOW_CRYSTAL_BUD_MAP.put(color, getCrystal(color, UNWAXED, BRIGHT, SMALL));
+            DIM_SMALL_RAINBOW_CRYSTAL_BUD_MAP.put(color, getCrystal(color, UNWAXED, DIM, SMALL));
 
-            RAINBOW_CRYSTAL_GROW_MAP.put(SMALL_RAINBOW_CRYSTAL_BUD_MAP.get(color), MEDIUM_RAINBOW_CRYSTAL_BUD_MAP.get(color));
-            RAINBOW_CRYSTAL_GROW_MAP.put(MEDIUM_RAINBOW_CRYSTAL_BUD_MAP.get(color), LARGE_RAINBOW_CRYSTAL_BUD_MAP.get(color));
-            RAINBOW_CRYSTAL_GROW_MAP.put(LARGE_RAINBOW_CRYSTAL_BUD_MAP.get(color), RAINBOW_CRYSTAL_CLUSTER_MAP.get(color));
-            RAINBOW_CRYSTAL_GROW_MAP.put(WAXED_SMALL_RAINBOW_CRYSTAL_BUD_MAP.get(color), WAXED_MEDIUM_RAINBOW_CRYSTAL_BUD_MAP.get(color));
-            RAINBOW_CRYSTAL_GROW_MAP.put(WAXED_MEDIUM_RAINBOW_CRYSTAL_BUD_MAP.get(color), WAXED_LARGE_RAINBOW_CRYSTAL_BUD_MAP.get(color));
-            RAINBOW_CRYSTAL_GROW_MAP.put(WAXED_LARGE_RAINBOW_CRYSTAL_BUD_MAP.get(color), WAXED_RAINBOW_CRYSTAL_CLUSTER_MAP.get(color));
+            for (String brightness : brightnesses) {
+                for (String size : sizes) {
+                    RAINBOW_CRYSTAL_WAX_ON_MAP.put(getCrystal(color, UNWAXED, brightness, size), getCrystal(color, WAXED, brightness, size));
+                    RAINBOW_CRYSTAL_WAX_OFF_MAP.put(getCrystal(color, WAXED, brightness, size), getCrystal(color, UNWAXED, brightness, size));
+                }
 
-            RAINBOW_CRYSTAL_WAX_ON_MAP.put(SMALL_RAINBOW_CRYSTAL_BUD_MAP.get(color), WAXED_SMALL_RAINBOW_CRYSTAL_BUD_MAP.get(color));
-            RAINBOW_CRYSTAL_WAX_ON_MAP.put(MEDIUM_RAINBOW_CRYSTAL_BUD_MAP.get(color), WAXED_MEDIUM_RAINBOW_CRYSTAL_BUD_MAP.get(color));
-            RAINBOW_CRYSTAL_WAX_ON_MAP.put(LARGE_RAINBOW_CRYSTAL_BUD_MAP.get(color), WAXED_LARGE_RAINBOW_CRYSTAL_BUD_MAP.get(color));
-            RAINBOW_CRYSTAL_WAX_ON_MAP.put(RAINBOW_CRYSTAL_CLUSTER_MAP.get(color), WAXED_RAINBOW_CRYSTAL_CLUSTER_MAP.get(color));
-            RAINBOW_CRYSTAL_WAX_OFF_MAP.put(WAXED_SMALL_RAINBOW_CRYSTAL_BUD_MAP.get(color), SMALL_RAINBOW_CRYSTAL_BUD_MAP.get(color));
-            RAINBOW_CRYSTAL_WAX_OFF_MAP.put(WAXED_MEDIUM_RAINBOW_CRYSTAL_BUD_MAP.get(color), MEDIUM_RAINBOW_CRYSTAL_BUD_MAP.get(color));
-            RAINBOW_CRYSTAL_WAX_OFF_MAP.put(WAXED_LARGE_RAINBOW_CRYSTAL_BUD_MAP.get(color), LARGE_RAINBOW_CRYSTAL_BUD_MAP.get(color));
-            RAINBOW_CRYSTAL_WAX_OFF_MAP.put(WAXED_RAINBOW_CRYSTAL_CLUSTER_MAP.get(color), RAINBOW_CRYSTAL_CLUSTER_MAP.get(color));
+                for (String coating : coatings) {
+                    RAINBOW_CRYSTAL_GROW_MAP.put(getCrystal(color, coating, brightness, SMALL), getCrystal(color, coating, brightness, MEDIUM));
+                    RAINBOW_CRYSTAL_GROW_MAP.put(getCrystal(color, coating, brightness, MEDIUM), getCrystal(color, coating, brightness, LARGE));
+                    RAINBOW_CRYSTAL_GROW_MAP.put(getCrystal(color, coating, brightness, LARGE), getCrystal(color, coating, brightness, CLUSTER));
+                }
+            }
         }
     }
     protected VoxelShape northShape;
@@ -116,17 +159,26 @@ public class RainbowCrystalClusterBlock extends AmethystBlock
     }
 
     public static void registerAll() {
-        for (String color : COLOR_PREFIXES) {
-            registerCluster(RAINBOW_CRYSTAL_CLUSTER_MAP.get(color), color + "_rainbow_crystal_cluster");
-            registerCluster(LARGE_RAINBOW_CRYSTAL_BUD_MAP.get(color), color + "_large_rainbow_crystal_bud");
-            registerCluster(MEDIUM_RAINBOW_CRYSTAL_BUD_MAP.get(color), color + "_medium_rainbow_crystal_bud");
-            registerCluster(SMALL_RAINBOW_CRYSTAL_BUD_MAP.get(color), color + "_small_rainbow_crystal_bud");
-
-            registerCluster(WAXED_RAINBOW_CRYSTAL_CLUSTER_MAP.get(color), color + "_waxed_rainbow_crystal_cluster");
-            registerCluster(WAXED_LARGE_RAINBOW_CRYSTAL_BUD_MAP.get(color), color + "_waxed_large_rainbow_crystal_bud");
-            registerCluster(WAXED_MEDIUM_RAINBOW_CRYSTAL_BUD_MAP.get(color), color + "_waxed_medium_rainbow_crystal_bud");
-            registerCluster(WAXED_SMALL_RAINBOW_CRYSTAL_BUD_MAP.get(color), color + "_waxed_small_rainbow_crystal_bud");
+        for (String color : ALL_CRYSTALS_MAP.keySet()) {
+            Map<String, Map<String, Map<String, RainbowCrystalClusterBlock>>> singleColorMap = ALL_CRYSTALS_MAP.get(color);
+            for (String coating : singleColorMap.keySet()) {
+                Map<String, Map<String, RainbowCrystalClusterBlock>> singleCoatingMap = singleColorMap.get(coating);
+                for (String brightness : singleCoatingMap.keySet()) {
+                    Map<String, RainbowCrystalClusterBlock> singleBrightnessMap = singleCoatingMap.get(brightness);
+                    for (String size : singleBrightnessMap.keySet()) {
+                        registerCluster(singleBrightnessMap.get(size), color + coating + brightness + size);
+                    }
+                }
+            }
         }
+    }
+
+    private static void addToAllCrystals(String color, String coating, String brightness, String size, RainbowCrystalClusterBlock block) {
+        ALL_CRYSTALS_MAP.computeIfAbsent(color, k -> new HashMap<>()).computeIfAbsent(coating, k -> new HashMap<>()).computeIfAbsent(brightness, k -> new HashMap<>()).put(size, block);
+    }
+
+    public static RainbowCrystalClusterBlock getCrystal(String color, String coating, String brightness, String size) {
+        return ALL_CRYSTALS_MAP.get(color).get(coating).get(brightness).get(size);
     }
 
     private static void registerCluster(Block block, String id) {
