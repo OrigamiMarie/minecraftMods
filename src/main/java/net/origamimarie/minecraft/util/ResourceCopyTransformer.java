@@ -45,7 +45,7 @@ import java.util.Set;
 public class ResourceCopyTransformer {
 
     private static final Charset UTF_8 = Charsets.UTF_8;
-    private static final String RESOURCES_DIR = "C:/Users/origa/java/minecraftMods/src/main/resources/";
+    private static final String RESOURCES_DIR = "C:/Users/origa/IdeaProjects/minecraftMods2/src/main/resources/";
     private static final File COPIER_CONTROLLER_FILE = new File(RESOURCES_DIR, "copierControllerFile");
 
     public static void main(String[] args) throws IOException {
@@ -136,7 +136,7 @@ public class ResourceCopyTransformer {
             for (int i = 0; i < lines.length; i++) {
                 // Skip over the comment lines and empty lines
                 String currentLine = lines[i].strip();
-                if (currentLine.length() == 0 || currentLine.startsWith(COMMENT)) {
+                if (currentLine.isEmpty() || currentLine.startsWith(COMMENT)) {
                     continue;
                 }
                 // Now we have a transform definition
@@ -145,14 +145,14 @@ public class ResourceCopyTransformer {
                 File destinationDir = mashFileParts(new File(parentFile, sourceAndDestFiles[1]));
                 Map<String, List<String>> replacements = new HashMap<>();
                 i++;
-                while (i < lines.length && lines[i].strip().length() > 0) {
+                while (i < lines.length && !lines[i].isBlank()) {
                     currentLine = lines[i];
                     i++;
                     if (currentLine.strip().startsWith(COMMENT)) {
                         continue;
                     }
                     List<String> replacementTokens = new ArrayList<>(Arrays.asList(currentLine.split(FIELD_SEPARATOR)));
-                    String key = replacementTokens.remove(0);
+                    String key = replacementTokens.removeFirst();
                     replacements.put(key, replacementTokens);
                 }
                 result.add(new TransformParameters(sourceFile, destinationDir, replacements));

@@ -19,17 +19,18 @@ public abstract class ItemFrameEntityMixin {
 
     @Inject(method = "interact", cancellable = true, at = @At(value = "HEAD", target = "Lnet/minecraft/entity/decoration/ItemFrameEntity;interact(Lnet/minecraft/entity/player/PlayerEntity;Lnet/minecraft/util/Hand;)Lnet/minecraft/util/ActionResult;"))
     public void interactInterruption(PlayerEntity player, Hand hand, CallbackInfoReturnable<ActionResult> cir) {
-        // Alright, so the compiler thinks that 'this' can't be either of those things, because we don't inherit from them.
+        // Alright, so the compiler thinks that 'this' can't be any of those things, because we don't inherit from them.
         // That's sensible, but wrong, because this code is going to be transcribed into the ItemFrameEntity code before compilation.
         // That'll take care of the problem, but all the checking before that is going to be kind of clueless.
         Object tempThis = this;
         ItemFrameEntity frame = (ItemFrameEntity) tempThis;
         AbstractDecorationEntityAccessor selfFrameAccessor = (AbstractDecorationEntityAccessor) tempThis;
+        BlockAttachedEntityAccessor selfEntityAccessor = (BlockAttachedEntityAccessor) tempThis;
         boolean invisible = frame.isInvisible();
         ItemStack itemStack = player.getStackInHand(hand);
         if (itemStack.getItem() instanceof WrenchItem) {
             frame.setInvisible(!invisible);
-            updateBoundingBox(invisible ? 12 : 4, selfFrameAccessor, frame);
+            updateBoundingBox(invisible ? 12 : 4, selfFrameAccessor, selfEntityAccessor, frame);
             cir.setReturnValue(ActionResult.SUCCESS);
         } else {
             if (invisible) {
@@ -39,9 +40,9 @@ public abstract class ItemFrameEntityMixin {
     }
 
 
-    private static void updateBoundingBox(double size, AbstractDecorationEntityAccessor itemFrameAccessor, ItemFrameEntity itemFrame) {
+    private static void updateBoundingBox(double size, AbstractDecorationEntityAccessor itemFrameAccessor, BlockAttachedEntityAccessor blockAttachedEntityAccessor, ItemFrameEntity itemFrame) {
         Direction facing = itemFrameAccessor.getFacing();
-        BlockPos attachmentPos = itemFrameAccessor.getAttachmentPos();
+        BlockPos attachmentPos = blockAttachedEntityAccessor.getAttachedBlockPos();
         if (facing != null) {
             double e = (double)attachmentPos.getX() + 0.5 - (double)facing.getOffsetX() * 0.46875;
             double f = (double)attachmentPos.getY() + 0.5 - (double)facing.getOffsetY() * 0.46875;

@@ -1,7 +1,6 @@
 package net.origamimarie.minecraft;
 
 import net.fabricmc.fabric.api.blockrenderlayer.v1.BlockRenderLayerMap;
-import net.fabricmc.fabric.api.item.v1.FabricItemSettings;
 import net.fabricmc.fabric.api.itemgroup.v1.ItemGroupEvents;
 import net.minecraft.block.AbstractBlock;
 import net.minecraft.block.Block;
@@ -27,26 +26,23 @@ import java.util.Locale;
 import static net.origamimarie.minecraft.OrigamiMarieMod.ORIGAMIMARIE_MOD;
 
 public class OrnamentBlock extends Block {
-    private static final VoxelShape SHAPE = Block.createCuboidShape(4.0, 4.0, 4.0, 12.0, 12.0, 12.0);;
+    private static final VoxelShape SHAPE = Block.createCuboidShape(4.0, 4.0, 4.0, 12.0, 12.0, 12.0);
 
     public static final List<OrnamentBlock> ORNAMENT_BLOCKS = new ArrayList<>(16);
 
-    private final DyeColor color;
-
-    public OrnamentBlock(DyeColor color) {
+    public OrnamentBlock() {
         super(AbstractBlock.Settings.copy(Blocks.GLASS).breakInstantly().nonOpaque().luminance((state) -> 10));
-        this.color = color;
     }
 
     public static void registerOrnaments() {
         List<DyeColor> dyeColorsInOrder = List.of(DyeColor.WHITE, DyeColor.LIGHT_GRAY, DyeColor.GRAY, DyeColor.BLACK, DyeColor.BROWN, DyeColor.RED, DyeColor.ORANGE, DyeColor.YELLOW, DyeColor.LIME, DyeColor.GREEN, DyeColor.CYAN, DyeColor.LIGHT_BLUE, DyeColor.BLUE, DyeColor.PURPLE, DyeColor.MAGENTA, DyeColor.PINK);
         for (DyeColor color : dyeColorsInOrder) {
-            OrnamentBlock ornamentBlock = new OrnamentBlock(color);
+            OrnamentBlock ornamentBlock = new OrnamentBlock();
             ORNAMENT_BLOCKS.add(ornamentBlock);
             String ornamentPathName = color.name().toLowerCase(Locale.ROOT) + "_ornament";
-            Registry.register(Registries.BLOCK, new Identifier(ORIGAMIMARIE_MOD, ornamentPathName), ornamentBlock);
-            Item item = new BlockItem(ornamentBlock, new FabricItemSettings());
-            Registry.register(Registries.ITEM, new Identifier(ORIGAMIMARIE_MOD, ornamentPathName), item);
+            Registry.register(Registries.BLOCK, Identifier.of(ORIGAMIMARIE_MOD, ornamentPathName), ornamentBlock);
+            Item item = new BlockItem(ornamentBlock, new Item.Settings());
+            Registry.register(Registries.ITEM, Identifier.of(ORIGAMIMARIE_MOD, ornamentPathName), item);
             BlockRenderLayerMap.INSTANCE.putBlock(ornamentBlock, RenderLayer.getCutout());
             ItemGroupEvents.modifyEntriesEvent(ItemGroups.COLORED_BLOCKS).register(content -> content.add(item));
         }

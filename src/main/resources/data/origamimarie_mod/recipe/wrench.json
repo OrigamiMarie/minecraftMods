@@ -1,0 +1,17 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "key": {
+    "G": {
+      "item": "minecraft:gold_ingot"
+    }
+  },
+  "pattern": [
+    " G ",
+    " GG",
+    "G  "
+  ],
+  "result": {
+    "count": 1,
+    "id": "origamimarie_mod:wrench"
+  }
+}

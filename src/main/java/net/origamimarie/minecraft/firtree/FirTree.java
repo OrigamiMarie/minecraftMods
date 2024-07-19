@@ -4,7 +4,6 @@ import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import net.fabricmc.fabric.api.blockrenderlayer.v1.BlockRenderLayerMap;
 import net.fabricmc.fabric.api.client.rendering.v1.ColorProviderRegistry;
-import net.fabricmc.fabric.api.item.v1.FabricItemSettings;
 import net.fabricmc.fabric.api.itemgroup.v1.ItemGroupEvents;
 import net.fabricmc.fabric.api.registry.CompostingChanceRegistry;
 import net.fabricmc.fabric.api.registry.FlammableBlockRegistry;
@@ -17,7 +16,7 @@ import net.minecraft.block.FlowerPotBlock;
 import net.minecraft.block.LeavesBlock;
 import net.minecraft.block.MapColor;
 import net.minecraft.block.PillarBlock;
-import net.minecraft.block.enums.Instrument;
+import net.minecraft.block.enums.NoteBlockInstrument;
 import net.minecraft.client.render.RenderLayer;
 import net.minecraft.item.BlockItem;
 import net.minecraft.item.Item;
@@ -38,7 +37,6 @@ import java.util.Map;
 import java.util.Random;
 
 import static net.origamimarie.minecraft.OrigamiMarieMod.ORIGAMIMARIE_MOD;
-
 
 public class FirTree {
 
@@ -75,8 +73,8 @@ public class FirTree {
     }
 
     private static void registerLeaves() {
-        Registry.register(Registries.BLOCK, new Identifier(ORIGAMIMARIE_MOD, "fir_leaves"), FIR_LEAVES);
-        Registry.register(Registries.ITEM, new Identifier(ORIGAMIMARIE_MOD, "fir_leaves"), new BlockItem(FIR_LEAVES, new FabricItemSettings()));
+        Registry.register(Registries.BLOCK, Identifier.of(ORIGAMIMARIE_MOD, "fir_leaves"), FIR_LEAVES);
+        Registry.register(Registries.ITEM, Identifier.of(ORIGAMIMARIE_MOD, "fir_leaves"), new BlockItem(FIR_LEAVES, new Item.Settings()));
         ItemGroupEvents.modifyEntriesEvent(ItemGroups.NATURAL).register(content -> content.addAfter(Items.SPRUCE_LEAVES, FIR_LEAVES));
         ColorProviderRegistry.BLOCK.register((state, world, pos, tintIndex) -> 0x80bb55, FIR_LEAVES);
         ColorProviderRegistry.ITEM.register((stack, tintIndex) -> 0x80bb55, FIR_LEAVES);
@@ -110,32 +108,32 @@ public class FirTree {
     private static void registerSaplingAndPottedSapling(FirSaplingBlock sapling, FlowerPotBlock pottedSapling, String path, int candleCount) {
         FIR_SAPLINGS.put(candleCount, sapling);
         POTTED_FIR_SAPLINGS.put(candleCount, pottedSapling);
-        Registry.register(Registries.BLOCK, new Identifier(ORIGAMIMARIE_MOD, path), sapling);
-        Item saplingItem = new BlockItem(sapling, new FabricItemSettings());
-        Registry.register(Registries.ITEM, new Identifier(ORIGAMIMARIE_MOD, path), saplingItem);
+        Registry.register(Registries.BLOCK, Identifier.of(ORIGAMIMARIE_MOD, path), sapling);
+        Item saplingItem = new BlockItem(sapling, new Item.Settings());
+        Registry.register(Registries.ITEM, Identifier.of(ORIGAMIMARIE_MOD, path), saplingItem);
         ItemGroupEvents.modifyEntriesEvent(ItemGroups.NATURAL).register(content -> content.addAfter(Items.SPRUCE_SAPLING, sapling));
         BlockRenderLayerMap.INSTANCE.putBlock(sapling, RenderLayer.getCutout());
         CompostingChanceRegistry.INSTANCE.add(sapling, 0.3f);
-        Registry.register(Registries.BLOCK, new Identifier(ORIGAMIMARIE_MOD, "potted_" + path), pottedSapling);
+        Registry.register(Registries.BLOCK, Identifier.of(ORIGAMIMARIE_MOD, "potted_" + path), pottedSapling);
         BlockRenderLayerMap.INSTANCE.putBlock(pottedSapling, RenderLayer.getCutout());
     }
 
     private static void registerLog() {
-        Registry.register(Registries.BLOCK, new Identifier(ORIGAMIMARIE_MOD, "fir_log"), FIR_LOG);
-        Item logItem = new BlockItem(FIR_LOG, new FabricItemSettings());
-        Registry.register(Registries.ITEM, new Identifier(ORIGAMIMARIE_MOD, "fir_log"), logItem);
+        Registry.register(Registries.BLOCK, Identifier.of(ORIGAMIMARIE_MOD, "fir_log"), FIR_LOG);
+        Item logItem = new BlockItem(FIR_LOG, new Item.Settings());
+        Registry.register(Registries.ITEM, Identifier.of(ORIGAMIMARIE_MOD, "fir_log"), logItem);
         ItemGroupEvents.modifyEntriesEvent(ItemGroups.NATURAL).register(content -> content.addAfter(Items.SPRUCE_LOG, logItem));
         ItemGroupEvents.modifyEntriesEvent(ItemGroups.BUILDING_BLOCKS).register(content -> content.addAfter(Items.SPRUCE_BUTTON, logItem));
         FlammableBlockRegistry.getDefaultInstance().add(FIR_LOG, 5, 5);
-        Registry.register(Registries.BLOCK, new Identifier(ORIGAMIMARIE_MOD, "fir_wood"), FIR_WOOD);
-        Item woodItem = new BlockItem(FIR_WOOD, new FabricItemSettings());
-        Registry.register(Registries.ITEM, new Identifier(ORIGAMIMARIE_MOD, "fir_wood"), woodItem);
+        Registry.register(Registries.BLOCK, Identifier.of(ORIGAMIMARIE_MOD, "fir_wood"), FIR_WOOD);
+        Item woodItem = new BlockItem(FIR_WOOD, new Item.Settings());
+        Registry.register(Registries.ITEM, Identifier.of(ORIGAMIMARIE_MOD, "fir_wood"), woodItem);
         ItemGroupEvents.modifyEntriesEvent(ItemGroups.BUILDING_BLOCKS).register(content -> content.addAfter(logItem, woodItem));
         FlammableBlockRegistry.getDefaultInstance().add(FIR_WOOD, 5, 5);
     }
 
     private static PillarBlock createLogBlock(MapColor topMapColor, MapColor sideMapColor) {
-        return new PillarBlock(AbstractBlock.Settings.create().mapColor((state) -> state.get(PillarBlock.AXIS) == Direction.Axis.Y ? topMapColor : sideMapColor).instrument(Instrument.BASS).strength(2.0F).sounds(BlockSoundGroup.WOOD).burnable());
+        return new PillarBlock(AbstractBlock.Settings.create().mapColor((state) -> state.get(PillarBlock.AXIS) == Direction.Axis.Y ? topMapColor : sideMapColor).instrument(NoteBlockInstrument.BASS).strength(2.0F).sounds(BlockSoundGroup.WOOD).burnable());
     }
 
 

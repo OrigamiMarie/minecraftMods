@@ -2,7 +2,6 @@ package net.origamimarie.minecraft.rainbow_crystal;
 
 import com.mojang.serialization.MapCodec;
 import net.fabricmc.fabric.api.blockrenderlayer.v1.BlockRenderLayerMap;
-import net.fabricmc.fabric.api.item.v1.FabricItemSettings;
 import net.minecraft.block.AbstractBlock;
 import net.minecraft.block.AmethystBlock;
 import net.minecraft.block.Block;
@@ -13,6 +12,7 @@ import net.minecraft.block.ShapeContext;
 import net.minecraft.block.Waterloggable;
 import net.minecraft.block.piston.PistonBehavior;
 import net.minecraft.client.render.RenderLayer;
+import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.fluid.FluidState;
 import net.minecraft.fluid.Fluids;
@@ -32,11 +32,11 @@ import net.minecraft.state.StateManager;
 import net.minecraft.state.property.BooleanProperty;
 import net.minecraft.state.property.DirectionProperty;
 import net.minecraft.state.property.Properties;
-import net.minecraft.util.ActionResult;
 import net.minecraft.util.BlockMirror;
 import net.minecraft.util.BlockRotation;
 import net.minecraft.util.Hand;
 import net.minecraft.util.Identifier;
+import net.minecraft.util.ItemActionResult;
 import net.minecraft.util.hit.BlockHitResult;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
@@ -53,7 +53,6 @@ import java.util.List;
 import java.util.Map;
 
 import static net.origamimarie.minecraft.OrigamiMarieMod.ORIGAMIMARIE_MOD;
-
 
 public class RainbowCrystalClusterBlock extends AmethystBlock
         implements Waterloggable {
@@ -182,10 +181,10 @@ public class RainbowCrystalClusterBlock extends AmethystBlock
     }
 
     private static void registerCluster(Block block, String id) {
-        Registry.register(Registries.BLOCK, new Identifier(ORIGAMIMARIE_MOD, id), block);
+        Registry.register(Registries.BLOCK, Identifier.of(ORIGAMIMARIE_MOD, id), block);
         BlockRenderLayerMap.INSTANCE.putBlock(block, RenderLayer.getCutout());
-        Item item = new BlockItem(block, new FabricItemSettings());
-        Registry.register(Registries.ITEM, new Identifier(ORIGAMIMARIE_MOD, id), item);
+        Item item = new BlockItem(block, new Item.Settings());
+        Registry.register(Registries.ITEM, Identifier.of(ORIGAMIMARIE_MOD, id), item);
     }
 
     // This is just to make codec happy, might never get called
@@ -198,7 +197,7 @@ public class RainbowCrystalClusterBlock extends AmethystBlock
     }
 
     @Override
-    public ActionResult onUse(BlockState state, World world, BlockPos pos, PlayerEntity player, Hand hand, BlockHitResult hit) {
+    protected ItemActionResult onUseWithItem(ItemStack stack, BlockState state, World world, BlockPos pos, PlayerEntity player, Hand hand, BlockHitResult hit) {
         ItemStack itemStack = player.getStackInHand(hand);
         Item item = itemStack.getItem();
         if (itemStack.isOf(Items.HONEYCOMB) && RAINBOW_CRYSTAL_WAX_ON_MAP.containsKey(this)) {
@@ -209,19 +208,17 @@ public class RainbowCrystalClusterBlock extends AmethystBlock
             world.playSound(null, pos, SoundEvents.ITEM_HONEYCOMB_WAX_ON, SoundCategory.BLOCKS, 1.0F, 1.0F);
             world.emitGameEvent(player, GameEvent.BLOCK_CHANGE, pos);
             player.incrementStat(Stats.USED.getOrCreateStat(Items.HONEYCOMB));
-            return ActionResult.SUCCESS;
+            return ItemActionResult.SUCCESS;
         } else if (item instanceof AxeItem && RAINBOW_CRYSTAL_WAX_OFF_MAP.containsKey(this)) {
-            if (!player.isCreative()) {
-                itemStack.damage(1, player, (p) -> {
-                    p.sendToolBreakStatus(hand);
-                });
-            }
             world.playSound(null, pos, SoundEvents.ITEM_AXE_WAX_OFF, SoundCategory.BLOCKS, 1.0F, 1.0F);
             world.setBlockState(pos, RAINBOW_CRYSTAL_WAX_OFF_MAP.get(this).getDefaultState().with(RainbowCrystalClusterBlock.FACING, state.get(RainbowCrystalClusterBlock.FACING)).with(RainbowCrystalClusterBlock.WATERLOGGED, state.getFluidState().getFluid() == Fluids.WATER));
             world.emitGameEvent(player, GameEvent.BLOCK_CHANGE, pos);
-            return ActionResult.SUCCESS;
+            if (!player.isCreative()) {
+                itemStack.damage(1, player, LivingEntity.getSlotForHand(hand));
+            }
+            return ItemActionResult.SUCCESS;
         }
-        return ActionResult.PASS;
+        return ItemActionResult.PASS_TO_DEFAULT_BLOCK_INTERACTION;
     }
 
     @Override

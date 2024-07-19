@@ -1,0 +1,14 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "ingredients": [
+    {
+      "item": "minecraft:honeycomb"
+    },
+    {
+      "item": "origamimarie_mod:color_brightness_crystal_type"
+    }
+  ],
+  "result": {
+    "id": "origamimarie_mod:color_waxed_brightness_crystal_type"
+  }
+}

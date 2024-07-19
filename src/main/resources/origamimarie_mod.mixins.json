@@ -4,14 +4,15 @@
   "package": "net.origamimarie.minecraft.mixin",
   "compatibilityLevel": "JAVA_17",
   "mixins": [
+    "AbstractBlockMixin",
     "AxeItemMixin",
-    "FlintAndSteelItemMixin",
     "LilyPadMixin",
     "conduit.ConduitBlockEntityAccessor",
     "conduit.ConduitBlockEntityMixin",
     "conduit.DrownedEntityMixin",
     "fish.EntityRendererMixin",
     "itemframe.AbstractDecorationEntityAccessor",
+    "itemframe.BlockAttachedEntityAccessor",
     "itemframe.ItemFrameEntityMixin"
   ],
   "client": [

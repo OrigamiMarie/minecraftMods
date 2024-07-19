@@ -23,7 +23,7 @@ import java.util.LinkedList;
 import java.util.List;
 
 public class IceSpikeWithCrystalsFeature extends Feature<DefaultFeatureConfig> {
-    public static final Identifier ICE_SPIKE_WITH_CRYSTALS_FEATURE_ID = new Identifier("origamimarie_mod", "ice_spike_with_crystals");
+    public static final Identifier ICE_SPIKE_WITH_CRYSTALS_FEATURE_ID = Identifier.of("origamimarie_mod", "ice_spike_with_crystals");
     public static final IceSpikeWithCrystalsFeature ICE_SPIKE_WITH_CRYSTALS_FEATURE = new IceSpikeWithCrystalsFeature(DefaultFeatureConfig.CODEC);
     private static final String CRYSTAL_COLOR = RainbowCrystalClusterBlock.BLUE;
     private static final List<RainbowCrystalClusterBlock> CRYSTAL_OPTIONS = List.of(

@@ -1,7 +1,6 @@
 package net.origamimarie.minecraft.rainbow_crystal;
 
 import com.mojang.serialization.MapCodec;
-import net.fabricmc.fabric.api.item.v1.FabricItemSettings;
 import net.fabricmc.fabric.api.itemgroup.v1.ItemGroupEvents;
 import net.minecraft.block.AbstractBlock;
 import net.minecraft.block.AmethystBlock;
@@ -37,14 +36,14 @@ public class BuddingRainbowCrystalBlock extends AmethystBlock {
 
     public static void registerAll() {
         // strength similar to deepslate cobble, which should make it slow enough to mine that we don't do it accidentally
-        Registry.register(Registries.BLOCK, new Identifier(ORIGAMIMARIE_MOD, "budding_rainbow_crystal"), LIGHT_BLOCK);
-        Item buddingRainbowCrystalItem = new BlockItem(LIGHT_BLOCK, new FabricItemSettings());
-        Registry.register(Registries.ITEM, new Identifier(ORIGAMIMARIE_MOD, "budding_rainbow_crystal"), buddingRainbowCrystalItem);
+        Registry.register(Registries.BLOCK, Identifier.of(ORIGAMIMARIE_MOD, "budding_rainbow_crystal"), LIGHT_BLOCK);
+        Item buddingRainbowCrystalItem = new BlockItem(LIGHT_BLOCK, new Item.Settings());
+        Registry.register(Registries.ITEM, Identifier.of(ORIGAMIMARIE_MOD, "budding_rainbow_crystal"), buddingRainbowCrystalItem);
         ItemGroupEvents.modifyEntriesEvent(ItemGroups.NATURAL).register(content -> content.addAfter(Items.AMETHYST_CLUSTER, buddingRainbowCrystalItem));
 
-        Registry.register(Registries.BLOCK, new Identifier(ORIGAMIMARIE_MOD, "dim_budding_rainbow_crystal"), DIM_BLOCK);
-        Item dimBuddingRainbowCrystalItem = new BlockItem(DIM_BLOCK, new FabricItemSettings());
-        Registry.register(Registries.ITEM, new Identifier(ORIGAMIMARIE_MOD, "dim_budding_rainbow_crystal"), dimBuddingRainbowCrystalItem);
+        Registry.register(Registries.BLOCK, Identifier.of(ORIGAMIMARIE_MOD, "dim_budding_rainbow_crystal"), DIM_BLOCK);
+        Item dimBuddingRainbowCrystalItem = new BlockItem(DIM_BLOCK, new Item.Settings());
+        Registry.register(Registries.ITEM, Identifier.of(ORIGAMIMARIE_MOD, "dim_budding_rainbow_crystal"), dimBuddingRainbowCrystalItem);
         ItemGroupEvents.modifyEntriesEvent(ItemGroups.NATURAL).register(content -> content.addAfter(Items.AMETHYST_CLUSTER, buddingRainbowCrystalItem));
     }
 
