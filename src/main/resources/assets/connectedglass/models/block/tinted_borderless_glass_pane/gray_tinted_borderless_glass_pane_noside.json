@@ -1,0 +1,6 @@
+{
+  "parent": "minecraft:block/template_glass_pane_noside",
+  "textures": {
+    "pane": "connectedglass:block/gray_tinted_borderless_glass_side"
+  }
+}

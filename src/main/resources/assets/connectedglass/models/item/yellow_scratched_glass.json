@@ -1,0 +1,6 @@
+{
+  "parent": "minecraft:block/cube_all",
+  "textures": {
+    "all": "connectedglass:item/yellow_scratched_glass"
+  }
+}

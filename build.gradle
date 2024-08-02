@@ -16,6 +16,17 @@ repositories {
 	// Loom adds the essential maven repositories to download Minecraft and libraries from automatically.
 	// See https://docs.gradle.org/current/userguide/declaring_repositories.html
 	// for more information about repositories.
+	exclusiveContent {
+		forRepository {
+			maven {
+				name = "Modrinth"
+				url = "https://api.modrinth.com/maven"
+			}
+		}
+		filter {
+			includeGroup "maven.modrinth"
+		}
+	}
 }
 
 dependencies {
@@ -31,6 +42,10 @@ dependencies {
 	implementation "net.fabricmc:tiny-remapper:0.10.4"
 	implementation "net.fabricmc:access-widener:2.1.0"
 	implementation "net.fabricmc:mapping-io:0.6.1"
+
+	modImplementation "maven.modrinth:continuity:3.0.0-beta.5+1.21"
+//	modImplementation "maven.modrinth:indium:1.0.34+mc1.21"
+//	modImplementation "maven.modrinth:sodium:mc1.21-0.5.11"
 
     testImplementation 'org.junit.jupiter:junit-jupiter-api:5.8.2'
     testImplementation 'org.junit.jupiter:junit-jupiter-params:5.8.2'

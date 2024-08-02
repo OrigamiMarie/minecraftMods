@@ -1,7 +1,3 @@
-glass_type_glass_color.json; ../
-glass_type; borderless; clear; scratched; tinted_borderless
-_color; ; _pink; _magenta; _red; _orange; _yellow; _lime; _green; _cyan; _light_blue; _blue; _purple; _white; _light_gray; _gray; _black; _brown
-
-glass_type_glass_color_pane.json; ../
-glass_type; borderless; clear; scratched; tinted_borderless
-_color; ; _pink; _magenta; _red; _orange; _yellow; _lime; _green; _cyan; _light_blue; _blue; _purple; _white; _light_gray; _gray; _black; _brown
+*.json; ../
+color_; ; pink_; magenta_; red_; orange_; yellow_; lime_; green_; cyan_; light_blue_; blue_; purple_; white_; light_gray_; gray_; black_; brown_
+clarity; borderless_glass; clear_glass; scratched_glass; tinted_borderless_glass

@@ -1,3 +1,6 @@
 {
-  "parent": "connectedglass:scratched_glass"
+  "parent": "minecraft:block/cube_all",
+  "textures": {
+    "all": "connectedglass:item/scratched_glass"
+  }
 }

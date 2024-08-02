@@ -7,7 +7,6 @@ import net.minecraft.block.AmethystBlock;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
-import net.minecraft.block.BuddingAmethystBlock;
 import net.minecraft.item.BlockItem;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemGroups;
@@ -27,7 +26,7 @@ import static net.origamimarie.minecraft.OrigamiMarieMod.ORIGAMIMARIE_MOD;
 import static net.origamimarie.minecraft.rainbow_crystal.RainbowCrystalClusterBlock.*;
 
 public class BuddingRainbowCrystalBlock extends AmethystBlock {
-    public static final MapCodec<BuddingRainbowCrystalBlock> CODEC = BuddingAmethystBlock.createCodec(BuddingRainbowCrystalBlock::new);
+    public static final MapCodec<BuddingRainbowCrystalBlock> CODEC = BuddingRainbowCrystalBlock.createCodec(BuddingRainbowCrystalBlock::new);
     public static final int GROW_CHANCE = 5;
     public static final Direction[] DIRECTIONS = Direction.values();
     private static final List<String> COLOR_ORDER = List.of(RED, LIME, YELLOW, BLUE, PURPLE, BLUE, ORANGE, LIME, MAGENTA, CYAN, ORANGE, MAGENTA, ORANGE, RED, CYAN, PURPLE, LIME, CYAN, BLUE, PURPLE, BLUE, RED, YELLOW, CYAN, YELLOW, MAGENTA, ORANGE, YELLOW, RED, LIME, MAGENTA, PURPLE);

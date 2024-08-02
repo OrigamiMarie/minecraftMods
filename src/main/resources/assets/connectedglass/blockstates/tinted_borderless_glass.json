@@ -1,7 +1,7 @@
 {
   "variants": {
     "": {
-      "model": "connectedglass:tinted_borderless_glass"
+      "model": "connectedglass:block/tinted_borderless_glass/tinted_borderless_glass"
     }
   }
 }

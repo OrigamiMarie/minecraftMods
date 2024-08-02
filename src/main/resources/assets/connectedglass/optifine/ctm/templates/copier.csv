@@ -1,0 +1,3 @@
+clarity/fileColor/*.properties; ../
+color_|fileColor; |plain; pink_|pink; magenta_|magenta; red_|red; orange_|orange; yellow_|yellow; lime_|lime; green_|green; cyan_|cyan; light_blue_|light_blue; blue_|blue; purple_|purple; white_|white; light_gray_|light_gray; gray_|gray; black_|black; brown_|brown
+clarity; borderless_glass; clear_glass; scratched_glass; tinted_borderless_glass

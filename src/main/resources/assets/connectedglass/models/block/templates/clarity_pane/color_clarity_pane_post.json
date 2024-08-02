@@ -1,0 +1,9 @@
+{
+  "parent": "minecraft:block/template_glass_pane_post",
+  "textures": {
+    "edge": "connectedglass:block/color_clarity_top",
+    "pane": "connectedglass:block/color_clarity_side",
+    "particle": "connectedglass:item/color_borderless_glass_particle"
+
+  }
+}

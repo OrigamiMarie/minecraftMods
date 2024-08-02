@@ -1,0 +1,6 @@
+{
+  "parent": "minecraft:item/generated",
+  "textures": {
+    "layer0": "connectedglass:item/light_blue_tinted_borderless_glass"
+  }
+}

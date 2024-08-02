@@ -1,0 +1,6 @@
+{
+  "parent": "minecraft:block/cube_all",
+  "textures": {
+    "all": "connectedglass:item/lime_borderless_glass"
+  }
+}

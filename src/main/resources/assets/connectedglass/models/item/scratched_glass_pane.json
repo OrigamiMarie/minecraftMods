@@ -1,7 +1,6 @@
 {
-  "parent": "connectedglass:pane_item_template",
+  "parent": "minecraft:item/generated",
   "textures": {
-    "all": "connectedglass:scratched_glass/scratched_glass",
-    "edge": "connectedglass:scratched_glass/scratched_glass_edge"
+    "layer0": "connectedglass:item/scratched_glass"
   }
 }

@@ -1,7 +1,7 @@
 {
   "variants": {
     "": {
-      "model": "connectedglass:scratched_glass"
+      "model": "connectedglass:block/scratched_glass/scratched_glass"
     }
   }
 }

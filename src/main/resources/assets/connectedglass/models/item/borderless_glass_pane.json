@@ -1,7 +1,6 @@
 {
-  "parent": "connectedglass:pane_item_template",
+  "parent": "minecraft:item/generated",
   "textures": {
-    "all": "connectedglass:borderless_glass/borderless_glass",
-    "edge": "connectedglass:borderless_glass/borderless_glass_edge"
+    "layer0": "connectedglass:item/borderless_glass"
   }
 }
