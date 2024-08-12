@@ -13,5 +13,7 @@ assets/connectedglass/optifine/ctm/borderless_glass/templates/copier.csv
 assets/connectedglass/textures/item/templates/copier.csv
 assets/connectedglass/models/item/templates/copier.csv
 assets/connectedglass/optifine/ctm/clear_glass/templates/copier.csv
-assets\connectedglass\optifine\ctm\scratched_glass\templates\copier.csv
-assets\connectedglass\optifine\ctm\tinted_borderless_glass\templates\copier.csv
+assets/connectedglass/optifine/ctm/scratched_glass/templates/copier.csv
+assets/connectedglass/optifine/ctm/tinted_borderless_glass/templates/copier.csv
+data/connectedglass/loot_table/blocks/templates/copier.csv
+data/connectedglass/recipe/template/copier.csv

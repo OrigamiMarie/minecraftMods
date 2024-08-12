@@ -64,7 +64,7 @@ public class OrigamiMarieMod implements ModInitializer {
         Block[] candles = new Block[] {Blocks.CANDLE, Blocks.RED_CANDLE, Blocks.ORANGE_CANDLE, Blocks.YELLOW_CANDLE, Blocks.LIME_CANDLE, Blocks.GREEN_CANDLE, Blocks.LIGHT_BLUE_CANDLE, Blocks.BLUE_CANDLE, Blocks.PURPLE_CANDLE, Blocks.MAGENTA_CANDLE, Blocks.PINK_CANDLE, Blocks.WHITE_CANDLE, Blocks.LIGHT_GRAY_CANDLE, Blocks.GRAY_CANDLE, Blocks.BLACK_CANDLE, Blocks.BROWN_CANDLE, Blocks.CYAN_CANDLE};
         for (Block candleBlock : candles) {
             String candleName = getCandleNameFromCandle(candleBlock) + "_pad";
-            CandlePadBlock candlePad = new CandlePadBlock(candleBlock, AbstractBlock.Settings.copy(Blocks.CANDLE).luminance(CandlePadBlock.STATE_TO_LUMINANCE));
+            CandlePadBlock candlePad = new CandlePadBlock(candleBlock, AbstractBlock.Settings.copy(candleBlock).luminance(CandlePadBlock.STATE_TO_LUMINANCE));
             BlockRenderLayerMap.INSTANCE.putBlock(candlePad, RenderLayer.getCutout());
             Registry.register(Registries.BLOCK, Identifier.of(ORIGAMIMARIE_MOD, candleName), candlePad);
         }

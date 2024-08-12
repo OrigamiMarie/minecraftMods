@@ -30,14 +30,14 @@ public class OrnamentBlock extends Block {
 
     public static final List<OrnamentBlock> ORNAMENT_BLOCKS = new ArrayList<>(16);
 
-    public OrnamentBlock() {
-        super(AbstractBlock.Settings.copy(Blocks.GLASS).breakInstantly().nonOpaque().luminance((state) -> 10));
+    public OrnamentBlock(DyeColor color) {
+        super(AbstractBlock.Settings.copy(Blocks.GLASS).breakInstantly().nonOpaque().luminance((state) -> 10).mapColor(color));
     }
 
     public static void registerOrnaments() {
         List<DyeColor> dyeColorsInOrder = List.of(DyeColor.WHITE, DyeColor.LIGHT_GRAY, DyeColor.GRAY, DyeColor.BLACK, DyeColor.BROWN, DyeColor.RED, DyeColor.ORANGE, DyeColor.YELLOW, DyeColor.LIME, DyeColor.GREEN, DyeColor.CYAN, DyeColor.LIGHT_BLUE, DyeColor.BLUE, DyeColor.PURPLE, DyeColor.MAGENTA, DyeColor.PINK);
         for (DyeColor color : dyeColorsInOrder) {
-            OrnamentBlock ornamentBlock = new OrnamentBlock();
+            OrnamentBlock ornamentBlock = new OrnamentBlock(color);
             ORNAMENT_BLOCKS.add(ornamentBlock);
             String ornamentPathName = color.name().toLowerCase(Locale.ROOT) + "_ornament";
             Registry.register(Registries.BLOCK, Identifier.of(ORIGAMIMARIE_MOD, ornamentPathName), ornamentBlock);

@@ -3,6 +3,7 @@ package net.origamimarie.minecraft.glass;
 import com.mojang.serialization.MapCodec;
 import net.fabricmc.fabric.api.blockrenderlayer.v1.BlockRenderLayerMap;
 import net.minecraft.block.AbstractBlock;
+import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
 import net.minecraft.block.PaneBlock;
 import net.minecraft.block.TransparentBlock;
@@ -14,19 +15,25 @@ import net.minecraft.registry.Registries;
 import net.minecraft.registry.Registry;
 import net.minecraft.sound.BlockSoundGroup;
 import net.minecraft.util.Identifier;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.BlockView;
+import net.origamimarie.minecraft.util.UnderscoreColors;
 
 import java.util.List;
-import java.util.Map;
 
-// TODO recipes and loot tables
-// TODO crlf problems with the file copier
-// TODO figure out how to block light but not sight in tinted glass
+import static net.origamimarie.minecraft.util.UnderscoreColors.*;
+
+// TODO textures for clear glass
+// TODO shine on all surfaces of blocks & panes -- probably in the shader settings
+// TODO glass pathname converter
 public class ConnectedGlassBlock extends TransparentBlock {
     public static final MapCodec<ConnectedGlassBlock> CODEC = ConnectedGlassBlock.createCodec(ConnectedGlassBlock::new);
-    private static final String CONNECTEDGLASS = "connectedglass";
-    private static final List<String> ALL_COLORS = List.of("", "white_", "light_gray_", "gray_", "black_", "brown_", "red_", "orange_", "yellow_", "lime_", "green_", "cyan_", "light_blue_", "blue_", "purple_", "magenta_", "pink_");
-    private static final List<String> CLARITY = List.of("borderless_", "clear_", "scratched_", "tinted_borderless_");
-    private static final Map<String, Boolean> TRANSLUCENT = Map.of("borderless_", true, "clear_", true, "scratched_", true, "tinted_borderless_", true);
+    private static final String CONNECTEDGLASS = "origamimarie_mod";
+    private static final String BORDERLESS = "borderless_";
+    private static final String CLEAR = "clear_";
+    private static final String SCRATCHED = "scratched_";
+    private static final String TINTED_BORDERLESS = "tinted_borderless_";
+    private static final List<String> TRANSPARENT_CLARITIES = List.of(BORDERLESS, CLEAR, SCRATCHED);
 
     public ConnectedGlassBlock(AbstractBlock.Settings settings) {
         super(settings);
@@ -37,24 +44,26 @@ public class ConnectedGlassBlock extends TransparentBlock {
     }
 
     public static void registerAll() {
-        for (String color : ALL_COLORS) {
-            for (String clarity : CLARITY) {
-                boolean transparent = TRANSLUCENT.getOrDefault(clarity, false);
-                Settings settings = Settings.create().instrument(NoteBlockInstrument.HAT).strength(0.3F).sounds(BlockSoundGroup.GLASS).allowsSpawning(Blocks::never).solidBlock(Blocks::never).suffocates(Blocks::never).blockVision(Blocks::never);
-                if (transparent) {
-                    settings = settings.nonOpaque();
-                }
-                String glassName = color + clarity + "glass";
-                Identifier glassIdentifier = Identifier.of(CONNECTEDGLASS, glassName);
-                ConnectedGlassBlock glassBlock = new ConnectedGlassBlock(settings);
+        Settings settings = Settings.create().instrument(NoteBlockInstrument.HAT).strength(0.3F).sounds(BlockSoundGroup.GLASS).allowsSpawning(Blocks::never).solidBlock(Blocks::never).suffocates(Blocks::never).blockVision(Blocks::never).nonOpaque();
+        for (UnderscoreColors color : ALL_UNDERSCORE_COLORS) {
+            Settings colorSettings = UnderscoreColors.copySettingsAndAddMapColor(settings, color.dyeColor);
+            Identifier tintedGlassIdentifier = Identifier.of(CONNECTEDGLASS, color + TINTED_BORDERLESS + "glass");
+            TintedConnectedGlassBlock tintedGlassBlock = new TintedConnectedGlassBlock(colorSettings);
+            Registry.register(Registries.BLOCK, tintedGlassIdentifier, tintedGlassBlock);
+            BlockRenderLayerMap.INSTANCE.putBlock(tintedGlassBlock, RenderLayer.getTranslucent());
+            Item tintedGlassBlockItem = new BlockItem(tintedGlassBlock, new Item.Settings());
+            Registry.register(Registries.ITEM, tintedGlassIdentifier, tintedGlassBlockItem);
+
+            for (String clarity : TRANSPARENT_CLARITIES) {
+                Identifier glassIdentifier = Identifier.of(CONNECTEDGLASS, color + clarity + "glass");
+                ConnectedGlassBlock glassBlock = new ConnectedGlassBlock(colorSettings);
                 Registry.register(Registries.BLOCK, glassIdentifier, glassBlock);
                 BlockRenderLayerMap.INSTANCE.putBlock(glassBlock, RenderLayer.getTranslucent());
                 Item glassBlockItem = new BlockItem(glassBlock, new Item.Settings());
                 Registry.register(Registries.ITEM, glassIdentifier, glassBlockItem);
 
-                String glassPaneName = color + clarity + "glass_pane";
-                Identifier glassPaneIdentifier = Identifier.of(CONNECTEDGLASS, glassPaneName);
-                ConnectedGlassPaneBlock glassPaneBlock = new ConnectedGlassPaneBlock(settings);
+                Identifier glassPaneIdentifier = Identifier.of(CONNECTEDGLASS, color + clarity + "glass_pane");
+                ConnectedGlassPaneBlock glassPaneBlock = new ConnectedGlassPaneBlock(colorSettings);
                 Registry.register(Registries.BLOCK, glassPaneIdentifier, glassPaneBlock);
                 BlockRenderLayerMap.INSTANCE.putBlock(glassPaneBlock, RenderLayer.getTranslucent());
                 Item glassPaneBlockItem = new BlockItem(glassPaneBlock, new Item.Settings());
@@ -73,6 +82,26 @@ public class ConnectedGlassBlock extends TransparentBlock {
         public MapCodec<ConnectedGlassPaneBlock> getCodec() {
             return CODEC;
         }
-
     }
+
+    public static class TintedConnectedGlassBlock extends TransparentBlock {
+        public static final MapCodec<TintedConnectedGlassBlock> CODEC = TintedConnectedGlassBlock.createCodec(TintedConnectedGlassBlock::new);
+
+        public TintedConnectedGlassBlock(AbstractBlock.Settings settings) {
+            super(settings);
+        }
+
+        public MapCodec<TintedConnectedGlassBlock> getCodec() {
+            return CODEC;
+        }
+
+        protected boolean isTransparent(BlockState state, BlockView world, BlockPos pos) {
+            return false;
+        }
+
+        protected int getOpacity(BlockState state, BlockView world, BlockPos pos) {
+            return world.getMaxLightLevel();
+        }
+    }
+
 }
