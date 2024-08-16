@@ -1,6 +1,0 @@
-{
-  "parent": "minecraft:block/cube_all",
-  "textures": {
-    "all": "origamimarie_mod:item/pink_tinted_borderless_glass"
-  }
-}

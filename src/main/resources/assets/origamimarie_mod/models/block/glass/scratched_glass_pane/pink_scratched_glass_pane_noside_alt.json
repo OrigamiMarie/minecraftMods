@@ -1,6 +1,0 @@
-{
-  "parent": "minecraft:block/template_glass_pane_noside_alt",
-  "textures": {
-    "pane": "origamimarie_mod:block/glass/pink_scratched_glass_side"
-  }
-}

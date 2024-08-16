@@ -1,7 +1,0 @@
-clarity/*.json; ../
-color_; ; pink_; magenta_; red_; orange_; yellow_; lime_; green_; cyan_; light_blue_; blue_; purple_; white_; light_gray_; gray_; black_; brown_
-clarity; borderless_glass; clear_glass; scratched_glass; tinted_borderless_glass
-
-clarity_pane/*.json; ../
-color_; ; pink_; magenta_; red_; orange_; yellow_; lime_; green_; cyan_; light_blue_; blue_; purple_; white_; light_gray_; gray_; black_; brown_
-clarity; borderless_glass; clear_glass; scratched_glass; tinted_borderless_glass

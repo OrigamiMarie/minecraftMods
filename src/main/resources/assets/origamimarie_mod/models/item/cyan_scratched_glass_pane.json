@@ -1,6 +1,0 @@
-{
-  "parent": "minecraft:item/generated",
-  "textures": {
-    "layer0": "origamimarie_mod:item/cyan_scratched_glass"
-  }
-}

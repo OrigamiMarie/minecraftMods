@@ -10,11 +10,10 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.server.command.CommandManager;
 import net.minecraft.server.command.ServerCommandSource;
 import net.minecraft.server.network.ServerPlayerEntity;
-import net.origamimarie.minecraft.glass.OldConnectedGlassBlock;
 
-public class ConvenienceCommand implements Command<ServerCommandSource> {
+public class ConvenienceCommand /*implements Command<ServerCommandSource>*/ {
     private static final String COLOR = "color";
-
+/*
     @Override
     public int run(CommandContext<ServerCommandSource> context) {
         try {
@@ -28,15 +27,15 @@ public class ConvenienceCommand implements Command<ServerCommandSource> {
             return 0;
         }
     }
-
+*/
     public static void registerCommand() {
-        CommandRegistrationCallback.EVENT.register((dispatcher, dedicated, environment) -> {
+        /*CommandRegistrationCallback.EVENT.register((dispatcher, dedicated, environment) -> {
             LiteralCommandNode<ServerCommandSource> convenienceCommandNode = CommandManager
                     .literal("foo")
                     .then(CommandManager.argument(COLOR, StringArgumentType.string())
                     .executes(new ConvenienceCommand()))
                     .build();
             dispatcher.getRoot().addChild(convenienceCommandNode);
-        });
+        });*/
     }
 }

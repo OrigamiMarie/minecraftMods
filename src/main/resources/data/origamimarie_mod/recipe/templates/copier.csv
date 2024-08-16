@@ -5,21 +5,3 @@ brightness_; ; dim_
 
 color_ornament.json; ../
 color; pink; magenta; red; orange; yellow; lime; green; cyan; light_blue; blue; purple; white; light_gray; gray; black; brown
-
-color_output_clarity_from_input_clarity_pane.json; ../
-color_; pink_; magenta_; red_; orange_; yellow_; lime_; green_; cyan_; light_blue_; blue_; purple_; white_; light_gray_; gray_; black_; brown_
-input_path|input_clarity|output_clarity; minecraft|stained_glass|borderless_glass; origamimarie_mod|borderless_glass|clear_glass; origamimarie_mod|clear_glass|scratched_glass; origamimarie_mod|scratched_glass|borderless_glass
-_pane; ; _pane
-
-color_output_clarity_from_input_clarity_pane.json; ../
-color_; ``
-input_path|input_clarity|output_clarity; minecraft|glass|borderless_glass; origamimarie_mod|borderless_glass|clear_glass; origamimarie_mod|clear_glass|scratched_glass; origamimarie_mod|scratched_glass|borderless_glass
-_pane; ; _pane
-
-color_clarity_from_plain.json; ../
-color_; pink_; magenta_; red_; orange_; yellow_; lime_; green_; cyan_; light_blue_; blue_; purple_; white_; light_gray_; gray_; black_; brown_
-clarity; borderless_glass; clear_glass; scratched_glass; tinted_borderless_glass
-
-color_clarity_pane_from_block.json; ../
-color_; pink_; magenta_; red_; orange_; yellow_; lime_; green_; cyan_; light_blue_; blue_; purple_; white_; light_gray_; gray_; black_; brown_
-clarity; borderless_glass; clear_glass; scratched_glass

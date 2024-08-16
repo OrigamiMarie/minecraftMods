@@ -1,7 +1,0 @@
-{
-  "parent": "minecraft:block/template_glass_pane_side",
-  "textures": {
-    "edge": "origamimarie_mod:block/glass/green_borderless_glass_top",
-    "pane": "origamimarie_mod:block/glass/green_borderless_glass_side"
-  }
-}
