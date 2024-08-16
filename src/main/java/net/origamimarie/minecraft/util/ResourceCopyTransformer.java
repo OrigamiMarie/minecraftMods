@@ -56,6 +56,7 @@ public class ResourceCopyTransformer {
     public static final String DOUBLE_DOT = "..";
     public static final String LINE_SEPARATOR = "\r\n";
     public static final String FIELD_SEPARATOR = "; ";
+    public static final String DISPOSABLE_CHARACTER = "`";
     public static final String CORRELATED_FIELD_SEPARATOR = "|";
     public static final String ESCAPED_CORRELATED_FIELD_SEPARATOR = "\\|";
     public static final String COLOR_SEPARATOR = "-";
@@ -199,7 +200,7 @@ public class ResourceCopyTransformer {
                     if (currentLine.strip().startsWith(COMMENT)) {
                         continue;
                     }
-                    List<String> replacementTokens = new ArrayList<>(Arrays.asList(currentLine.split(FIELD_SEPARATOR)));
+                    List<String> replacementTokens = Arrays.stream(currentLine.split(FIELD_SEPARATOR)).map(s -> s.replace(DISPOSABLE_CHARACTER, "")).collect(Collectors.toList());
                     String firstToken = replacementTokens.getFirst();
                     int pngFileNameIndex = fieldSectionWithPngExtension(firstToken);
                     if (pngFileNameIndex > -1) {

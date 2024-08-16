@@ -1,0 +1,6 @@
+{
+  "parent": "minecraft:item/generated",
+  "textures": {
+    "layer0": "origamimarie_mod:item/brown_clear_glass"
+  }
+}

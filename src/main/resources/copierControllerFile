@@ -1,5 +1,3 @@
-assets/connectedglass/blockstates/templates/copier.csv
-assets/connectedglass/models/block/templates/copier.csv
 assets/origamimarie_mod/blockstates/templates/copier.csv
 assets/origamimarie_mod/models/block/candles/template/copier.csv
 assets/origamimarie_mod/models/block/ornament/templates/copier.csv
@@ -8,12 +6,10 @@ assets/origamimarie_mod/models/item/templates/copier.csv
 assets/origamimarie_mod/textures/block/rainbow_crystal/templates/copier.csv
 data/origamimarie_mod/loot_table/blocks/templates/copier.csv
 data/origamimarie_mod/recipe/templates/copier.csv
-assets/connectedglass/optifine/ctm/templates/copier.csv
-assets/connectedglass/optifine/ctm/borderless_glass/templates/copier.csv
-assets/connectedglass/textures/item/templates/copier.csv
-assets/connectedglass/models/item/templates/copier.csv
-assets/connectedglass/optifine/ctm/clear_glass/templates/copier.csv
-assets/connectedglass/optifine/ctm/scratched_glass/templates/copier.csv
-assets/connectedglass/optifine/ctm/tinted_borderless_glass/templates/copier.csv
-data/connectedglass/loot_table/blocks/templates/copier.csv
-data/connectedglass/recipe/template/copier.csv
+assets/origamimarie_mod/models/block/glass/templates/copier.csv
+assets/origamimarie_mod/optifine/ctm/templates/copier.csv
+assets/origamimarie_mod/optifine/ctm/borderless_glass/templates/copier.csv
+assets/origamimarie_mod/textures/item/templates/copier.csv
+assets/origamimarie_mod/optifine/ctm/clear_glass/templates/copier.csv
+assets/origamimarie_mod/optifine/ctm/scratched_glass/templates/copier.csv
+assets/origamimarie_mod/optifine/ctm/tinted_borderless_glass/templates/copier.csv

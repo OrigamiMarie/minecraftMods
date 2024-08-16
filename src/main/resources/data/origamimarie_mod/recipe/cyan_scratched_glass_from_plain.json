@@ -1,0 +1,20 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "key": {
+    "#": {
+      "item": "origamimarie_mod:scratched_glass"
+    },
+    "D": {
+      "item": "cyan_dye"
+    }
+  },
+  "pattern": [
+    "###",
+    "#D#",
+    "###"
+  ],
+  "result": {
+    "count": 8,
+    "id": "origamimarie_mod:cyan_scratched_glass"
+  }
+}

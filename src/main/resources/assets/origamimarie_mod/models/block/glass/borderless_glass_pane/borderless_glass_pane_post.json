@@ -1,0 +1,9 @@
+{
+  "parent": "minecraft:block/template_glass_pane_post",
+  "textures": {
+    "edge": "origamimarie_mod:block/glass/borderless_glass_top",
+    "pane": "origamimarie_mod:block/glass/borderless_glass_side",
+    "particle": "origamimarie_mod:item/borderless_glass_particle"
+
+  }
+}

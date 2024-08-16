@@ -1,7 +1,0 @@
-{
-  "parent": "minecraft:block/template_glass_pane_side_alt",
-  "textures": {
-    "edge": "connectedglass:block/magenta_tinted_borderless_glass_top",
-    "pane": "connectedglass:block/magenta_tinted_borderless_glass_side"
-  }
-}

@@ -1,0 +1,6 @@
+{
+  "parent": "minecraft:item/generated",
+  "textures": {
+    "layer0": "origamimarie_mod:item/light_gray_tinted_borderless_glass"
+  }
+}

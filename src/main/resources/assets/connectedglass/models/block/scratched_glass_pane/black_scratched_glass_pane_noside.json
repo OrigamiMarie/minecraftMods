@@ -1,6 +1,0 @@
-{
-  "parent": "minecraft:block/template_glass_pane_noside",
-  "textures": {
-    "pane": "connectedglass:block/black_scratched_glass_side"
-  }
-}

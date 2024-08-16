@@ -1,0 +1,7 @@
+{
+  "parent": "minecraft:block/template_glass_pane_side_alt",
+  "textures": {
+    "edge": "origamimarie_mod:block/glass/cyan_tinted_borderless_glass_top",
+    "pane": "origamimarie_mod:block/glass/cyan_tinted_borderless_glass_side"
+  }
+}

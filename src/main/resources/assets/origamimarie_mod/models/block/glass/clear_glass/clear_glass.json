@@ -1,0 +1,7 @@
+{
+  "parent": "minecraft:block/cube_all",
+  "textures": {
+    "texture": "origamimarie_mod:block/glass/borderless_glass",
+    "particle": "origamimarie_mod:item/borderless_glass_particle"
+  }
+}

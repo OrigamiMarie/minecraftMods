@@ -1,0 +1,6 @@
+{
+  "parent": "minecraft:block/cube_all",
+  "textures": {
+    "all": "origamimarie_mod:item/gray_borderless_glass"
+  }
+}

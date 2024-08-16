@@ -1,0 +1,6 @@
+{
+  "parent": "minecraft:block/template_glass_pane_noside",
+  "textures": {
+    "pane": "origamimarie_mod:block/glass/pink_scratched_glass_side"
+  }
+}

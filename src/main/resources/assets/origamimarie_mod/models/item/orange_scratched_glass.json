@@ -1,0 +1,6 @@
+{
+  "parent": "minecraft:block/cube_all",
+  "textures": {
+    "all": "origamimarie_mod:item/orange_scratched_glass"
+  }
+}
