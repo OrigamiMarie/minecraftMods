@@ -40,9 +40,6 @@ public class LilyPadMixin extends AbstractBlockMixin {
                 world.setBlockState(pos, CandlePadBlock.getCandlePadFromCandle(block));
                 world.emitGameEvent(player, GameEvent.BLOCK_CHANGE, pos);
                 player.incrementStat(Stats.USED.getOrCreateStat(item));
-                if (!player.isCreative()) {
-                    itemStack.decrement(1);
-                }
                 cir.setReturnValue(ItemActionResult.SUCCESS);
                 return;
             }
