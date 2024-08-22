@@ -20,6 +20,7 @@ import net.origamimarie.minecraft.azalea.ModdedAzaleaBlock;
 import net.origamimarie.minecraft.biome.IceSpikeWithCrystalsFeature;
 import net.origamimarie.minecraft.firtree.FirTree;
 import net.origamimarie.minecraft.flowers.CustomFlowers;
+import net.origamimarie.minecraft.hud.CoordinatesHUD;
 import net.origamimarie.minecraft.rainbow_crystal.BuddingRainbowCrystalBlock;
 import net.origamimarie.minecraft.rainbow_crystal.RainbowCrystalClusterBlock;
 import net.origamimarie.minecraft.util.ConvenienceCommand;
@@ -49,6 +50,7 @@ public class OrigamiMarieMod implements ModInitializer {
         registerRainbowCrystals();
         IceSpikeWithCrystalsFeature.register();
         ConvenienceCommand.registerCommand();
+        CoordinatesHUD.register();
     }
 
     private void registerRainbowCrystals() {
