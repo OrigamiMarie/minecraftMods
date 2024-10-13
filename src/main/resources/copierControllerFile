@@ -2,6 +2,8 @@ assets/origamimarie_mod/blockstates/templates/copier.csv
 assets/origamimarie_mod/models/block/candles/template/copier.csv
 assets/origamimarie_mod/models/block/ornament/templates/copier.csv
 assets/origamimarie_mod/models/block/rainbow_crystal/templates/copier.csv
+assets/origamimarie_mod/models/block/azalea/templates/copier.csv
+assets/origamimarie_mod/models/block/ice/templates/copier.csv
 assets/origamimarie_mod/models/item/templates/copier.csv
 assets/origamimarie_mod/textures/block/rainbow_crystal/templates/copier.csv
 data/origamimarie_mod/loot_table/blocks/templates/copier.csv

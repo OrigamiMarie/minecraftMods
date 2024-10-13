@@ -6,6 +6,7 @@ import net.fabricmc.fabric.api.itemgroup.v1.ItemGroupEvents;
 import net.minecraft.block.AbstractBlock;
 import net.minecraft.block.Block;
 import net.minecraft.block.Blocks;
+import net.minecraft.block.SlabBlock;
 import net.minecraft.client.render.RenderLayer;
 import net.minecraft.item.BlockItem;
 import net.minecraft.item.Item;
@@ -27,6 +28,7 @@ import net.origamimarie.minecraft.util.ConvenienceCommand;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.Map;
 
 public class OrigamiMarieMod implements ModInitializer {
 
@@ -43,6 +45,7 @@ public class OrigamiMarieMod implements ModInitializer {
         registerCandles();
         registerMangroveBookshelf();
         registerWrench();
+        registerIceSlabs();
         FirTree.registerFirTree();
         OrnamentBlock.registerOrnaments();
         registerAzaleas();
@@ -85,6 +88,19 @@ public class OrigamiMarieMod implements ModInitializer {
         ItemGroupEvents.modifyEntriesEvent(ItemGroups.TOOLS).register(content -> content.addAfter(Items.RECOVERY_COMPASS, wrenchItem));
     }
 
+    private void registerIceSlabs() {
+        Map<String, Block> slabsByName = Map.of(
+                "packed_ice_slab", new SlabBlock(AbstractBlock.Settings.copy(Blocks.PACKED_ICE)),
+                "blue_ice_slab", new SlabBlock(AbstractBlock.Settings.copy(Blocks.BLUE_ICE))
+        );
+        for (String name : slabsByName.keySet()) {
+            Block slabBlock = slabsByName.get(name);
+            Registry.register(Registries.BLOCK, Identifier.of(ORIGAMIMARIE_MOD, name), slabBlock);
+            Item slabItem = new BlockItem(slabBlock, new Item.Settings());
+            Registry.register(Registries.ITEM, Identifier.of(ORIGAMIMARIE_MOD, name), slabItem);
+        }
+    }
+
     private String getCandleNameFromCandle(Block candle) {
         String messyName = candle.toString().replace("}", "");
         String[] tokens = messyName.split(":");
@@ -92,8 +108,3 @@ public class OrigamiMarieMod implements ModInitializer {
     }
 
 }
-
-/*
-/give @p connectedglass:black_borderless_glass
-/give @p connectedglass:blue_borderless_glass
- */
