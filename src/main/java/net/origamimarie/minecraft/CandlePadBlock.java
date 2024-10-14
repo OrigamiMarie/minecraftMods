@@ -72,7 +72,6 @@ public class CandlePadBlock extends AbstractCandleBlock {
         FOUR_CANDLES_SHAPE = VoxelShapes.union(padShape, Block.createCuboidShape(5.0D, 0.0D, 5.0D, 11.0D, 6.0D, 10.0D));
         CANDLES_TO_CANDLE_PADS = Maps.newHashMap();
         STATE_TO_LUMINANCE = (state) -> (Boolean)state.get(LIT) ? 3 * state.get(CANDLES) : 0;
-        // TODO looks like we will have to set these per rotation angle . . . if possible.
         CANDLES_TO_PARTICLE_OFFSETS = Util.make(() -> {
             Int2ObjectMap<List<Vec3d>> int2ObjectMap = new Int2ObjectOpenHashMap<>();
             int2ObjectMap.defaultReturnValue(ImmutableList.of());

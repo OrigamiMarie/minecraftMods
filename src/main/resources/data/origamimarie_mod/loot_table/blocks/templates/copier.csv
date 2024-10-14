@@ -12,3 +12,6 @@ color_; ; pink_; magenta_; red_; orange_; yellow_; lime_; green_; cyan_; light_b
 
 ice_type_slab.json; ../
 ice_type; packed_ice; blue_ice
+
+pastel_color_concrete*.json; ../
+color; pink; magenta; red; orange; yellow; lime; green; cyan; light_blue; blue; purple; white; light_gray; gray; black; brown
