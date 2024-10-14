@@ -1,6 +1,7 @@
 {
-  "parent": "origamimarie_mod:block/candles/template/template_pad_with_four_candles_90",
+  "parent": "origamimarie_mod:block/candles/template/template_pad_with_four_candles",
   "textures": {
-    "candle_texture": "origamimarie_mod:block/candles/magenta_candle_lit"
+    "candle_texture": "minecraft:block/magenta_candle_lit",
+    "pad_texture": "origamimarie_mod:block/lily_pad_90"
   }
 }

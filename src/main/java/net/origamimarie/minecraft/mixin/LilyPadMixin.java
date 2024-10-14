@@ -27,7 +27,6 @@ public class LilyPadMixin extends AbstractBlockMixin {
 
     @Override
     protected void onUseWithItem(ItemStack stack, BlockState state, World world, BlockPos pos, PlayerEntity player, Hand hand, BlockHitResult hit, CallbackInfoReturnable<ItemActionResult> cir) {
-        OrigamiMarieMod.LOGGER.info("hi we're here in onUseWithItem");
         ItemStack itemStack = player.getStackInHand(hand);
         Item item = itemStack.getItem();
         if (itemStack.isIn(ItemTags.CANDLES)) {

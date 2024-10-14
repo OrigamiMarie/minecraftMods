@@ -1,7 +1,6 @@
 {
     "textures": {
-      "particle": "origamimarie_mod:block/lily_pad_0",
-      "pad_texture": "origamimarie_mod:block/lily_pad_0"
+      "particle": "minecraft:block/lily_pad"
     },
     "elements": [
       {
