@@ -31,8 +31,8 @@ public class BuddingRainbowCrystalBlock extends AmethystBlock {
     public static final MapCodec<BuddingRainbowCrystalBlock> CODEC = BuddingRainbowCrystalBlock.createCodec(BuddingRainbowCrystalBlock::new);
     public static final int GROW_CHANCE = 5;
     public static final Direction[] DIRECTIONS = Direction.values();
-    private static final BuddingRainbowCrystalBlock LIGHT_BLOCK = new BuddingRainbowCrystalBlock(Settings.copy(Blocks.BUDDING_AMETHYST).strength(3.5f, 6.0f).mapColor(MapColor.TERRACOTTA_WHITE));
-    private static final DimBuddingRainbowCrystalBlock DIM_BLOCK = new DimBuddingRainbowCrystalBlock(Settings.copy(Blocks.BUDDING_AMETHYST).strength(3.5f, 6.0f).mapColor(MapColor.BLACK));
+    private static final BuddingRainbowCrystalBlock LIGHT_BLOCK = new BuddingRainbowCrystalBlock(Settings.copy(Blocks.AMETHYST_BLOCK).ticksRandomly().strength(3.5f, 6.0f).mapColor(MapColor.TERRACOTTA_WHITE));
+    private static final DimBuddingRainbowCrystalBlock DIM_BLOCK = new DimBuddingRainbowCrystalBlock(Settings.copy(Blocks.AMETHYST_BLOCK).ticksRandomly().strength(3.5f, 6.0f).mapColor(MapColor.BLACK));
 
     public static void registerAll() {
         // strength similar to deepslate cobble, which should make it slow enough to mine that we don't do it accidentally

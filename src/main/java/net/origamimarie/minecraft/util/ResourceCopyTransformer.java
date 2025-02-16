@@ -66,7 +66,6 @@ public class ResourceCopyTransformer {
 
     public static void main(String[] args) throws IOException {
         readControllerFileAndPerformCopierTransforms();
-//        foo();
     }
 
     private static void readControllerFileAndPerformCopierTransforms() throws IOException {
@@ -92,7 +91,8 @@ public class ResourceCopyTransformer {
 
             for (Set<Pair<String, String>> replacementSet : replacementSets) {
                 String newFileName = performAllReplacements(transform.sourceFileNameAndSubDirs, replacementSet);
-                File newFile = new File(transform.destinationDir, newFileName);
+                String newDestinationDirName = performAllReplacements(transform.destinationSubDirPattern, replacementSet);
+                File newFile = new File(mashSingleFile(new File(transform.destinationParentDir, newDestinationDirName)), newFileName);
                 if (fileIsPng) {
                     BufferedImage newImage = performAllColorReplacements(originalImage, replacementSet);
                     ImageIO.write(newImage, "png", newFile);
@@ -139,9 +139,18 @@ public class ResourceCopyTransformer {
         return s;
     }
 
+    private static String mashSingleFile(File file) {
+        String fullFile = file.getAbsolutePath();
+        while (fullFile.contains(DOUBLE_DOT)) {
+            int location = fullFile.indexOf(DOUBLE_DOT);
+            int startOfFileAbove = StringUtils.lastIndexOf(fullFile, "\\", location - 2);
+            fullFile = fullFile.substring(0, startOfFileAbove) + fullFile.substring(location + 2);
+        }
+        return fullFile;
+    }
 
-    public record TransformParameters(File sourceFile, String sourceFileNameAndSubDirs, File destinationDir,
-                                      Map<String, List<String>> replacements) {
+    public record TransformParameters(File sourceFile, String sourceFileNameAndSubDirs, File destinationParentDir,
+                                      String destinationSubDirPattern, Map<String, List<String>> replacements) {
         // Multiplex all the replacements against each other, to get all combinations.
         // Split apart any correlated fields, and don't multiplex them against each other.
         public List<Set<Pair<String, String>>> calculateAllStringReplacementSets() {
@@ -167,8 +176,11 @@ public class ResourceCopyTransformer {
         }
 
         private static List<Pair<String, String>> makeReplacementPairs(String originalString, String replacementString) {
-            String[] originalStrings = originalString.split(ESCAPED_CORRELATED_FIELD_SEPARATOR);
-            String[] replacementStrings = replacementString.split(ESCAPED_CORRELATED_FIELD_SEPARATOR);
+            String[] originalStrings = StringUtils.splitPreserveAllTokens(originalString, ESCAPED_CORRELATED_FIELD_SEPARATOR);
+            String[] replacementStrings = StringUtils.splitPreserveAllTokens(replacementString, ESCAPED_CORRELATED_FIELD_SEPARATOR);
+            if (replacementStrings.length == 0) {
+                replacementStrings = new String[] {""};
+            }
             List<Pair<String, String>> pairs = new ArrayList<>(originalStrings.length);
             for (int i = 0; i < originalStrings.length; i++) {
                 pairs.add(Pair.of(originalStrings[i], replacementStrings[i]));
@@ -191,7 +203,6 @@ public class ResourceCopyTransformer {
                 // Now we have a transform definition
                 String[] sourceAndDestFiles = currentLine.split(FIELD_SEPARATOR);
                 List<File> sourceFiles = mashFileParts(new File(parentFile, sourceAndDestFiles[0]));
-                List<File> destinationDirs = mashFileParts(new File(parentFile, sourceAndDestFiles[1]));
                 Map<String, List<String>> replacements = new HashMap<>();
                 i++;
                 while (i < lines.length && !lines[i].isBlank()) {
@@ -214,10 +225,8 @@ public class ResourceCopyTransformer {
                     replacements.put(replacementTokens.removeFirst(), replacementTokens);
                 }
                 for (File sourceFile : sourceFiles) {
-                    for (File destinationDir : destinationDirs) {
-                        String sourceFileNameAndSubDirs = sourceFile.getAbsolutePath().replace(parentFile.getAbsolutePath(), "");
-                        result.add(new TransformParameters(sourceFile, sourceFileNameAndSubDirs, destinationDir, replacements));
-                    }
+                    String sourceFileNameAndSubDirs = sourceFile.getAbsolutePath().replace(parentFile.getAbsolutePath(), "");
+                    result.add(new TransformParameters(sourceFile, sourceFileNameAndSubDirs, parentFile, sourceAndDestFiles[1], replacements));
                 }
             }
             return result;
@@ -269,12 +278,7 @@ public class ResourceCopyTransformer {
         // You may include a * in the filename, but only one *.
         private static List<File> mashFileParts(File file) {
             List<File> files = new ArrayList<>();
-            String fullFile = file.getAbsolutePath();
-            while (fullFile.contains(DOUBLE_DOT)) {
-                int location = fullFile.indexOf(DOUBLE_DOT);
-                int startOfFileAbove = StringUtils.lastIndexOf(fullFile, "\\", location - 2);
-                fullFile = fullFile.substring(0, startOfFileAbove) + fullFile.substring(location + 2);
-            }
+            String fullFile = mashSingleFile(file);
             if (fullFile.contains("*")) {
                 String[] prefixAndSuffix = fullFile.split("\\*");
                 if (prefixAndSuffix.length > 2) {
