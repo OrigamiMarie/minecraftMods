@@ -5,16 +5,6 @@ public class ConvenienceCommand /*implements Command<ServerCommandSource>*/ {
 /*
     @Override
     public int run(CommandContext<ServerCommandSource> context) {
-        try {
-            UnderscoreColors color = UnderscoreColors.valueOf(context.getArgument(COLOR, String.class));
-            ServerPlayerEntity player = context.getSource().getPlayer();
-            for (Block block : OldConnectedGlassBlock.NAME_TO_COLOR_BLOCKS.get(color)) {
-                player.giveItemStack(new ItemStack(block, 1));
-            }
-            return 1; //positive numbers are success! Negative numbers are failure.
-        } catch (IllegalArgumentException e) {
-            return 0;
-        }
     }
 */
     public static void registerCommand() {

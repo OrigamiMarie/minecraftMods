@@ -346,8 +346,6 @@ public class ResourceCopyTransformer {
     private static void foo() {
         Map<String, String> clarities = Map.of("borderless_glass", "Borderless Glass", "clear_glass", "Clear Glass", "scratched_glass", "Scratched Glass", "tinted_borderless_glass", "Tinted Borderless Glass");
         Map<String, String> panes = Map.of("_pane", "Pane", "", "");
-        // connectedglass.white_borderless_glass
-        //   "block.connectedglass.borderless_glass_white_pane": "Connecting White Stained Glass Pane",
         for (UnderscoreColors color : UnderscoreColors.values()) {
             for (String clarity : clarities.keySet()) {
                 for (String pane : panes.keySet()) {
