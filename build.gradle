@@ -1,10 +1,10 @@
 plugins {
-	id 'fabric-loom' version '1.5-SNAPSHOT'
+	id "fabric-loom" version "1.7-SNAPSHOT"
 	id 'maven-publish'
 }
 
-sourceCompatibility = JavaVersion.VERSION_17
-targetCompatibility = JavaVersion.VERSION_17
+sourceCompatibility = JavaVersion.VERSION_21
+targetCompatibility = JavaVersion.VERSION_21
 
 archivesBaseName = project.archives_base_name
 version = project.mod_version
@@ -16,6 +16,17 @@ repositories {
 	// Loom adds the essential maven repositories to download Minecraft and libraries from automatically.
 	// See https://docs.gradle.org/current/userguide/declaring_repositories.html
 	// for more information about repositories.
+	exclusiveContent {
+		forRepository {
+			maven {
+				name = "Modrinth"
+				url = "https://api.modrinth.com/maven"
+			}
+		}
+		filter {
+			includeGroup "maven.modrinth"
+		}
+	}
 }
 
 dependencies {
@@ -28,13 +39,12 @@ dependencies {
 	modImplementation "net.fabricmc.fabric-api:fabric-api:${project.fabric_version}"
 
 	// Fun with class access hacking
-	implementation "net.fabricmc:tiny-remapper:0.8.10"
+	implementation "net.fabricmc:tiny-remapper:0.10.4"
 	implementation "net.fabricmc:access-widener:2.1.0"
-	implementation "net.fabricmc:mapping-io:0.5.1"
+	implementation "net.fabricmc:mapping-io:0.6.1"
 
-    testImplementation 'org.junit.jupiter:junit-jupiter-api:5.8.2'
-    testImplementation 'org.junit.jupiter:junit-jupiter-params:5.8.2'
-    testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.8.2'
+	testImplementation "org.junit.jupiter:junit-jupiter:5.8.2"
+	testRuntimeOnly "org.junit.platform:junit-platform-launcher"
 }
 
 processResources {
@@ -47,7 +57,7 @@ processResources {
 
 tasks.withType(JavaCompile).configureEach {
 	// Minecraft 1.18 (1.18-pre2) upwards uses Java 17.
-	it.options.release = 17
+	it.options.release = 21
 }
 
 java {
@@ -83,4 +93,8 @@ publishing {
 loom {
 	// Required as the item-group API uses access widened classes in its API, without this the javadoc generation fails.
 	accessWidenerPath = file("src/main/resources/origamimarie_mod.accesswidener")
+}
+
+test {
+	useJUnitPlatform()
 }

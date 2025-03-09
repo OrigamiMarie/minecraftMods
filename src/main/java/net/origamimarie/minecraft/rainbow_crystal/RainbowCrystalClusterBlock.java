@@ -2,17 +2,16 @@ package net.origamimarie.minecraft.rainbow_crystal;
 
 import com.mojang.serialization.MapCodec;
 import net.fabricmc.fabric.api.blockrenderlayer.v1.BlockRenderLayerMap;
-import net.fabricmc.fabric.api.item.v1.FabricItemSettings;
 import net.minecraft.block.AbstractBlock;
 import net.minecraft.block.AmethystBlock;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
-import net.minecraft.block.MapColor;
 import net.minecraft.block.ShapeContext;
 import net.minecraft.block.Waterloggable;
 import net.minecraft.block.piston.PistonBehavior;
 import net.minecraft.client.render.RenderLayer;
+import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.fluid.FluidState;
 import net.minecraft.fluid.Fluids;
@@ -32,11 +31,11 @@ import net.minecraft.state.StateManager;
 import net.minecraft.state.property.BooleanProperty;
 import net.minecraft.state.property.DirectionProperty;
 import net.minecraft.state.property.Properties;
-import net.minecraft.util.ActionResult;
 import net.minecraft.util.BlockMirror;
 import net.minecraft.util.BlockRotation;
 import net.minecraft.util.Hand;
 import net.minecraft.util.Identifier;
+import net.minecraft.util.ItemActionResult;
 import net.minecraft.util.hit.BlockHitResult;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
@@ -46,6 +45,7 @@ import net.minecraft.world.World;
 import net.minecraft.world.WorldAccess;
 import net.minecraft.world.WorldView;
 import net.minecraft.world.event.GameEvent;
+import net.origamimarie.minecraft.util.UnderscoreColors;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.HashMap;
@@ -53,7 +53,6 @@ import java.util.List;
 import java.util.Map;
 
 import static net.origamimarie.minecraft.OrigamiMarieMod.ORIGAMIMARIE_MOD;
-
 
 public class RainbowCrystalClusterBlock extends AmethystBlock
         implements Waterloggable {
@@ -63,14 +62,6 @@ public class RainbowCrystalClusterBlock extends AmethystBlock
 
     public MapCodec<RainbowCrystalClusterBlock> CODEC = createCodec(RainbowCrystalClusterBlock::new);
 
-    public static final String MAGENTA = "magenta_";
-    public static final String RED = "red_";
-    public static final String ORANGE = "orange_";
-    public static final String YELLOW = "yellow_";
-    public static final String LIME = "lime_";
-    public static final String CYAN = "cyan_";
-    public static final String BLUE = "blue_";
-    public static final String PURPLE = "purple_";
     public static final String WAXED = "waxed_";
     public static final String UNWAXED = "";
     public static final String BRIGHT = "";
@@ -82,16 +73,14 @@ public class RainbowCrystalClusterBlock extends AmethystBlock
     public static final DirectionProperty FACING = Properties.FACING;
 
     // This map is needed for starting crystal growth from bud blocks
-    public static final Map<String, RainbowCrystalClusterBlock> SMALL_RAINBOW_CRYSTAL_BUD_MAP = new HashMap<>();
-    public static final Map<String, RainbowCrystalClusterBlock> DIM_SMALL_RAINBOW_CRYSTAL_BUD_MAP = new HashMap<>();
-    private static final Map<String, Map<String, Map<String, Map<String, RainbowCrystalClusterBlock>>>> ALL_CRYSTALS_MAP = new HashMap<>();
+    public static final Map<UnderscoreColors, RainbowCrystalClusterBlock> SMALL_RAINBOW_CRYSTAL_BUD_MAP = new HashMap<>();
+    public static final Map<UnderscoreColors, RainbowCrystalClusterBlock> DIM_SMALL_RAINBOW_CRYSTAL_BUD_MAP = new HashMap<>();
+    private static final Map<UnderscoreColors, Map<String, Map<String, Map<String, RainbowCrystalClusterBlock>>>> ALL_CRYSTALS_MAP = new HashMap<>();
 
     public static final Map<Block, RainbowCrystalClusterBlock> RAINBOW_CRYSTAL_GROW_MAP = new HashMap<>();
     private static final Map<Block, RainbowCrystalClusterBlock> RAINBOW_CRYSTAL_WAX_ON_MAP = new HashMap<>();
     private static final Map<Block, RainbowCrystalClusterBlock> RAINBOW_CRYSTAL_WAX_OFF_MAP = new HashMap<>();
 
-
-    public static final List<String> COLOR_PREFIXES = List.of(MAGENTA, RED, ORANGE, YELLOW, LIME, CYAN, BLUE, PURPLE);
     static {
         List<String> coatings = List.of(UNWAXED, WAXED);
         List<String> brightnesses = List.of(BRIGHT, DIM);
@@ -100,28 +89,30 @@ public class RainbowCrystalClusterBlock extends AmethystBlock
         Map<String, Float> sizeHeight = Map.of(SMALL, 3.0f, MEDIUM, 4.0f, LARGE, 5.0f, CLUSTER, 7.0f);
         Map<String, Float> sizeXzOffset = Map.of(SMALL, 4.0f, MEDIUM, 3.0f, LARGE, 3.0f, CLUSTER, 3.0f);
         Map<String, AbstractBlock.Settings> brightSizeSettings = Map.of(
-                SMALL, AbstractBlock.Settings.create().mapColor(MapColor.MAGENTA).solid().nonOpaque().sounds(BlockSoundGroup.SMALL_AMETHYST_BUD).strength(0.0f, 0.0f).luminance(state -> 1).pistonBehavior(PistonBehavior.DESTROY),
-                MEDIUM, AbstractBlock.Settings.create().mapColor(MapColor.MAGENTA).solid().nonOpaque().sounds(BlockSoundGroup.MEDIUM_AMETHYST_BUD).strength(0.0f, 0.0f).luminance(state -> 2).pistonBehavior(PistonBehavior.DESTROY),
-                LARGE, AbstractBlock.Settings.create().mapColor(MapColor.MAGENTA).solid().nonOpaque().sounds(BlockSoundGroup.LARGE_AMETHYST_BUD).strength(0.0f, 0.0f).luminance(state -> 4).pistonBehavior(PistonBehavior.DESTROY),
-                CLUSTER, AbstractBlock.Settings.create().mapColor(MapColor.MAGENTA).solid().nonOpaque().sounds(BlockSoundGroup.AMETHYST_CLUSTER).strength(0.0f, 0.0f).luminance(state -> 5).pistonBehavior(PistonBehavior.DESTROY)
+                SMALL, AbstractBlock.Settings.create().solid().nonOpaque().sounds(BlockSoundGroup.SMALL_AMETHYST_BUD).strength(0.0f, 0.0f).luminance(state -> 1).pistonBehavior(PistonBehavior.DESTROY),
+                MEDIUM, AbstractBlock.Settings.create().solid().nonOpaque().sounds(BlockSoundGroup.MEDIUM_AMETHYST_BUD).strength(0.0f, 0.0f).luminance(state -> 2).pistonBehavior(PistonBehavior.DESTROY),
+                LARGE, AbstractBlock.Settings.create().solid().nonOpaque().sounds(BlockSoundGroup.LARGE_AMETHYST_BUD).strength(0.0f, 0.0f).luminance(state -> 4).pistonBehavior(PistonBehavior.DESTROY),
+                CLUSTER, AbstractBlock.Settings.create().solid().nonOpaque().sounds(BlockSoundGroup.AMETHYST_CLUSTER).strength(0.0f, 0.0f).luminance(state -> 5).pistonBehavior(PistonBehavior.DESTROY)
         );
         Map<String, AbstractBlock.Settings> dimSizeSettings = Map.of(
-                SMALL, AbstractBlock.Settings.create().mapColor(MapColor.MAGENTA).solid().nonOpaque().sounds(BlockSoundGroup.SMALL_AMETHYST_BUD).strength(0.0f, 0.0f).pistonBehavior(PistonBehavior.DESTROY),
-                MEDIUM, AbstractBlock.Settings.create().mapColor(MapColor.MAGENTA).solid().nonOpaque().sounds(BlockSoundGroup.MEDIUM_AMETHYST_BUD).strength(0.0f, 0.0f).pistonBehavior(PistonBehavior.DESTROY),
-                LARGE, AbstractBlock.Settings.create().mapColor(MapColor.MAGENTA).solid().nonOpaque().sounds(BlockSoundGroup.LARGE_AMETHYST_BUD).strength(0.0f, 0.0f).pistonBehavior(PistonBehavior.DESTROY),
-                CLUSTER, AbstractBlock.Settings.create().mapColor(MapColor.MAGENTA).solid().nonOpaque().sounds(BlockSoundGroup.AMETHYST_CLUSTER).strength(0.0f, 0.0f).pistonBehavior(PistonBehavior.DESTROY)
+                SMALL, AbstractBlock.Settings.create().solid().nonOpaque().sounds(BlockSoundGroup.SMALL_AMETHYST_BUD).strength(0.0f, 0.0f).pistonBehavior(PistonBehavior.DESTROY),
+                MEDIUM, AbstractBlock.Settings.create().solid().nonOpaque().sounds(BlockSoundGroup.MEDIUM_AMETHYST_BUD).strength(0.0f, 0.0f).pistonBehavior(PistonBehavior.DESTROY),
+                LARGE, AbstractBlock.Settings.create().solid().nonOpaque().sounds(BlockSoundGroup.LARGE_AMETHYST_BUD).strength(0.0f, 0.0f).pistonBehavior(PistonBehavior.DESTROY),
+                CLUSTER, AbstractBlock.Settings.create().solid().nonOpaque().sounds(BlockSoundGroup.AMETHYST_CLUSTER).strength(0.0f, 0.0f).pistonBehavior(PistonBehavior.DESTROY)
         );
         Map<String, Map<String, AbstractBlock.Settings>> brightnessSizeSettings = Map.of(BRIGHT, brightSizeSettings, DIM, dimSizeSettings);
-        for (String color : COLOR_PREFIXES) {
+        for (UnderscoreColors color : UnderscoreColors.RAINBOW_EIGHT) {
             for (String coating : coatings) {
                 for (String brightness : brightnesses) {
                     for (String size : sizes) {
-                        addToAllCrystals(color, coating, brightness, size, new RainbowCrystalClusterBlock(coating.equals(WAXED), sizeHeight.get(size), sizeXzOffset.get(size), brightnessSizeSettings.get(brightness).get(size)));
+                        Settings colorSettings = UnderscoreColors.copySettingsAndAddMapColor(brightnessSizeSettings.get(brightness).get(size), color.dyeColor);
+                        RainbowCrystalClusterBlock clusterBlock = new RainbowCrystalClusterBlock(coating.equals(WAXED), sizeHeight.get(size), sizeXzOffset.get(size), colorSettings);
+                        addToAllCrystals(color, coating, brightness, size, clusterBlock);
                     }
                 }
             }
         }
-        for (String color : COLOR_PREFIXES) {
+        for (UnderscoreColors color : UnderscoreColors.RAINBOW_EIGHT) {
             SMALL_RAINBOW_CRYSTAL_BUD_MAP.put(color, getCrystal(color, UNWAXED, BRIGHT, SMALL));
             DIM_SMALL_RAINBOW_CRYSTAL_BUD_MAP.put(color, getCrystal(color, UNWAXED, DIM, SMALL));
 
@@ -159,7 +150,7 @@ public class RainbowCrystalClusterBlock extends AmethystBlock
     }
 
     public static void registerAll() {
-        for (String color : ALL_CRYSTALS_MAP.keySet()) {
+        for (UnderscoreColors color : ALL_CRYSTALS_MAP.keySet()) {
             Map<String, Map<String, Map<String, RainbowCrystalClusterBlock>>> singleColorMap = ALL_CRYSTALS_MAP.get(color);
             for (String coating : singleColorMap.keySet()) {
                 Map<String, Map<String, RainbowCrystalClusterBlock>> singleCoatingMap = singleColorMap.get(coating);
@@ -173,19 +164,19 @@ public class RainbowCrystalClusterBlock extends AmethystBlock
         }
     }
 
-    private static void addToAllCrystals(String color, String coating, String brightness, String size, RainbowCrystalClusterBlock block) {
+    private static void addToAllCrystals(UnderscoreColors color, String coating, String brightness, String size, RainbowCrystalClusterBlock block) {
         ALL_CRYSTALS_MAP.computeIfAbsent(color, k -> new HashMap<>()).computeIfAbsent(coating, k -> new HashMap<>()).computeIfAbsent(brightness, k -> new HashMap<>()).put(size, block);
     }
 
-    public static RainbowCrystalClusterBlock getCrystal(String color, String coating, String brightness, String size) {
+    public static RainbowCrystalClusterBlock getCrystal(UnderscoreColors color, String coating, String brightness, String size) {
         return ALL_CRYSTALS_MAP.get(color).get(coating).get(brightness).get(size);
     }
 
     private static void registerCluster(Block block, String id) {
-        Registry.register(Registries.BLOCK, new Identifier(ORIGAMIMARIE_MOD, id), block);
+        Registry.register(Registries.BLOCK, Identifier.of(ORIGAMIMARIE_MOD, id), block);
         BlockRenderLayerMap.INSTANCE.putBlock(block, RenderLayer.getCutout());
-        Item item = new BlockItem(block, new FabricItemSettings());
-        Registry.register(Registries.ITEM, new Identifier(ORIGAMIMARIE_MOD, id), item);
+        Item item = new BlockItem(block, new Item.Settings());
+        Registry.register(Registries.ITEM, Identifier.of(ORIGAMIMARIE_MOD, id), item);
     }
 
     // This is just to make codec happy, might never get called
@@ -198,7 +189,7 @@ public class RainbowCrystalClusterBlock extends AmethystBlock
     }
 
     @Override
-    public ActionResult onUse(BlockState state, World world, BlockPos pos, PlayerEntity player, Hand hand, BlockHitResult hit) {
+    protected ItemActionResult onUseWithItem(ItemStack stack, BlockState state, World world, BlockPos pos, PlayerEntity player, Hand hand, BlockHitResult hit) {
         ItemStack itemStack = player.getStackInHand(hand);
         Item item = itemStack.getItem();
         if (itemStack.isOf(Items.HONEYCOMB) && RAINBOW_CRYSTAL_WAX_ON_MAP.containsKey(this)) {
@@ -209,19 +200,17 @@ public class RainbowCrystalClusterBlock extends AmethystBlock
             world.playSound(null, pos, SoundEvents.ITEM_HONEYCOMB_WAX_ON, SoundCategory.BLOCKS, 1.0F, 1.0F);
             world.emitGameEvent(player, GameEvent.BLOCK_CHANGE, pos);
             player.incrementStat(Stats.USED.getOrCreateStat(Items.HONEYCOMB));
-            return ActionResult.SUCCESS;
+            return ItemActionResult.SUCCESS;
         } else if (item instanceof AxeItem && RAINBOW_CRYSTAL_WAX_OFF_MAP.containsKey(this)) {
-            if (!player.isCreative()) {
-                itemStack.damage(1, player, (p) -> {
-                    p.sendToolBreakStatus(hand);
-                });
-            }
             world.playSound(null, pos, SoundEvents.ITEM_AXE_WAX_OFF, SoundCategory.BLOCKS, 1.0F, 1.0F);
             world.setBlockState(pos, RAINBOW_CRYSTAL_WAX_OFF_MAP.get(this).getDefaultState().with(RainbowCrystalClusterBlock.FACING, state.get(RainbowCrystalClusterBlock.FACING)).with(RainbowCrystalClusterBlock.WATERLOGGED, state.getFluidState().getFluid() == Fluids.WATER));
             world.emitGameEvent(player, GameEvent.BLOCK_CHANGE, pos);
-            return ActionResult.SUCCESS;
+            if (!player.isCreative()) {
+                itemStack.damage(1, player, LivingEntity.getSlotForHand(hand));
+            }
+            return ItemActionResult.SUCCESS;
         }
-        return ActionResult.PASS;
+        return ItemActionResult.PASS_TO_DEFAULT_BLOCK_INTERACTION;
     }
 
     @Override

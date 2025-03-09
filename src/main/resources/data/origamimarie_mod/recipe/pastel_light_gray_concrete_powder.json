@@ -1,0 +1,20 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "key": {
+    "X": {
+      "item": "minecraft:light_gray_concrete_powder"
+    },
+    "D": {
+      "item": "minecraft:white_dye"
+    }
+  },
+  "pattern": [
+    "XXX",
+    "XDX",
+    "XXX"
+  ],
+  "result": {
+    "count": 8,
+    "id": "origamimarie_mod:pastel_light_gray_concrete_powder"
+  }
+}

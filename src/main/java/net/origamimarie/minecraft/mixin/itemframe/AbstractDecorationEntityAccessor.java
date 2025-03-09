@@ -10,6 +10,4 @@ import org.spongepowered.asm.mixin.gen.Accessor;
 public interface AbstractDecorationEntityAccessor {
     @Accessor
     Direction getFacing();
-    @Accessor
-    BlockPos getAttachmentPos();
 }

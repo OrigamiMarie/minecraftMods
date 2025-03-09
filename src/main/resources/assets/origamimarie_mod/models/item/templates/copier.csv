@@ -6,3 +6,18 @@ brightness_; ; dim_
 
 color_ornament.json; ../
 color; pink; magenta; red; orange; yellow; lime; green; cyan; light_blue; blue; purple; white; light_gray; gray; black; brown
+
+ice_type_slab.json; ../
+ice_type; packed_ice; blue_ice
+
+fir_lighting_sapling.json; ../
+lighting_; ; one_candle_; two_candle_; three_candle_; four_candle_
+
+color_flowering_azalea.json; ../
+color; purple; white; yellow
+
+color_flowering_azalea_leaves.json; ../
+color; purple; white; yellow
+
+pastel_color_concrete*.json; ../
+color; pink; magenta; red; orange; yellow; lime; green; cyan; light_blue; blue; purple; white; light_gray; gray; black; brown

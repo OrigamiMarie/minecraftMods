@@ -2,7 +2,6 @@ package net.origamimarie.minecraft.azalea;
 
 import com.mojang.serialization.MapCodec;
 import net.fabricmc.fabric.api.blockrenderlayer.v1.BlockRenderLayerMap;
-import net.fabricmc.fabric.api.item.v1.FabricItemSettings;
 import net.fabricmc.fabric.api.itemgroup.v1.ItemGroupEvents;
 import net.fabricmc.fabric.api.registry.CompostingChanceRegistry;
 import net.fabricmc.fabric.api.registry.FlammableBlockRegistry;
@@ -68,19 +67,19 @@ public abstract class ModdedAzaleaBlock extends PlantBlock implements Fertilizab
 
     protected void registerSaplingBlock(String path) {
         FlowerPotBlock pottedSapling = new FlowerPotBlock(this, AbstractBlock.Settings.copy(Blocks.FLOWER_POT));
-        Registry.register(Registries.BLOCK, new Identifier(ORIGAMIMARIE_MOD, path), this);
-        Item saplingItem = new BlockItem(this, new FabricItemSettings());
-        Registry.register(Registries.ITEM, new Identifier(ORIGAMIMARIE_MOD, path), saplingItem);
+        Registry.register(Registries.BLOCK, Identifier.of(ORIGAMIMARIE_MOD, path), this);
+        Item saplingItem = new BlockItem(this, new Item.Settings());
+        Registry.register(Registries.ITEM, Identifier.of(ORIGAMIMARIE_MOD, path), saplingItem);
         ItemGroupEvents.modifyEntriesEvent(ItemGroups.NATURAL).register(content -> content.addAfter(Items.FLOWERING_AZALEA, saplingItem));
         BlockRenderLayerMap.INSTANCE.putBlock(this, RenderLayer.getCutout());
         CompostingChanceRegistry.INSTANCE.add(saplingItem, 0.3f);
-        Registry.register(Registries.BLOCK, new Identifier(ORIGAMIMARIE_MOD, "potted_" + path + "_bush"), pottedSapling);
+        Registry.register(Registries.BLOCK, Identifier.of(ORIGAMIMARIE_MOD, "potted_" + path + "_bush"), pottedSapling);
         BlockRenderLayerMap.INSTANCE.putBlock(pottedSapling, RenderLayer.getCutout());
     }
 
     protected void registerLeavesBlock(LeavesBlock blockToRegister, String path) {
-        Registry.register(Registries.BLOCK, new Identifier(ORIGAMIMARIE_MOD, path), blockToRegister);
-        Registry.register(Registries.ITEM, new Identifier(ORIGAMIMARIE_MOD, path), new BlockItem(blockToRegister, new FabricItemSettings()));
+        Registry.register(Registries.BLOCK, Identifier.of(ORIGAMIMARIE_MOD, path), blockToRegister);
+        Registry.register(Registries.ITEM, Identifier.of(ORIGAMIMARIE_MOD, path), new BlockItem(blockToRegister, new Item.Settings()));
         ItemGroupEvents.modifyEntriesEvent(ItemGroups.NATURAL).register(content -> content.addAfter(Items.AZALEA_LEAVES, blockToRegister));
         FlammableBlockRegistry.getDefaultInstance().add(blockToRegister, 30, 60);
         CompostingChanceRegistry.INSTANCE.add(blockToRegister, 0.3f);

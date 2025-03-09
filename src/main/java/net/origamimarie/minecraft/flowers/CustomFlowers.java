@@ -1,7 +1,6 @@
 package net.origamimarie.minecraft.flowers;
 
 import net.fabricmc.fabric.api.blockrenderlayer.v1.BlockRenderLayerMap;
-import net.fabricmc.fabric.api.item.v1.FabricItemSettings;
 import net.fabricmc.fabric.api.itemgroup.v1.ItemGroupEvents;
 import net.fabricmc.fabric.api.registry.CompostingChanceRegistry;
 import net.minecraft.block.AbstractBlock;
@@ -36,27 +35,19 @@ public class CustomFlowers {
     private static Triple<Block, Item, Item> makeFlowerBlockItemSeed(String flowerName, Item afterFlowerInMenu, Item afterSeedsInMenu) {
         // Block
         Block flowerBlock = new FlowerBlock(StatusEffects.FIRE_RESISTANCE, 4, AbstractBlock.Settings.create().mapColor(MapColor.DARK_GREEN).noCollision().breakInstantly().sounds(BlockSoundGroup.GRASS).offset(AbstractBlock.OffsetType.XZ).pistonBehavior(PistonBehavior.DESTROY));
-        Registry.register(Registries.BLOCK, new Identifier(ORIGAMIMARIE_MOD, flowerName), flowerBlock);
+        Registry.register(Registries.BLOCK, Identifier.of(ORIGAMIMARIE_MOD, flowerName), flowerBlock);
         BlockRenderLayerMap.INSTANCE.putBlock(flowerBlock, RenderLayer.getCutout());
 
         // Item
-        Item flowerItem = new BlockItem(flowerBlock, new FabricItemSettings());
-        Registry.register(Registries.ITEM, new Identifier(ORIGAMIMARIE_MOD, flowerName), flowerItem);
+        Item flowerItem = new BlockItem(flowerBlock, new Item.Settings());
+        Registry.register(Registries.ITEM, Identifier.of(ORIGAMIMARIE_MOD, flowerName), flowerItem);
         ItemGroupEvents.modifyEntriesEvent(ItemGroups.NATURAL).register(content -> content.addAfter(afterFlowerInMenu, flowerBlock));
         CompostingChanceRegistry.INSTANCE.add(flowerItem, 0.65f);
 
         // Flower Pot
         FlowerPotBlock pottedFlower = new FlowerPotBlock(flowerBlock, AbstractBlock.Settings.copy(Blocks.FLOWER_POT));
-        Registry.register(Registries.BLOCK, new Identifier(ORIGAMIMARIE_MOD, "potted_" + flowerName), pottedFlower);
+        Registry.register(Registries.BLOCK, Identifier.of(ORIGAMIMARIE_MOD, "potted_" + flowerName), pottedFlower);
         BlockRenderLayerMap.INSTANCE.putBlock(pottedFlower, RenderLayer.getCutout());
-
-        // Seeds -- TODO fix this so we can plant them but the item doesn't replace the flower item
-        /*Item seedsItem = new AliasedBlockItem(flowerBlock, new Item.Settings());
-        Registry.register(Registries.ITEM, new Identifier(ORIGAMIMARIE_MOD, flowerName + "_seeds"), seedsItem);
-        ItemGroupEvents.modifyEntriesEvent(ItemGroups.NATURAL).register(content -> content.addAfter(afterSeedsInMenu, seedsItem));
-        CompostingChanceRegistry.INSTANCE.add(seedsItem, 0.3f);*/
-
-        // TODO change that back to seedsItem when you've fixed them.
         return Triple.of(flowerBlock, flowerItem, flowerItem);
     }
 }

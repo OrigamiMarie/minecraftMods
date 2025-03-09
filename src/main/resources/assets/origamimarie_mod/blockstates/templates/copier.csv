@@ -9,3 +9,25 @@ color_; ; pink_; magenta_; red_; orange_; yellow_; lime_; green_; cyan_; light_b
 
 color_ornament.json; ../
 color; pink; magenta; red; orange; yellow; lime; green; cyan; light_blue; blue; purple; white; light_gray; gray; black; brown
+
+color_flowering_azalea_leaves.json; ../
+color; purple; white; yellow
+
+color_flowering_azalea.json; ../
+color; purple; white; yellow
+
+fir_lighting_sapling.json; ../
+lighting_; ; one_candle_; two_candle_; three_candle_; four_candle_
+
+potted_fir_lighting_sapling.json; ../
+lighting_; ; one_candle_; two_candle_; three_candle_; four_candle_
+
+potted_color_flowering_azalea_bush.json; ../
+color; purple; white; yellow
+
+ice_type_slab.json; ../
+ice_type; packed_ice; blue_ice
+
+pastel_color_concrete_substance.json; ../
+color; pink; magenta; red; orange; yellow; lime; green; cyan; light_blue; blue; purple; white; light_gray; gray; black; brown
+_substance; ; _powder
