@@ -2,12 +2,8 @@
   "type": "minecraft:crafting_shaped",
   "group": "bookshelves",
   "key": {
-    "P": {
-      "item": "minecraft:mangrove_planks"
-    },
-    "B": {
-      "item": "minecraft:book"
-    }
+    "P": "minecraft:mangrove_planks",
+    "B": "minecraft:book"
   },
   "pattern": [
     "PPP",
@@ -15,6 +11,7 @@
     "PPP"
   ],
   "result": {
+    "count": 1,
     "id": "origamimarie_mod:mangrove_bookshelf"
   }
 }

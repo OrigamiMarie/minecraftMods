@@ -61,7 +61,7 @@ public class ResourceCopyTransformer {
     public static final String ESCAPED_CORRELATED_FIELD_SEPARATOR = "\\|";
     public static final String COLOR_SEPARATOR = "-";
     public static final String COLOR_CHANNEL_SEPARATOR = ",";
-    private static final String RESOURCES_DIR = "C:/Users/origa/IdeaProjects/minecraftMods2/src/main/resources/";
+    private static final String RESOURCES_DIR = "C:/Users/origa/IdeaProjects/minecraftMods/src/main/resources/";
     private static final File COPIER_CONTROLLER_FILE = new File(RESOURCES_DIR, "copierControllerFile");
 
     public static void main(String[] args) throws IOException {
@@ -340,21 +340,6 @@ public class ResourceCopyTransformer {
                 }
             }
             return linearAlpha;
-        }
-    }
-
-    private static void foo() {
-        Map<String, String> clarities = Map.of("borderless_glass", "Borderless Glass", "clear_glass", "Clear Glass", "scratched_glass", "Scratched Glass", "tinted_borderless_glass", "Tinted Borderless Glass");
-        Map<String, String> panes = Map.of("_pane", "Pane", "", "");
-        for (UnderscoreColors color : UnderscoreColors.values()) {
-            for (String clarity : clarities.keySet()) {
-                for (String pane : panes.keySet()) {
-                    String prettyColor = UnderscoreColors.PRETTY_NAMES.get(color);
-                    String line = "'block.connectedglass." + color + clarity + pane + "':'" + prettyColor + " " + clarities.get(clarity) + " " + panes.get(pane) + "',";
-                    line = line.replace("  ", " ").replace(" '", "'").replace("' ", "'").replace("':'", "': '").replace("'", "\"").strip();
-                    System.out.println(line);
-                }
-            }
         }
     }
 }

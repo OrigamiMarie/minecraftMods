@@ -1,17 +1,12 @@
 {
   "type": "minecraft:crafting_shapeless",
   "ingredients": [
-    {
-      "item": "minecraft:gold_nugget"
-    },
-    {
-      "item": "minecraft:glass_bottle"
-    },
-    {
-      "item": "minecraft:magenta_dye"
-    }
+    "minecraft:gold_nugget",
+    "minecraft:glass_bottle",
+    "minecraft:magenta_dye"
   ],
   "result": {
+    "count": 1,
     "id": "origamimarie_mod:magenta_ornament"
   }
 }

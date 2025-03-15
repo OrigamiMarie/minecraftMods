@@ -7,5 +7,6 @@ assets/origamimarie_mod/models/block/concrete/templates/copier.csv
 assets/origamimarie_mod/models/block/ice/templates/copier.csv
 assets/origamimarie_mod/models/item/templates/copier.csv
 assets/origamimarie_mod/textures/block/rainbow_crystal/templates/copier.csv
+assets/origamimarie_mod/items/templates/copier.csv
 data/origamimarie_mod/loot_table/blocks/templates/copier.csv
 data/origamimarie_mod/recipe/templates/copier.csv

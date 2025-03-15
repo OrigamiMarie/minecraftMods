@@ -1,17 +1,12 @@
 {
   "type": "minecraft:crafting_shapeless",
   "ingredients": [
-    {
-      "item": "origamimarie_mod:fir_sapling"
-    },
-    {
-      "item": "minecraft:candle"
-    },
-    {
-      "item": "minecraft:candle"
-    }
+    "origamimarie_mod:fir_sapling",
+    "minecraft:candle",
+    "minecraft:candle"
   ],
   "result": {
+    "count": 1,
     "id": "origamimarie_mod:fir_two_candle_sapling"
   }
 }

@@ -1,9 +1,5 @@
 package net.origamimarie.minecraft.util;
 
-import com.mojang.serialization.MapCodec;
-import net.minecraft.block.AbstractBlock;
-import net.minecraft.block.Block;
-import net.minecraft.item.Item;
 import net.minecraft.util.DyeColor;
 
 import java.util.HashMap;
@@ -51,30 +47,4 @@ public enum UnderscoreColors {
         return color;
     }
 
-
-    public static AbstractBlock.Settings copySettingsAndAddMapColor(AbstractBlock.Settings settings, DyeColor color) {
-        return AbstractBlock.Settings.copy(new SillyBlock(settings)).mapColor(color);
-    }
-
-
-    private static class SillyBlock extends AbstractBlock {
-        public SillyBlock(Settings settings) {
-            super(settings);
-        }
-
-        @Override
-        protected MapCodec<? extends Block> getCodec() {
-            return null;
-        }
-
-        @Override
-        public Item asItem() {
-            return null;
-        }
-
-        @Override
-        protected Block asBlock() {
-            return null;
-        }
-    }
 }

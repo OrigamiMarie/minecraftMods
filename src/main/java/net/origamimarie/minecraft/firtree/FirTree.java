@@ -7,7 +7,7 @@ import net.fabricmc.fabric.api.client.rendering.v1.ColorProviderRegistry;
 import net.fabricmc.fabric.api.itemgroup.v1.ItemGroupEvents;
 import net.fabricmc.fabric.api.registry.CompostingChanceRegistry;
 import net.fabricmc.fabric.api.registry.FlammableBlockRegistry;
-import net.minecraft.block.AbstractBlock;
+import net.minecraft.block.AbstractBlock.Settings;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
@@ -18,14 +18,9 @@ import net.minecraft.block.MapColor;
 import net.minecraft.block.PillarBlock;
 import net.minecraft.block.enums.NoteBlockInstrument;
 import net.minecraft.client.render.RenderLayer;
-import net.minecraft.item.BlockItem;
-import net.minecraft.item.Item;
 import net.minecraft.item.ItemGroups;
 import net.minecraft.item.Items;
-import net.minecraft.registry.Registries;
-import net.minecraft.registry.Registry;
 import net.minecraft.sound.BlockSoundGroup;
-import net.minecraft.util.Identifier;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
 import net.minecraft.world.World;
@@ -36,7 +31,7 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Random;
 
-import static net.origamimarie.minecraft.OrigamiMarieMod.ORIGAMIMARIE_MOD;
+import static net.origamimarie.minecraft.util.RegistrationMethods.registerBlock;
 
 public class FirTree {
 
@@ -49,16 +44,21 @@ public class FirTree {
     private static final double CLOSEST_BRANCH_SPACING = 0.2;
     private static final double PHI = ((1 + Math.sqrt(5)) / 2);
     private static final double ROTATION_ANGLE = (2 * Math.PI) - (2 * Math.PI / PHI);
-    public static final LeavesBlock FIR_LEAVES = new LeavesBlock(AbstractBlock.Settings.copy(Blocks.SPRUCE_LEAVES));
+    private static final String FIR_LOG = "fir_log";
+    private static final String FIR_WOOD = "fir_wood";
+    private static final String FIR_LEAVES = "fir_leaves";
+    public static final Block FIR_LEAVES_BLOCK = registerBlock(FIR_LEAVES, LeavesBlock::new, Settings.copy(Blocks.SPRUCE_LEAVES), true);
+    public static final PillarBlock FIR_LOG_BLOCK = registerBlock(FIR_LOG, PillarBlock::new, createLogSettings(MapColor.PALE_YELLOW, MapColor.OFF_WHITE, BlockSoundGroup.WOOD), true);
+    public static final PillarBlock FIR_WOOD_BLOCK = registerBlock(FIR_WOOD, PillarBlock::new, Settings.copy(Blocks.BIRCH_WOOD), true);
+
     public static final Map<Integer, FirSaplingBlock> FIR_SAPLINGS = new HashMap<>();
     public static final Map<Integer, FlowerPotBlock> POTTED_FIR_SAPLINGS = new HashMap<>();
-    public static final PillarBlock FIR_LOG = createLogBlock(MapColor.PALE_YELLOW, MapColor.OFF_WHITE);
-    public static final PillarBlock FIR_WOOD = new PillarBlock(AbstractBlock.Settings.copy(Blocks.BIRCH_WOOD));
 
     private static final HashSet<Block> AIR_AND_LEAF_BLOCKS = new HashSet<>(ImmutableList.of(
             Blocks.AIR, Blocks.ACACIA_LEAVES, Blocks.BIRCH_LEAVES, Blocks.OAK_LEAVES, Blocks.DARK_OAK_LEAVES,
             Blocks.JUNGLE_LEAVES, Blocks.MANGROVE_LEAVES, Blocks.AZALEA_LEAVES, Blocks.FLOWERING_AZALEA_LEAVES,
-            Blocks.SPRUCE_LEAVES, Blocks.CHERRY_LEAVES, FIR_LEAVES, ModdedAzaleaBlock.PURPLE_AZALEA_LEAVES, ModdedAzaleaBlock.WHITE_AZALEA_LEAVES, ModdedAzaleaBlock.YELLOW_AZALEA_LEAVES));
+            Blocks.SPRUCE_LEAVES, Blocks.CHERRY_LEAVES, FIR_LEAVES_BLOCK, ModdedAzaleaBlock.PURPLE_AZALEA_LEAVES_BLOCK,
+            ModdedAzaleaBlock.WHITE_AZALEA_LEAVES_BLOCK, ModdedAzaleaBlock.YELLOW_AZALEA_LEAVES_BLOCK));
 
     private static final Map<Integer, BlockState> LIT_CANDLE_STATES = ImmutableMap.of(
             1, Blocks.CANDLE.getDefaultState().with(CandleBlock.LIT, true).with(CandleBlock.CANDLES, 1),
@@ -73,69 +73,60 @@ public class FirTree {
     }
 
     private static void registerLeaves() {
-        Registry.register(Registries.BLOCK, Identifier.of(ORIGAMIMARIE_MOD, "fir_leaves"), FIR_LEAVES);
-        Registry.register(Registries.ITEM, Identifier.of(ORIGAMIMARIE_MOD, "fir_leaves"), new BlockItem(FIR_LEAVES, new Item.Settings()));
-        ItemGroupEvents.modifyEntriesEvent(ItemGroups.NATURAL).register(content -> content.addAfter(Items.SPRUCE_LEAVES, FIR_LEAVES));
-        ColorProviderRegistry.BLOCK.register((state, world, pos, tintIndex) -> 0x80bb55, FIR_LEAVES);
-        ColorProviderRegistry.ITEM.register((stack, tintIndex) -> 0x80bb55, FIR_LEAVES);
-        FlammableBlockRegistry.getDefaultInstance().add(FIR_LEAVES, 30, 60);
-        CompostingChanceRegistry.INSTANCE.add(FIR_LEAVES, 0.3f);
+        ItemGroupEvents.modifyEntriesEvent(ItemGroups.NATURAL).register(content -> content.addAfter(Items.SPRUCE_LEAVES, FIR_LEAVES_BLOCK));
+        ColorProviderRegistry.BLOCK.register((state, world, pos, tintIndex) -> 0x80bb55, FIR_LEAVES_BLOCK);
+        FlammableBlockRegistry.getDefaultInstance().add(FIR_LEAVES_BLOCK, 30, 60);
+        CompostingChanceRegistry.INSTANCE.add(FIR_LEAVES_BLOCK, 0.3f);
     }
 
     private static void registerSaplingsAndPottedSaplings() {
         // Yes these are backwards.  It's the simplest way to put them in order in the creative block palette.
-        FirSaplingBlock sapling = new FirSaplingBlock.FirFourCandleSaplingBlock();
-        FlowerPotBlock pottedSapling = makePottedSapling(sapling);
-        registerSaplingAndPottedSapling(sapling, pottedSapling, "fir_four_candle_sapling", 4);
-        sapling = new FirSaplingBlock.FirThreeCandleSaplingBlock();
-        pottedSapling = makePottedSapling(sapling);
-        registerSaplingAndPottedSapling(sapling, pottedSapling, "fir_three_candle_sapling", 3);
-        sapling = new FirSaplingBlock.FirTwoCandleSaplingBlock();
-        pottedSapling = makePottedSapling(sapling);
-        registerSaplingAndPottedSapling(sapling, pottedSapling, "fir_two_candle_sapling", 2);
-        sapling = new FirSaplingBlock.FirOneCandleSaplingBlock();
-        pottedSapling = makePottedSapling(sapling);
-        registerSaplingAndPottedSapling(sapling, pottedSapling, "fir_one_candle_sapling", 1);
-        sapling = new FirSaplingBlock();
-        pottedSapling = makePottedSapling(sapling);
-        registerSaplingAndPottedSapling(sapling, pottedSapling, "fir_sapling", 0);
+        FlowerPotBlock pottedSapling;
+        String name;
+        String potted = "potted_";
+        name = "fir_four_candle_sapling";
+        FirSaplingBlock fourCandleSapling = registerBlock(name, FirSaplingBlock.FirFourCandleSaplingBlock::new, Settings.copy(Blocks.SPRUCE_SAPLING), true);
+        pottedSapling = registerBlock(potted + name, s -> new FlowerPotBlock(fourCandleSapling, s), Settings.copy(Blocks.FLOWER_POT).luminance((state) -> fourCandleSapling.getDefaultState().getLuminance()), false);
+        registerSaplingAndPottedSapling(fourCandleSapling, pottedSapling);
+        name = "fir_three_candle_sapling";
+        FirSaplingBlock threeCandleSapling = registerBlock(name, FirSaplingBlock.FirThreeCandleSaplingBlock::new, Settings.copy(Blocks.SPRUCE_SAPLING), true);
+        pottedSapling = registerBlock(potted + name, s -> new FlowerPotBlock(threeCandleSapling, s), Settings.copy(Blocks.FLOWER_POT).luminance((state) -> threeCandleSapling.getDefaultState().getLuminance()), false);
+        registerSaplingAndPottedSapling(threeCandleSapling, pottedSapling);
+        name = "fir_two_candle_sapling";
+        FirSaplingBlock twoCandleSapling = registerBlock(name, FirSaplingBlock.FirTwoCandleSaplingBlock::new, Settings.copy(Blocks.SPRUCE_SAPLING), true);
+        pottedSapling = registerBlock(potted + name, s -> new FlowerPotBlock(twoCandleSapling, s), Settings.copy(Blocks.FLOWER_POT).luminance((state) -> twoCandleSapling.getDefaultState().getLuminance()), false);
+        registerSaplingAndPottedSapling(twoCandleSapling, pottedSapling);
+        name = "fir_one_candle_sapling";
+        FirSaplingBlock oneCandleSapling = registerBlock(name, FirSaplingBlock.FirOneCandleSaplingBlock::new, Settings.copy(Blocks.SPRUCE_SAPLING), true);
+        pottedSapling = registerBlock(potted + name, s -> new FlowerPotBlock(oneCandleSapling, s), Settings.copy(Blocks.FLOWER_POT).luminance((state) -> oneCandleSapling.getDefaultState().getLuminance()), false);
+        registerSaplingAndPottedSapling(oneCandleSapling, pottedSapling);
+        name = "fir_sapling";
+        FirSaplingBlock sapling = registerBlock(name, FirSaplingBlock::new, Settings.copy(Blocks.SPRUCE_SAPLING), true);
+        pottedSapling = registerBlock(potted + name, s -> new FlowerPotBlock(sapling, s), Settings.copy(Blocks.FLOWER_POT).luminance((state) -> sapling.getDefaultState().getLuminance()), false);
+        registerSaplingAndPottedSapling(sapling, pottedSapling);
     }
 
-    private static FlowerPotBlock makePottedSapling(FirSaplingBlock sapling) {
-        return new FlowerPotBlock(sapling, AbstractBlock.Settings.copy(Blocks.FLOWER_POT).luminance((state) -> sapling.getDefaultState().getLuminance()));
-    }
-
-    private static void registerSaplingAndPottedSapling(FirSaplingBlock sapling, FlowerPotBlock pottedSapling, String path, int candleCount) {
-        FIR_SAPLINGS.put(candleCount, sapling);
+    private static void registerSaplingAndPottedSapling(FirSaplingBlock saplingBlock, FlowerPotBlock pottedSapling) {
+        int candleCount = saplingBlock.candleCount;
+        FIR_SAPLINGS.put(candleCount, saplingBlock);
         POTTED_FIR_SAPLINGS.put(candleCount, pottedSapling);
-        Registry.register(Registries.BLOCK, Identifier.of(ORIGAMIMARIE_MOD, path), sapling);
-        Item saplingItem = new BlockItem(sapling, new Item.Settings());
-        Registry.register(Registries.ITEM, Identifier.of(ORIGAMIMARIE_MOD, path), saplingItem);
-        ItemGroupEvents.modifyEntriesEvent(ItemGroups.NATURAL).register(content -> content.addAfter(Items.SPRUCE_SAPLING, sapling));
-        BlockRenderLayerMap.INSTANCE.putBlock(sapling, RenderLayer.getCutout());
-        CompostingChanceRegistry.INSTANCE.add(sapling, 0.3f);
-        Registry.register(Registries.BLOCK, Identifier.of(ORIGAMIMARIE_MOD, "potted_" + path), pottedSapling);
+        ItemGroupEvents.modifyEntriesEvent(ItemGroups.NATURAL).register(content -> content.addAfter(Items.SPRUCE_SAPLING, saplingBlock));
+        BlockRenderLayerMap.INSTANCE.putBlock(saplingBlock, RenderLayer.getCutout());
+        CompostingChanceRegistry.INSTANCE.add(saplingBlock, 0.3f);
         BlockRenderLayerMap.INSTANCE.putBlock(pottedSapling, RenderLayer.getCutout());
     }
 
     private static void registerLog() {
-        Registry.register(Registries.BLOCK, Identifier.of(ORIGAMIMARIE_MOD, "fir_log"), FIR_LOG);
-        Item logItem = new BlockItem(FIR_LOG, new Item.Settings());
-        Registry.register(Registries.ITEM, Identifier.of(ORIGAMIMARIE_MOD, "fir_log"), logItem);
-        ItemGroupEvents.modifyEntriesEvent(ItemGroups.NATURAL).register(content -> content.addAfter(Items.SPRUCE_LOG, logItem));
-        ItemGroupEvents.modifyEntriesEvent(ItemGroups.BUILDING_BLOCKS).register(content -> content.addAfter(Items.SPRUCE_BUTTON, logItem));
-        FlammableBlockRegistry.getDefaultInstance().add(FIR_LOG, 5, 5);
-        Registry.register(Registries.BLOCK, Identifier.of(ORIGAMIMARIE_MOD, "fir_wood"), FIR_WOOD);
-        Item woodItem = new BlockItem(FIR_WOOD, new Item.Settings());
-        Registry.register(Registries.ITEM, Identifier.of(ORIGAMIMARIE_MOD, "fir_wood"), woodItem);
-        ItemGroupEvents.modifyEntriesEvent(ItemGroups.BUILDING_BLOCKS).register(content -> content.addAfter(logItem, woodItem));
-        FlammableBlockRegistry.getDefaultInstance().add(FIR_WOOD, 5, 5);
+        ItemGroupEvents.modifyEntriesEvent(ItemGroups.BUILDING_BLOCKS).register(content -> content.addAfter(Items.SPRUCE_LOG, FIR_LOG_BLOCK));
+        FlammableBlockRegistry.getDefaultInstance().add(FIR_LOG_BLOCK, 5, 5);
+        ItemGroupEvents.modifyEntriesEvent(ItemGroups.BUILDING_BLOCKS).register(content -> content.addAfter(Items.SPRUCE_WOOD, FIR_WOOD_BLOCK));
+        FlammableBlockRegistry.getDefaultInstance().add(FIR_WOOD_BLOCK, 5, 5);
     }
 
-    private static PillarBlock createLogBlock(MapColor topMapColor, MapColor sideMapColor) {
-        return new PillarBlock(AbstractBlock.Settings.create().mapColor((state) -> state.get(PillarBlock.AXIS) == Direction.Axis.Y ? topMapColor : sideMapColor).instrument(NoteBlockInstrument.BASS).strength(2.0F).sounds(BlockSoundGroup.WOOD).burnable());
+    public static Settings createLogSettings(MapColor topMapColor, MapColor sideMapColor, BlockSoundGroup sounds) {
+        return Settings.create().mapColor((state) -> state.get(PillarBlock.AXIS) == Direction.Axis.Y ? topMapColor : sideMapColor).
+                instrument(NoteBlockInstrument.BASS).strength(2.0F).sounds(sounds).burnable();
     }
-
 
     public static boolean makeTree(World world, BlockPos blockPos, int candleCount) {
         Random random = new Random();
@@ -155,8 +146,8 @@ public class FirTree {
         double taperPerBranch = currentBranchLength / branchCount;
         int branchNumber = 0;
         // Make the trunk below the branches
-        world.setBlockState(blockPosFromDoubles(x, y, z), FIR_LOG.getDefaultState());
-        world.setBlockState(blockPosFromDoubles(x, y+1, z), FIR_LOG.getDefaultState());
+        world.setBlockState(blockPosFromDoubles(x, y, z), FIR_LOG_BLOCK.getDefaultState());
+        world.setBlockState(blockPosFromDoubles(x, y+1, z), FIR_LOG_BLOCK.getDefaultState());
         // Make all the branches, and fill in the trunk after each branch (in case the branch makes leaves in the trunk block)
         for (double i = branchStartHeight; i < trunkHeight; i = i + branchSpacing) {
             boolean madeExtendedBranch = makeBranch(x, (int)Math.floor(y+i), z, currentBranchLength, ROTATION_ANGLE * branchNumber, candleCount, world);
@@ -164,8 +155,8 @@ public class FirTree {
             // If not, we are almost certainly at the point of the tree, and we want it to stay green.
             BlockPos trunkBlockPos = blockPosFromDoubles(x, y + i, z);
             Block trunkBlockLocationCurrentBlock = world.getBlockState(trunkBlockPos).getBlock();
-            if (madeExtendedBranch && (trunkBlockLocationCurrentBlock.equals(FIR_LEAVES) || trunkBlockLocationCurrentBlock.equals(Blocks.CANDLE))) {
-                world.setBlockState(trunkBlockPos, FIR_LOG.getDefaultState());
+            if (madeExtendedBranch && (trunkBlockLocationCurrentBlock.equals(FIR_LEAVES_BLOCK) || trunkBlockLocationCurrentBlock.equals(Blocks.CANDLE))) {
+                world.setBlockState(trunkBlockPos, FIR_LOG_BLOCK.getDefaultState());
             }
             branchNumber++;
             currentBranchLength = currentBranchLength - taperPerBranch;
@@ -205,7 +196,7 @@ public class FirTree {
             leafBlockPos = blockPosFromDoubles(leafBlockX, y, leafBlockZ);
             Block leafBlockLocationCurrentBlock = world.getBlockState(leafBlockPos).getBlock();
             if (leafBlockLocationCurrentBlock.equals(Blocks.AIR) || leafBlockLocationCurrentBlock.equals(Blocks.CANDLE)) {
-                world.setBlockState(leafBlockPos, FirTree.FIR_LEAVES.getDefaultState());
+                world.setBlockState(leafBlockPos, FirTree.FIR_LEAVES_BLOCK.getDefaultState());
             }
         }
         if (candleCount > 0) {
