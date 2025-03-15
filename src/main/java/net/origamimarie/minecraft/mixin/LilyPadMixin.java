@@ -12,13 +12,12 @@ import net.minecraft.sound.SoundCategory;
 import net.minecraft.sound.SoundEvents;
 import net.minecraft.stat.Stats;
 import net.minecraft.util.Hand;
-import net.minecraft.util.ItemActionResult;
+import net.minecraft.util.ActionResult;
 import net.minecraft.util.hit.BlockHitResult;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraft.world.event.GameEvent;
 import net.origamimarie.minecraft.CandlePadBlock;
-import net.origamimarie.minecraft.OrigamiMarieMod;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
@@ -26,7 +25,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 public class LilyPadMixin extends AbstractBlockMixin {
 
     @Override
-    protected void onUseWithItem(ItemStack stack, BlockState state, World world, BlockPos pos, PlayerEntity player, Hand hand, BlockHitResult hit, CallbackInfoReturnable<ItemActionResult> cir) {
+    protected void onUseWithItem(ItemStack stack, BlockState state, World world, BlockPos pos, PlayerEntity player, Hand hand, BlockHitResult hit, CallbackInfoReturnable<ActionResult> cir) {
         ItemStack itemStack = player.getStackInHand(hand);
         Item item = itemStack.getItem();
         if (itemStack.isIn(ItemTags.CANDLES)) {
@@ -39,13 +38,13 @@ public class LilyPadMixin extends AbstractBlockMixin {
                 world.setBlockState(pos, CandlePadBlock.getCandlePadFromCandle(block));
                 world.emitGameEvent(player, GameEvent.BLOCK_CHANGE, pos);
                 player.incrementStat(Stats.USED.getOrCreateStat(item));
-                cir.setReturnValue(ItemActionResult.SUCCESS);
+                cir.setReturnValue(ActionResult.SUCCESS);
                 return;
             }
-            cir.setReturnValue(ItemActionResult.PASS_TO_DEFAULT_BLOCK_INTERACTION);
+            cir.setReturnValue(ActionResult.PASS_TO_DEFAULT_BLOCK_ACTION);
             return;
         }
-        cir.setReturnValue(ItemActionResult.PASS_TO_DEFAULT_BLOCK_INTERACTION);
+        cir.setReturnValue(ActionResult.PASS_TO_DEFAULT_BLOCK_ACTION);
     }
 
 }

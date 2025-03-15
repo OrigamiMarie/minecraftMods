@@ -3,19 +3,16 @@ package net.origamimarie.minecraft;
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.blockrenderlayer.v1.BlockRenderLayerMap;
 import net.fabricmc.fabric.api.itemgroup.v1.ItemGroupEvents;
-import net.minecraft.block.AbstractBlock;
+import net.minecraft.block.AbstractBlock.Settings;
 import net.minecraft.block.Block;
 import net.minecraft.block.Blocks;
 import net.minecraft.block.ConcretePowderBlock;
 import net.minecraft.block.SlabBlock;
 import net.minecraft.block.enums.NoteBlockInstrument;
 import net.minecraft.client.render.RenderLayer;
-import net.minecraft.item.BlockItem;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemGroups;
 import net.minecraft.item.Items;
-import net.minecraft.registry.Registries;
-import net.minecraft.registry.Registry;
 import net.minecraft.registry.RegistryKeys;
 import net.minecraft.registry.tag.TagKey;
 import net.minecraft.sound.BlockSoundGroup;
@@ -29,6 +26,7 @@ import net.origamimarie.minecraft.hud.CoordinatesHUD;
 import net.origamimarie.minecraft.rainbow_crystal.BuddingRainbowCrystalBlock;
 import net.origamimarie.minecraft.rainbow_crystal.RainbowCrystalClusterBlock;
 import net.origamimarie.minecraft.util.ConvenienceCommand;
+import net.origamimarie.minecraft.util.RegistrationMethods;
 import net.origamimarie.minecraft.util.UnderscoreColors;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -37,14 +35,16 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
-import java.util.Map;
+
+import static net.origamimarie.minecraft.util.RegistrationMethods.registerBlock;
 
 public class OrigamiMarieMod implements ModInitializer {
 
     public static final String ORIGAMIMARIE_MOD = "origamimarie_mod";
     public static final Logger LOGGER = LoggerFactory.getLogger(ORIGAMIMARIE_MOD);
     public static final TagKey<Block> CANDLE_PADS = TagKey.of(RegistryKeys.BLOCK, Identifier.of(ORIGAMIMARIE_MOD, "candle_pads"));
-    public static final Block MANGROVE_BOOKSHELF = new Block(AbstractBlock.Settings.copy(Blocks.BOOKSHELF));
+    private static final String MANGROVE_BOOKSHELF = "mangrove_bookshelf";
+    public static final Block MANGROVE_BOOKSHELF_BLOCK = registerBlock(MANGROVE_BOOKSHELF, Block::new, Settings.copy(Blocks.BOOKSHELF), true);
 
     @Override
 	public void onInitialize() {
@@ -78,17 +78,13 @@ public class OrigamiMarieMod implements ModInitializer {
             String concreteName = "pastel_" + color + "concrete";
             String concretePowderName = concreteName + "_powder";
 
-            Block concreteBlock = new Block(AbstractBlock.Settings.create().mapColor(color.dyeColor).instrument(NoteBlockInstrument.BASEDRUM).requiresTool().strength(1.8F));
-            Registry.register(Registries.BLOCK, Identifier.of(ORIGAMIMARIE_MOD, concreteName), concreteBlock);
-            Item concreteItem = new BlockItem(concreteBlock, new Item.Settings());
-            Registry.register(Registries.ITEM, Identifier.of(ORIGAMIMARIE_MOD, concreteName), concreteItem);
-            ItemGroupEvents.modifyEntriesEvent(ItemGroups.COLORED_BLOCKS).register(content -> content.addAfter(Items.PINK_CONCRETE, concreteItem));
+            Settings concreteSettings = Settings.create().mapColor(color.dyeColor).instrument(NoteBlockInstrument.BASEDRUM).requiresTool().strength(1.8F);
+            Block concreteBlock = registerBlock(concreteName, Block::new, concreteSettings, true);
+            ItemGroupEvents.modifyEntriesEvent(ItemGroups.COLORED_BLOCKS).register(content -> content.addAfter(Items.PINK_CONCRETE, concreteBlock));
 
-            ConcretePowderBlock powderBlock = new ConcretePowderBlock(concreteBlock, AbstractBlock.Settings.create().mapColor(color.dyeColor).instrument(NoteBlockInstrument.SNARE).strength(0.5F).sounds(BlockSoundGroup.SAND));
-            Registry.register(Registries.BLOCK, Identifier.of(ORIGAMIMARIE_MOD, concretePowderName), powderBlock);
-            Item concretePowderItem = new BlockItem(powderBlock, new Item.Settings());
-            Registry.register(Registries.ITEM, Identifier.of(ORIGAMIMARIE_MOD, concretePowderName), concretePowderItem);
-            ItemGroupEvents.modifyEntriesEvent(ItemGroups.COLORED_BLOCKS).register(content -> content.addAfter(Items.PINK_CONCRETE_POWDER, concretePowderItem));
+            Settings powderSettings = Settings.create().mapColor(color.dyeColor).instrument(NoteBlockInstrument.SNARE).strength(0.5F).sounds(BlockSoundGroup.SAND);
+            Block powderBlock = registerBlock(concretePowderName, s -> new ConcretePowderBlock(concreteBlock, s), powderSettings, true);
+            ItemGroupEvents.modifyEntriesEvent(ItemGroups.COLORED_BLOCKS).register(content -> content.addAfter(Items.PINK_CONCRETE_POWDER, powderBlock));
         }
     }
 
@@ -105,36 +101,23 @@ public class OrigamiMarieMod implements ModInitializer {
         Block[] candles = new Block[] {Blocks.CANDLE, Blocks.RED_CANDLE, Blocks.ORANGE_CANDLE, Blocks.YELLOW_CANDLE, Blocks.LIME_CANDLE, Blocks.GREEN_CANDLE, Blocks.LIGHT_BLUE_CANDLE, Blocks.BLUE_CANDLE, Blocks.PURPLE_CANDLE, Blocks.MAGENTA_CANDLE, Blocks.PINK_CANDLE, Blocks.WHITE_CANDLE, Blocks.LIGHT_GRAY_CANDLE, Blocks.GRAY_CANDLE, Blocks.BLACK_CANDLE, Blocks.BROWN_CANDLE, Blocks.CYAN_CANDLE};
         for (Block candleBlock : candles) {
             String candleName = getCandleNameFromCandle(candleBlock) + "_pad";
-            CandlePadBlock candlePad = new CandlePadBlock(candleBlock, AbstractBlock.Settings.copy(candleBlock).luminance(CandlePadBlock.STATE_TO_LUMINANCE));
+            CandlePadBlock candlePad = registerBlock(candleName, s -> new CandlePadBlock(candleBlock, s), Settings.copy(candleBlock).luminance(CandlePadBlock.STATE_TO_LUMINANCE), false);
             BlockRenderLayerMap.INSTANCE.putBlock(candlePad, RenderLayer.getCutout());
-            Registry.register(Registries.BLOCK, Identifier.of(ORIGAMIMARIE_MOD, candleName), candlePad);
         }
     }
 
     private void registerMangroveBookshelf() {
-        Registry.register(Registries.BLOCK, Identifier.of(ORIGAMIMARIE_MOD, "mangrove_bookshelf"), MANGROVE_BOOKSHELF);
-        Item bookshelfItem = new BlockItem(MANGROVE_BOOKSHELF, new Item.Settings());
-        Registry.register(Registries.ITEM, Identifier.of(ORIGAMIMARIE_MOD, "mangrove_bookshelf"), bookshelfItem);
-        ItemGroupEvents.modifyEntriesEvent(ItemGroups.FUNCTIONAL).register(content -> content.addAfter(Items.BOOKSHELF, bookshelfItem));
+        ItemGroupEvents.modifyEntriesEvent(ItemGroups.FUNCTIONAL).register(content -> content.addAfter(Items.BOOKSHELF, MANGROVE_BOOKSHELF_BLOCK));
     }
 
     private void registerWrench() {
-        Item wrenchItem = new WrenchItem(new Item.Settings());
-        Registry.register(Registries.ITEM, Identifier.of(ORIGAMIMARIE_MOD, "wrench"), wrenchItem);
+        Item wrenchItem = RegistrationMethods.registerItem("wrench", WrenchItem::new);
         ItemGroupEvents.modifyEntriesEvent(ItemGroups.TOOLS).register(content -> content.addAfter(Items.RECOVERY_COMPASS, wrenchItem));
     }
 
     private void registerIceSlabs() {
-        Map<String, Block> slabsByName = Map.of(
-                "packed_ice_slab", new SlabBlock(AbstractBlock.Settings.copy(Blocks.PACKED_ICE)),
-                "blue_ice_slab", new SlabBlock(AbstractBlock.Settings.copy(Blocks.BLUE_ICE))
-        );
-        for (String name : slabsByName.keySet()) {
-            Block slabBlock = slabsByName.get(name);
-            Registry.register(Registries.BLOCK, Identifier.of(ORIGAMIMARIE_MOD, name), slabBlock);
-            Item slabItem = new BlockItem(slabBlock, new Item.Settings());
-            Registry.register(Registries.ITEM, Identifier.of(ORIGAMIMARIE_MOD, name), slabItem);
-        }
+        registerBlock("packed_ice_slab", SlabBlock::new, Settings.copy(Blocks.PACKED_ICE), true);
+        registerBlock("blue_ice_slab", SlabBlock::new, Settings.copy(Blocks.PACKED_ICE), true);
     }
 
     private String getCandleNameFromCandle(Block candle) {

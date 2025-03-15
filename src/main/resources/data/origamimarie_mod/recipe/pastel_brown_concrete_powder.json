@@ -1,12 +1,8 @@
 {
   "type": "minecraft:crafting_shaped",
   "key": {
-    "X": {
-      "item": "minecraft:brown_concrete_powder"
-    },
-    "D": {
-      "item": "minecraft:white_dye"
-    }
+    "X": "minecraft:brown_concrete_powder",
+    "D": "minecraft:white_dye"
   },
   "pattern": [
     "XXX",

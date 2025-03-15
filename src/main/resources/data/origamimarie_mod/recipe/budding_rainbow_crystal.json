@@ -1,33 +1,15 @@
 {
   "type": "minecraft:crafting_shaped",
   "key": {
-    "A": {
-      "item": "minecraft:amethyst_block"
-    },
-    "M": {
-      "item": "minecraft:magenta_dye"
-    },
-    "R": {
-      "item": "minecraft:red_dye"
-    },
-    "O": {
-      "item": "minecraft:orange_dye"
-    },
-    "Y": {
-      "item": "minecraft:yellow_dye"
-    },
-    "L": {
-      "item": "minecraft:lime_dye"
-    },
-    "C": {
-      "item": "minecraft:cyan_dye"
-    },
-    "B": {
-      "item": "minecraft:blue_dye"
-    },
-    "P": {
-      "item": "minecraft:purple_dye"
-    }
+    "A": "minecraft:amethyst_block",
+    "M": "minecraft:magenta_dye",
+    "R": "minecraft:red_dye",
+    "O": "minecraft:orange_dye",
+    "Y": "minecraft:yellow_dye",
+    "L": "minecraft:lime_dye",
+    "C": "minecraft:cyan_dye",
+    "B": "minecraft:blue_dye",
+    "P": "minecraft:purple_dye"
   },
   "pattern": [
     "MRO",
@@ -35,6 +17,7 @@
     "BCL"
   ],
   "result": {
+    "count": 1,
     "id": "origamimarie_mod:budding_rainbow_crystal"
   }
 }

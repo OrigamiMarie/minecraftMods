@@ -1,12 +1,8 @@
 {
   "type": "minecraft:crafting_shapeless",
   "ingredients": [
-    {
-      "item": "origamimarie_mod:budding_rainbow_crystal"
-    },
-    {
-      "item": "minecraft:black_dye"
-    }
+    "origamimarie_mod:budding_rainbow_crystal",
+    "minecraft:black_dye"
   ],
   "result": {
     "id": "origamimarie_mod:dim_budding_rainbow_crystal"

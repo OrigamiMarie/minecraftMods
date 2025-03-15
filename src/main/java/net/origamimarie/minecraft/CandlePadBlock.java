@@ -32,7 +32,7 @@ import net.minecraft.state.property.IntProperty;
 import net.minecraft.state.property.Properties;
 import net.minecraft.state.property.Property;
 import net.minecraft.util.Hand;
-import net.minecraft.util.ItemActionResult;
+import net.minecraft.util.ActionResult;
 import net.minecraft.util.Util;
 import net.minecraft.util.hit.BlockHitResult;
 import net.minecraft.util.math.BlockPos;
@@ -42,7 +42,6 @@ import net.minecraft.util.shape.VoxelShape;
 import net.minecraft.util.shape.VoxelShapes;
 import net.minecraft.world.BlockView;
 import net.minecraft.world.World;
-import net.minecraft.world.WorldAccess;
 import net.minecraft.world.WorldView;
 import net.minecraft.world.event.GameEvent;
 
@@ -136,14 +135,14 @@ public class CandlePadBlock extends AbstractCandleBlock {
     }
 
     @Override
-    protected ItemActionResult onUseWithItem(ItemStack stack, BlockState state, World world, BlockPos pos, PlayerEntity player, Hand hand, BlockHitResult hit) {
+    protected ActionResult onUseWithItem(ItemStack stack, BlockState state, World world, BlockPos pos, PlayerEntity player, Hand hand, BlockHitResult hit) {
         ItemStack itemStack = player.getStackInHand(hand);
         if (itemStack.isEmpty()) {
             if (state.get(LIT) && player.getAbilities().allowModifyWorld) {
                 extinguish(player, state, world, pos);
-                return ItemActionResult.success(world.isClient);
+                return ActionResult.SUCCESS;
             }
-            return ItemActionResult.PASS_TO_DEFAULT_BLOCK_INTERACTION;
+            return ActionResult.PASS_TO_DEFAULT_BLOCK_ACTION;
         }
         Item item = itemStack.getItem();
         if (itemStack.isOf(CANDLE.asItem())) {
@@ -158,9 +157,9 @@ public class CandlePadBlock extends AbstractCandleBlock {
                 if (!player.isCreative()) {
                     itemStack.decrement(1);
                 }
-                return ItemActionResult.SUCCESS;
+                return ActionResult.SUCCESS;
             } else {
-                return ItemActionResult.PASS_TO_DEFAULT_BLOCK_INTERACTION;
+                return ActionResult.PASS_TO_DEFAULT_BLOCK_ACTION;
             }
         } else if (itemStack.isOf(Items.FLINT_AND_STEEL)) {
             if (canBeLit(state)) {
@@ -170,20 +169,16 @@ public class CandlePadBlock extends AbstractCandleBlock {
                 if (!player.isCreative()) {
                     itemStack.damage(1, player, LivingEntity.getSlotForHand(hand));
                 }
-                return ItemActionResult.SUCCESS;
+                return ActionResult.SUCCESS;
             } else {
-                return ItemActionResult.PASS_TO_DEFAULT_BLOCK_INTERACTION;
+                return ActionResult.PASS_TO_DEFAULT_BLOCK_ACTION;
             }
         }
-        return ItemActionResult.PASS_TO_DEFAULT_BLOCK_INTERACTION;
+        return ActionResult.PASS_TO_DEFAULT_BLOCK_ACTION;
     }
 
     protected void appendProperties(Builder<Block, BlockState> builder) {
         builder.add(new Property[]{CANDLES, LIT});
-    }
-
-    public BlockState getStateForNeighborUpdate(BlockState state, Direction direction, BlockState neighborState, WorldAccess world, BlockPos pos, BlockPos neighborPos) {
-        return direction == Direction.DOWN && !state.canPlaceAt(world, pos) ? Blocks.AIR.getDefaultState() : super.getStateForNeighborUpdate(state, direction, neighborState, world, pos, neighborPos);
     }
 
     public boolean canPlaceAt(BlockState state, WorldView world, BlockPos pos) {

@@ -2,9 +2,7 @@
   "type": "minecraft:crafting_shapeless",
   "group": "planks",
   "ingredients": [
-    {
-      "item": "origamimarie_mod:fir_log"
-    }
+    "origamimarie_mod:fir_log"
   ],
   "result": {
     "count": 4,

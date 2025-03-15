@@ -39,9 +39,9 @@ dependencies {
 	modImplementation "net.fabricmc.fabric-api:fabric-api:${project.fabric_version}"
 
 	// Fun with class access hacking
-	implementation "net.fabricmc:tiny-remapper:0.10.4"
+	implementation "net.fabricmc:tiny-remapper:0.11.0"
 	implementation "net.fabricmc:access-widener:2.1.0"
-	implementation "net.fabricmc:mapping-io:0.6.1"
+	implementation "net.fabricmc:mapping-io:0.7.1"
 
 	testImplementation "org.junit.jupiter:junit-jupiter:5.8.2"
 	testRuntimeOnly "org.junit.platform:junit-platform-launcher"
@@ -56,7 +56,6 @@ processResources {
 }
 
 tasks.withType(JavaCompile).configureEach {
-	// Minecraft 1.18 (1.18-pre2) upwards uses Java 17.
 	it.options.release = 21
 }
 

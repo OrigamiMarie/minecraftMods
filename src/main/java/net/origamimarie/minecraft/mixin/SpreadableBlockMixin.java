@@ -26,9 +26,8 @@ public class SpreadableBlockMixin {
         } else if (blockState.getFluidState().getLevel() == 8) {
             cir.setReturnValue(false);
         } else {
-            int i = ChunkLightProvider.getRealisticOpacity(world, state, pos, blockState, blockPos, Direction.UP, blockState.getOpacity(world, blockPos));
-            cir.setReturnValue(i < world.getMaxLightLevel());
+            int i = ChunkLightProvider.getRealisticOpacity(state, blockState, Direction.UP, blockState.getOpacity());
+            cir.setReturnValue(i < 15);
         }
-        cir.cancel();
     }
 }

@@ -1,13 +1,9 @@
 {
   "type": "minecraft:crafting_shaped",
-  "group": "bookshelves",
+  "category": "building",
   "key": {
-    "#": {
-      "tag": "minecraft:planks"
-    },
-    "X": {
-      "item": "minecraft:book"
-    }
+    "#": "#minecraft:planks",
+    "X": "minecraft:book"
   },
   "pattern": [
     "###",
@@ -15,6 +11,7 @@
     "###"
   ],
   "result": {
+    "count": 1,
     "id": "minecraft:bookshelf"
   }
 }

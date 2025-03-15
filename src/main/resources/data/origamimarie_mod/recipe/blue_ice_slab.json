@@ -1,9 +1,7 @@
 {
   "type": "minecraft:crafting_shaped",
   "key": {
-    "X": {
-      "item": "minecraft:blue_ice"
-    }
+    "X": "minecraft:blue_ice"
   },
   "pattern": [
     "XXX"
