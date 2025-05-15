@@ -13,9 +13,9 @@ import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
 import net.minecraft.block.CandleBlock;
 import net.minecraft.block.FlowerPotBlock;
-import net.minecraft.block.LeavesBlock;
 import net.minecraft.block.MapColor;
 import net.minecraft.block.PillarBlock;
+import net.minecraft.block.TintedParticleLeavesBlock;
 import net.minecraft.block.enums.NoteBlockInstrument;
 import net.minecraft.client.render.RenderLayer;
 import net.minecraft.item.ItemGroups;
@@ -47,7 +47,7 @@ public class FirTree {
     private static final String FIR_LOG = "fir_log";
     private static final String FIR_WOOD = "fir_wood";
     private static final String FIR_LEAVES = "fir_leaves";
-    public static final Block FIR_LEAVES_BLOCK = registerBlock(FIR_LEAVES, LeavesBlock::new, Settings.copy(Blocks.SPRUCE_LEAVES), true);
+    public static final Block FIR_LEAVES_BLOCK = registerBlock(FIR_LEAVES, s -> new TintedParticleLeavesBlock(0.01F, s), Settings.copy(Blocks.SPRUCE_LEAVES), true);
     public static final PillarBlock FIR_LOG_BLOCK = registerBlock(FIR_LOG, PillarBlock::new, createLogSettings(MapColor.PALE_YELLOW, MapColor.OFF_WHITE, BlockSoundGroup.WOOD), true);
     public static final PillarBlock FIR_WOOD_BLOCK = registerBlock(FIR_WOOD, PillarBlock::new, Settings.copy(Blocks.BIRCH_WOOD), true);
 
