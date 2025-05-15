@@ -38,6 +38,8 @@ import java.util.List;
 
 import static net.origamimarie.minecraft.util.RegistrationMethods.registerBlock;
 
+// Hey!  You there, with the genSources command!  Your output is at
+// .gradle\loom-cache\minecraftMaven\net\minecraft
 public class OrigamiMarieMod implements ModInitializer {
 
     public static final String ORIGAMIMARIE_MOD = "origamimarie_mod";
