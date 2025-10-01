@@ -1,6 +1,6 @@
 package net.origamimarie.minecraft.flowers;
 
-import net.fabricmc.fabric.api.blockrenderlayer.v1.BlockRenderLayerMap;
+import net.fabricmc.fabric.api.client.rendering.v1.BlockRenderLayerMap;
 import net.fabricmc.fabric.api.itemgroup.v1.ItemGroupEvents;
 import net.fabricmc.fabric.api.registry.CompostingChanceRegistry;
 import net.minecraft.block.AbstractBlock;
@@ -11,6 +11,7 @@ import net.minecraft.block.FlowerBlock;
 import net.minecraft.block.FlowerPotBlock;
 import net.minecraft.block.MapColor;
 import net.minecraft.block.piston.PistonBehavior;
+import net.minecraft.client.render.BlockRenderLayer;
 import net.minecraft.client.render.RenderLayer;
 import net.minecraft.entity.effect.StatusEffect;
 import net.minecraft.entity.effect.StatusEffects;
@@ -34,7 +35,7 @@ public class CustomFlowers {
                         .sounds(BlockSoundGroup.GRASS).offset(AbstractBlock.OffsetType.XZ)
                         .pistonBehavior(PistonBehavior.DESTROY),
                 true);
-        BlockRenderLayerMap.INSTANCE.putBlock(flowerBlock, RenderLayer.getCutout());
+        BlockRenderLayerMap.putBlock(flowerBlock, BlockRenderLayer.CUTOUT);
 
         // Item
         ItemGroupEvents.modifyEntriesEvent(ItemGroups.NATURAL).register(content -> content.addAfter(afterFlowerInMenu, flowerBlock));
@@ -42,6 +43,6 @@ public class CustomFlowers {
 
         // Flower Pot
         FlowerPotBlock pottedFlower = registerBlock("potted_" + flowerName, s -> new FlowerPotBlock(flowerBlock, s), Settings.copy(Blocks.FLOWER_POT), false);
-        BlockRenderLayerMap.INSTANCE.putBlock(pottedFlower, RenderLayer.getCutout());
+        BlockRenderLayerMap.putBlock(pottedFlower, BlockRenderLayer.CUTOUT);
     }
 }

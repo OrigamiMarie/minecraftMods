@@ -12,7 +12,6 @@
     "conduit.ConduitBlockEntityMixin",
     "conduit.DrownedEntityMixin",
     "fish.EntityRendererMixin",
-    "itemframe.AbstractDecorationEntityAccessor",
     "itemframe.BlockAttachedEntityAccessor",
     "itemframe.ItemFrameEntityMixin"
   ],

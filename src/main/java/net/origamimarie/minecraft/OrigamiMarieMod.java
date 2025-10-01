@@ -1,15 +1,16 @@
 package net.origamimarie.minecraft;
 
 import net.fabricmc.api.ModInitializer;
-import net.fabricmc.fabric.api.blockrenderlayer.v1.BlockRenderLayerMap;
+import net.fabricmc.fabric.api.client.rendering.v1.BlockRenderLayerMap;
 import net.fabricmc.fabric.api.itemgroup.v1.ItemGroupEvents;
 import net.minecraft.block.AbstractBlock.Settings;
 import net.minecraft.block.Block;
 import net.minecraft.block.Blocks;
 import net.minecraft.block.ConcretePowderBlock;
 import net.minecraft.block.SlabBlock;
+import net.minecraft.block.StairsBlock;
 import net.minecraft.block.enums.NoteBlockInstrument;
-import net.minecraft.client.render.RenderLayer;
+import net.minecraft.client.render.BlockRenderLayer;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemGroups;
 import net.minecraft.item.Items;
@@ -25,6 +26,7 @@ import net.origamimarie.minecraft.flowers.CustomFlowers;
 import net.origamimarie.minecraft.hud.CoordinatesHUD;
 import net.origamimarie.minecraft.rainbow_crystal.BuddingRainbowCrystalBlock;
 import net.origamimarie.minecraft.rainbow_crystal.RainbowCrystalClusterBlock;
+import net.origamimarie.minecraft.util.CatenaryCommands;
 import net.origamimarie.minecraft.util.ConvenienceCommand;
 import net.origamimarie.minecraft.util.RegistrationMethods;
 import net.origamimarie.minecraft.util.UnderscoreColors;
@@ -40,6 +42,8 @@ import static net.origamimarie.minecraft.util.RegistrationMethods.registerBlock;
 
 // Hey!  You there, with the genSources command!  Your output is at
 // .gradle\loom-cache\minecraftMaven\net\minecraft
+// data & assets are in the original jar (at the top),
+// and the extracted code is in the -sources jar (at the bottom).
 public class OrigamiMarieMod implements ModInitializer {
 
     public static final String ORIGAMIMARIE_MOD = "origamimarie_mod";
@@ -56,7 +60,7 @@ public class OrigamiMarieMod implements ModInitializer {
         registerCandles();
         registerMangroveBookshelf();
         registerWrench();
-        registerIceSlabs();
+        registerIce();
         FirTree.registerFirTree();
         OrnamentBlock.registerOrnaments();
         registerAzaleas();
@@ -65,6 +69,7 @@ public class OrigamiMarieMod implements ModInitializer {
         IceSpikeWithCrystalsFeature.register();
         registerPastelConcrete();
         ConvenienceCommand.registerCommand();
+        CatenaryCommands.registerCommands();
         CoordinatesHUD.register();
     }
 
@@ -104,7 +109,7 @@ public class OrigamiMarieMod implements ModInitializer {
         for (Block candleBlock : candles) {
             String candleName = getCandleNameFromCandle(candleBlock) + "_pad";
             CandlePadBlock candlePad = registerBlock(candleName, s -> new CandlePadBlock(candleBlock, s), Settings.copy(candleBlock).luminance(CandlePadBlock.STATE_TO_LUMINANCE), false);
-            BlockRenderLayerMap.INSTANCE.putBlock(candlePad, RenderLayer.getCutout());
+            BlockRenderLayerMap.putBlock(candlePad, BlockRenderLayer.CUTOUT);
         }
     }
 
@@ -117,9 +122,15 @@ public class OrigamiMarieMod implements ModInitializer {
         ItemGroupEvents.modifyEntriesEvent(ItemGroups.TOOLS).register(content -> content.addAfter(Items.RECOVERY_COMPASS, wrenchItem));
     }
 
-    private void registerIceSlabs() {
+    private void registerIce() {
         registerBlock("packed_ice_slab", SlabBlock::new, Settings.copy(Blocks.PACKED_ICE), true);
         registerBlock("blue_ice_slab", SlabBlock::new, Settings.copy(Blocks.PACKED_ICE), true);
+        registerStairsBlock("packed_ice_stairs", Blocks.PACKED_ICE);
+        registerStairsBlock("blue_ice_stairs", Blocks.PACKED_ICE);
+    }
+
+    private static void registerStairsBlock(String id, Block fullBlock) {
+        registerBlock(id, (settings) -> new StairsBlock(fullBlock.getDefaultState(), settings), Settings.copy(fullBlock), true);
     }
 
     private String getCandleNameFromCandle(Block candle) {

@@ -10,6 +10,7 @@ import net.minecraft.util.math.Box;
 import net.minecraft.util.math.Direction;
 import net.origamimarie.minecraft.WrenchItem;
 import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
@@ -24,13 +25,12 @@ public abstract class ItemFrameEntityMixin {
         // That'll take care of the problem, but all the checking before that is going to be kind of clueless.
         Object tempThis = this;
         ItemFrameEntity frame = (ItemFrameEntity) tempThis;
-        AbstractDecorationEntityAccessor selfFrameAccessor = (AbstractDecorationEntityAccessor) tempThis;
         BlockAttachedEntityAccessor selfEntityAccessor = (BlockAttachedEntityAccessor) tempThis;
         boolean invisible = frame.isInvisible();
         ItemStack itemStack = player.getStackInHand(hand);
         if (itemStack.getItem() instanceof WrenchItem) {
             frame.setInvisible(!invisible);
-            updateBoundingBox(invisible ? 12 : 4, selfFrameAccessor, selfEntityAccessor, frame);
+            updateBoundingBox(invisible ? 12 : 4, selfEntityAccessor, frame);
             cir.setReturnValue(ActionResult.SUCCESS);
         } else {
             if (invisible) {
@@ -40,8 +40,9 @@ public abstract class ItemFrameEntityMixin {
     }
 
 
-    private static void updateBoundingBox(double size, AbstractDecorationEntityAccessor itemFrameAccessor, BlockAttachedEntityAccessor blockAttachedEntityAccessor, ItemFrameEntity itemFrame) {
-        Direction facing = itemFrameAccessor.getFacing();
+    @Unique
+    private static void updateBoundingBox(double size, BlockAttachedEntityAccessor blockAttachedEntityAccessor, ItemFrameEntity itemFrame) {
+        Direction facing = itemFrame.getFacing();
         BlockPos attachmentPos = blockAttachedEntityAccessor.getAttachedBlockPos();
         if (facing != null) {
             double e = (double)attachmentPos.getX() + 0.5 - (double)facing.getOffsetX() * 0.46875;
