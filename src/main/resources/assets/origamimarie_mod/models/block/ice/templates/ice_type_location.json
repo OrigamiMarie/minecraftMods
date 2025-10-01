@@ -1,1 +1,8 @@
-{  "parent": "minecraft:block/stairs",  "textures": {    "bottom": "minecraft:block/ice_type_planks",    "side": "minecraft:block/ice_type_planks",    "top": "minecraft:block/ice_type_planks"  }}
+{
+  "parent": "minecraft:block/stairs",
+  "textures": {
+    "bottom": "minecraft:block/ice_type_planks",
+    "side": "minecraft:block/ice_type_planks",
+    "top": "minecraft:block/ice_type_planks"
+  }
+}
