@@ -175,6 +175,8 @@
   "block.origamimarie_mod.purple_waxed_dim_small_rainbow_crystal_bud": "Waxed Dim Purple Small Rainbow Crystal Bud",
   "block.origamimarie_mod.packed_ice_slab": "Packed Ice Slab",
   "block.origamimarie_mod.blue_ice_slab": "Blue Ice Slab",
+  "block.origamimarie_mod.packed_ice_stairs": "Packed Ice Stairs",
+  "block.origamimarie_mod.blue_ice_stairs": "Blue Ice Stairs",
   "block.origamimarie_mod.pastel_black_concrete": "Pastel Black Concrete",
   "block.origamimarie_mod.pastel_black_concrete_powder": "Pastel Black Concrete Powder",
   "block.origamimarie_mod.pastel_red_concrete": "Pastel Red Concrete",
@@ -206,5 +208,8 @@
   "block.origamimarie_mod.pastel_orange_concrete": "Pastel Orange Concrete",
   "block.origamimarie_mod.pastel_orange_concrete_powder": "Pastel Orange Concrete Powder",
   "block.origamimarie_mod.pastel_white_concrete": "Pastel White Concrete",
-  "block.origamimarie_mod.pastel_white_concrete_powder": "Pastel White Concrete Powder"
+  "block.origamimarie_mod.pastel_white_concrete_powder": "Pastel White Concrete Powder",
+  "argument.catenarylength.invalid": "Woops, bad catenary length",
+  "commands.cat-draw.curve-too-long": "Sorry, this curve doesn't end soon enough!  nose=%s tail=%s belly=%s type=%s",
+  "commands.cat-draw.midway-belly": "Sorry, the belly should be below or above both the nose and the tail!  nose=%s tail=%s belly=%s type=%s"
 }

@@ -14,14 +14,15 @@ public class CoordinatesHUD {
             if (MinecraftClient.isHudEnabled()) {
                 PlayerEntity player = MinecraftClient.getInstance().player;
                 if (player != null) {
-                    context.getMatrices().push();
-                    context.getMatrices().translate((float) (context.getScaledWindowWidth() / 2), (float) (context.getScaledWindowHeight() - 63), 0.0F);
+                    context.getMatrices().pushMatrix();
+                    context.getMatrices().translate((float) (context.getScaledWindowWidth() / 2),
+                            (float) (context.getScaledWindowHeight() - 63));
                     TextRenderer renderer = MinecraftClient.getInstance().textRenderer;
                     String coordinatesString = (int) player.getX() + " " + (int) player.getY() + " " + (int) player.getZ();
                     int halfCoordinateStringWidth = renderer.getWidth(coordinatesString) / 2;
                     context.drawText(renderer, coordinatesString, -halfCoordinateStringWidth, -4, 0xCCFFFFFF, true);
                     context.drawText(renderer, getCompassDirection(player), halfCoordinateStringWidth + 8, -4, 0xCCFFFF88, true);
-                    context.getMatrices().pop();
+                    context.getMatrices().popMatrix();
                 }
             }
         });

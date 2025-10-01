@@ -1,7 +1,7 @@
 package net.origamimarie.minecraft.azalea;
 
 import com.mojang.serialization.MapCodec;
-import net.fabricmc.fabric.api.blockrenderlayer.v1.BlockRenderLayerMap;
+import net.fabricmc.fabric.api.client.rendering.v1.BlockRenderLayerMap;
 import net.fabricmc.fabric.api.itemgroup.v1.ItemGroupEvents;
 import net.fabricmc.fabric.api.registry.CompostingChanceRegistry;
 import net.fabricmc.fabric.api.registry.FlammableBlockRegistry;
@@ -15,7 +15,7 @@ import net.minecraft.block.PlantBlock;
 import net.minecraft.block.SaplingGenerator;
 import net.minecraft.block.ShapeContext;
 import net.minecraft.block.TintedParticleLeavesBlock;
-import net.minecraft.client.render.RenderLayer;
+import net.minecraft.client.render.BlockRenderLayer;
 import net.minecraft.item.ItemGroups;
 import net.minecraft.item.Items;
 import net.minecraft.registry.RegistryKey;
@@ -65,11 +65,11 @@ public abstract class ModdedAzaleaBlock extends PlantBlock implements Fertilizab
     protected static <T extends ModdedAzaleaBlock> void registerSaplingBlock(String path, Function<Settings, T> azaleaConstructor, Block leavesBlock) {
         ModdedAzaleaBlock saplingBlock = registerBlock(path, azaleaConstructor, Settings.copy(Blocks.AZALEA_LEAVES), true);
         ItemGroupEvents.modifyEntriesEvent(ItemGroups.NATURAL).register(content -> content.addAfter(Items.FLOWERING_AZALEA, saplingBlock));
-        BlockRenderLayerMap.INSTANCE.putBlock(saplingBlock, RenderLayer.getCutout());
+        BlockRenderLayerMap.putBlock(saplingBlock, BlockRenderLayer.CUTOUT);
         CompostingChanceRegistry.INSTANCE.add(saplingBlock, 0.3f);
 
         FlowerPotBlock pottedSaplingBlock = registerBlock("potted_" + path + "_bush", s -> new FlowerPotBlock(saplingBlock, s), Settings.copy(Blocks.FLOWER_POT), false);
-        BlockRenderLayerMap.INSTANCE.putBlock(pottedSaplingBlock, RenderLayer.getCutout());
+        BlockRenderLayerMap.putBlock(pottedSaplingBlock, BlockRenderLayer.CUTOUT);
 
         ItemGroupEvents.modifyEntriesEvent(ItemGroups.NATURAL).register(content -> content.addAfter(Items.AZALEA_LEAVES, leavesBlock));
         FlammableBlockRegistry.getDefaultInstance().add(leavesBlock, 30, 60);

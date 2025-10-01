@@ -167,7 +167,7 @@ public class CandlePadBlock extends AbstractCandleBlock {
                 world.setBlockState(pos, state.with(Properties.LIT, true), 11);
                 world.emitGameEvent(player, GameEvent.BLOCK_CHANGE, pos);
                 if (!player.isCreative()) {
-                    itemStack.damage(1, player, LivingEntity.getSlotForHand(hand));
+                    itemStack.damage(1, player, Hand.MAIN_HAND);
                 }
                 return ActionResult.SUCCESS;
             } else {

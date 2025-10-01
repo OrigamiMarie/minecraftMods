@@ -1,14 +1,14 @@
 package net.origamimarie.minecraft.rainbow_crystal;
 
 import com.mojang.serialization.MapCodec;
-import net.fabricmc.fabric.api.blockrenderlayer.v1.BlockRenderLayerMap;
+import net.fabricmc.fabric.api.client.rendering.v1.BlockRenderLayerMap;
 import net.minecraft.block.AmethystBlock;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.ShapeContext;
 import net.minecraft.block.Waterloggable;
 import net.minecraft.block.piston.PistonBehavior;
-import net.minecraft.client.render.RenderLayer;
+import net.minecraft.client.render.BlockRenderLayer;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.fluid.FluidState;
@@ -126,7 +126,7 @@ public class RainbowCrystalClusterBlock extends AmethystBlock
                         RainbowCrystalClusterBlock clusterBlock = registerBlock(color + coating + brightness + size,
                                 s -> new RainbowCrystalClusterBlock(coating.equals(WAXED), sizeHeight.get(size), sizeXzOffset.get(size), s),
                                 colorSettings, true);
-                        BlockRenderLayerMap.INSTANCE.putBlock(clusterBlock, RenderLayer.getCutout());
+                        BlockRenderLayerMap.putBlock(clusterBlock, BlockRenderLayer.CUTOUT);
                         addToAllCrystals(color, coating, brightness, size, clusterBlock);
                     }
                 }
@@ -194,7 +194,7 @@ public class RainbowCrystalClusterBlock extends AmethystBlock
             world.setBlockState(pos, RAINBOW_CRYSTAL_WAX_OFF_MAP.get(this).getDefaultState().with(RainbowCrystalClusterBlock.FACING, state.get(RainbowCrystalClusterBlock.FACING)).with(RainbowCrystalClusterBlock.WATERLOGGED, state.getFluidState().getFluid() == Fluids.WATER));
             world.emitGameEvent(player, GameEvent.BLOCK_CHANGE, pos);
             if (!player.isCreative()) {
-                itemStack.damage(1, player, LivingEntity.getSlotForHand(hand));
+                itemStack.damage(1, player, Hand.MAIN_HAND);
             }
             return ActionResult.SUCCESS;
         }

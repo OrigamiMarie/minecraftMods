@@ -2,7 +2,7 @@ package net.origamimarie.minecraft.firtree;
 
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
-import net.fabricmc.fabric.api.blockrenderlayer.v1.BlockRenderLayerMap;
+import net.fabricmc.fabric.api.client.rendering.v1.BlockRenderLayerMap;
 import net.fabricmc.fabric.api.client.rendering.v1.ColorProviderRegistry;
 import net.fabricmc.fabric.api.itemgroup.v1.ItemGroupEvents;
 import net.fabricmc.fabric.api.registry.CompostingChanceRegistry;
@@ -17,7 +17,7 @@ import net.minecraft.block.MapColor;
 import net.minecraft.block.PillarBlock;
 import net.minecraft.block.TintedParticleLeavesBlock;
 import net.minecraft.block.enums.NoteBlockInstrument;
-import net.minecraft.client.render.RenderLayer;
+import net.minecraft.client.render.BlockRenderLayer;
 import net.minecraft.item.ItemGroups;
 import net.minecraft.item.Items;
 import net.minecraft.sound.BlockSoundGroup;
@@ -111,9 +111,9 @@ public class FirTree {
         FIR_SAPLINGS.put(candleCount, saplingBlock);
         POTTED_FIR_SAPLINGS.put(candleCount, pottedSapling);
         ItemGroupEvents.modifyEntriesEvent(ItemGroups.NATURAL).register(content -> content.addAfter(Items.SPRUCE_SAPLING, saplingBlock));
-        BlockRenderLayerMap.INSTANCE.putBlock(saplingBlock, RenderLayer.getCutout());
+        BlockRenderLayerMap.putBlock(saplingBlock, BlockRenderLayer.CUTOUT);
         CompostingChanceRegistry.INSTANCE.add(saplingBlock, 0.3f);
-        BlockRenderLayerMap.INSTANCE.putBlock(pottedSapling, RenderLayer.getCutout());
+        BlockRenderLayerMap.putBlock(pottedSapling, BlockRenderLayer.CUTOUT);
     }
 
     private static void registerLog() {

@@ -1,12 +1,12 @@
 package net.origamimarie.minecraft;
 
-import net.fabricmc.fabric.api.blockrenderlayer.v1.BlockRenderLayerMap;
+import net.fabricmc.fabric.api.client.rendering.v1.BlockRenderLayerMap;
 import net.fabricmc.fabric.api.itemgroup.v1.ItemGroupEvents;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
 import net.minecraft.block.ShapeContext;
-import net.minecraft.client.render.RenderLayer;
+import net.minecraft.client.render.BlockRenderLayer;
 import net.minecraft.item.ItemGroups;
 import net.minecraft.util.DyeColor;
 import net.minecraft.util.math.BlockPos;
@@ -34,7 +34,7 @@ public class OrnamentBlock extends Block {
             String ornamentPathName = color.name().toLowerCase(Locale.ROOT) + "_ornament";
             OrnamentBlock ornamentBlock = registerBlock(ornamentPathName, s -> new OrnamentBlock(s, color), Settings.copy(Blocks.GLASS), true);
             ORNAMENT_BLOCKS.add(ornamentBlock);
-            BlockRenderLayerMap.INSTANCE.putBlock(ornamentBlock, RenderLayer.getCutout());
+            BlockRenderLayerMap.putBlock(ornamentBlock, BlockRenderLayer.CUTOUT);
             ItemGroupEvents.modifyEntriesEvent(ItemGroups.COLORED_BLOCKS).register(content -> content.add(ornamentBlock));
         }
     }
