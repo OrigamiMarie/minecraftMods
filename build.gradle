@@ -43,6 +43,10 @@ dependencies {
 	testRuntimeOnly "org.junit.platform:junit-platform-launcher"
 }
 
+base {
+    archivesName = project.archives_base_name
+}
+
 processResources {
 	inputs.property "version", project.version
 

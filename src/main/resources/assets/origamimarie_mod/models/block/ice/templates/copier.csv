@@ -4,4 +4,4 @@ _top; ; _top
 
 ice_type_stairs_location.json; ../
 ice_type; packed_ice; blue_ice
-_location; ; _inner; _outer
+_location|location_; |; _inner|inner_; _outer|outer_

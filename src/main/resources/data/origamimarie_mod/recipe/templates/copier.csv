@@ -9,5 +9,8 @@ color; pink; magenta; red; orange; yellow; lime; green; cyan; light_blue; blue; 
 ice_type_slab.json; ../
 ice_type; packed_ice; blue_ice
 
+ice_type_stairs.json; ../
+ice_type; packed_ice; blue_ice
+
 pastel_color_concrete_powder.json; ../
 color; pink; magenta; red; orange; yellow; lime; green; cyan; light_blue; blue; purple; white; light_gray; gray; black; brown

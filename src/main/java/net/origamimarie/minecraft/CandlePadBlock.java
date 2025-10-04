@@ -17,7 +17,6 @@ import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
 import net.minecraft.block.ShapeContext;
-import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemPlacementContext;
@@ -110,6 +109,11 @@ public class CandlePadBlock extends AbstractCandleBlock {
 
     public MapCodec<CandlePadBlock> getCodec() {
         return codec;
+    }
+
+    @Override
+    protected ItemStack getPickStack(WorldView world, BlockPos pos, BlockState state, boolean includeData) {
+        return new ItemStack(CANDLE);
     }
 
     protected Iterable<Vec3d> getParticleOffsets(BlockState state) {

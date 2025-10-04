@@ -1,6 +1,6 @@
 {
   "model": {
     "type": "minecraft:model",
-    "model": "origamimarie_mod:block/ice/ice_type_slab"
+    "model": "origamimarie_mod:block/ice/ice_type_shape"
   }
 }
