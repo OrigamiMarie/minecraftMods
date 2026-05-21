@@ -27,7 +27,10 @@ run/
 logs/
 
 # Other people's stuff
-vanilla-1-21-*/
+vanilla-*/
+BSL_v8-1-01/
+resourcePacks/
 
 # Mac
 **/._.DS_Store
+foo/
