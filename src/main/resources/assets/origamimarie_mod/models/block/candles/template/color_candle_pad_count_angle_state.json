@@ -1,6 +1,0 @@
-{
-  "parent": "origamimarie_mod:block/candles/template/template_pad_with_count_angle",
-  "textures": {
-    "candle_texture": "origamimarie_mod:block/candles/color_candle_state"
-  }
-}

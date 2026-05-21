@@ -1,0 +1,7 @@
+ice_type_slab_top.json; ../
+ice_type; packed_ice; blue_ice
+_top; ; _top
+
+ice_type_stairs_location.json; ../
+ice_type; packed_ice; blue_ice
+_location|location_; |; _inner|inner_; _outer|outer_

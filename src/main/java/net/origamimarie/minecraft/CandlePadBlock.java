@@ -17,11 +17,11 @@ import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
 import net.minecraft.block.ShapeContext;
-import net.minecraft.entity.ai.pathing.NavigationType;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemPlacementContext;
 import net.minecraft.item.ItemStack;
+import net.minecraft.item.Items;
 import net.minecraft.sound.SoundCategory;
 import net.minecraft.sound.SoundEvents;
 import net.minecraft.stat.Stats;
@@ -30,8 +30,8 @@ import net.minecraft.state.property.BooleanProperty;
 import net.minecraft.state.property.IntProperty;
 import net.minecraft.state.property.Properties;
 import net.minecraft.state.property.Property;
-import net.minecraft.util.ActionResult;
 import net.minecraft.util.Hand;
+import net.minecraft.util.ActionResult;
 import net.minecraft.util.Util;
 import net.minecraft.util.hit.BlockHitResult;
 import net.minecraft.util.math.BlockPos;
@@ -41,7 +41,6 @@ import net.minecraft.util.shape.VoxelShape;
 import net.minecraft.util.shape.VoxelShapes;
 import net.minecraft.world.BlockView;
 import net.minecraft.world.World;
-import net.minecraft.world.WorldAccess;
 import net.minecraft.world.WorldView;
 import net.minecraft.world.event.GameEvent;
 
@@ -112,6 +111,11 @@ public class CandlePadBlock extends AbstractCandleBlock {
         return codec;
     }
 
+    @Override
+    protected ItemStack getPickStack(WorldView world, BlockPos pos, BlockState state, boolean includeData) {
+        return new ItemStack(CANDLE);
+    }
+
     protected Iterable<Vec3d> getParticleOffsets(BlockState state) {
         return CANDLES_TO_PARTICLE_OFFSETS.get(state.get(CANDLES));
     }
@@ -134,14 +138,15 @@ public class CandlePadBlock extends AbstractCandleBlock {
         return super.canReplace(state, context);
     }
 
-    public ActionResult onUse(BlockState state, World world, BlockPos pos, PlayerEntity player, Hand hand, BlockHitResult hit) {
+    @Override
+    protected ActionResult onUseWithItem(ItemStack stack, BlockState state, World world, BlockPos pos, PlayerEntity player, Hand hand, BlockHitResult hit) {
         ItemStack itemStack = player.getStackInHand(hand);
         if (itemStack.isEmpty()) {
             if (state.get(LIT) && player.getAbilities().allowModifyWorld) {
                 extinguish(player, state, world, pos);
-                return ActionResult.success(world.isClient);
+                return ActionResult.SUCCESS;
             }
-            return ActionResult.PASS;
+            return ActionResult.PASS_TO_DEFAULT_BLOCK_ACTION;
         }
         Item item = itemStack.getItem();
         if (itemStack.isOf(CANDLE.asItem())) {
@@ -149,39 +154,39 @@ public class CandlePadBlock extends AbstractCandleBlock {
             state = state.cycle(CANDLES);
             // This means we actually added a candle
             if (state.get(CANDLES) > oldCandleCount) {
-                if (!player.isCreative()) {
-                    itemStack.decrement(1);
-                }
                 world.playSound(null, pos, SoundEvents.BLOCK_LILY_PAD_PLACE, SoundCategory.BLOCKS, 1.0F, 1.0F);
                 world.setBlockState(pos, state);
                 world.emitGameEvent(player, GameEvent.BLOCK_CHANGE, pos);
                 player.incrementStat(Stats.USED.getOrCreateStat(item));
+                if (!player.isCreative()) {
+                    itemStack.decrement(1);
+                }
                 return ActionResult.SUCCESS;
             } else {
-                return ActionResult.PASS;
+                return ActionResult.PASS_TO_DEFAULT_BLOCK_ACTION;
+            }
+        } else if (itemStack.isOf(Items.FLINT_AND_STEEL)) {
+            if (canBeLit(state)) {
+                world.playSound(player, pos, SoundEvents.ITEM_FLINTANDSTEEL_USE, SoundCategory.BLOCKS, 1.0F, world.getRandom().nextFloat() * 0.4F + 0.8F);
+                world.setBlockState(pos, state.with(Properties.LIT, true), 11);
+                world.emitGameEvent(player, GameEvent.BLOCK_CHANGE, pos);
+                if (!player.isCreative()) {
+                    itemStack.damage(1, player, Hand.MAIN_HAND);
+                }
+                return ActionResult.SUCCESS;
+            } else {
+                return ActionResult.PASS_TO_DEFAULT_BLOCK_ACTION;
             }
         }
-        return ActionResult.PASS;
+        return ActionResult.PASS_TO_DEFAULT_BLOCK_ACTION;
     }
 
     protected void appendProperties(Builder<Block, BlockState> builder) {
         builder.add(new Property[]{CANDLES, LIT});
     }
 
-    public ItemStack getPickStack(BlockView world, BlockPos pos, BlockState state) {
-        return new ItemStack(Blocks.LILY_PAD);
-    }
-
-    public BlockState getStateForNeighborUpdate(BlockState state, Direction direction, BlockState neighborState, WorldAccess world, BlockPos pos, BlockPos neighborPos) {
-        return direction == Direction.DOWN && !state.canPlaceAt(world, pos) ? Blocks.AIR.getDefaultState() : super.getStateForNeighborUpdate(state, direction, neighborState, world, pos, neighborPos);
-    }
-
     public boolean canPlaceAt(BlockState state, WorldView world, BlockPos pos) {
         return Block.sideCoversSmallSquare(world, pos.down(), Direction.UP);
-    }
-
-    public boolean canPathfindThrough(BlockState state, BlockView world, BlockPos pos, NavigationType type) {
-        return false;
     }
 
     public static BlockState getCandlePadFromCandle(Block candle) {

@@ -1,59 +1,56 @@
 package net.origamimarie.minecraft.rainbow_crystal;
 
 import com.mojang.serialization.MapCodec;
-import net.fabricmc.fabric.api.blockrenderlayer.v1.BlockRenderLayerMap;
-import net.fabricmc.fabric.api.item.v1.FabricItemSettings;
-import net.minecraft.block.AbstractBlock;
+import net.fabricmc.fabric.api.client.rendering.v1.BlockRenderLayerMap;
 import net.minecraft.block.AmethystBlock;
+import net.minecraft.block.AmethystClusterBlock;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
-import net.minecraft.block.MapColor;
 import net.minecraft.block.ShapeContext;
 import net.minecraft.block.Waterloggable;
 import net.minecraft.block.piston.PistonBehavior;
-import net.minecraft.client.render.RenderLayer;
+import net.minecraft.client.render.BlockRenderLayer;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.fluid.FluidState;
 import net.minecraft.fluid.Fluids;
 import net.minecraft.item.AxeItem;
-import net.minecraft.item.BlockItem;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemPlacementContext;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
-import net.minecraft.registry.Registries;
-import net.minecraft.registry.Registry;
 import net.minecraft.sound.BlockSoundGroup;
 import net.minecraft.sound.SoundCategory;
 import net.minecraft.sound.SoundEvents;
 import net.minecraft.stat.Stats;
 import net.minecraft.state.StateManager;
 import net.minecraft.state.property.BooleanProperty;
-import net.minecraft.state.property.DirectionProperty;
+import net.minecraft.state.property.EnumProperty;
 import net.minecraft.state.property.Properties;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.BlockMirror;
 import net.minecraft.util.BlockRotation;
+import net.minecraft.util.DyeColor;
 import net.minecraft.util.Hand;
-import net.minecraft.util.Identifier;
 import net.minecraft.util.hit.BlockHitResult;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
+import net.minecraft.util.math.random.Random;
 import net.minecraft.util.shape.VoxelShape;
 import net.minecraft.world.BlockView;
 import net.minecraft.world.World;
-import net.minecraft.world.WorldAccess;
 import net.minecraft.world.WorldView;
 import net.minecraft.world.event.GameEvent;
+import net.minecraft.world.tick.ScheduledTickView;
+import net.origamimarie.minecraft.util.UnderscoreColors;
+import org.apache.commons.lang3.tuple.Pair;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import static net.origamimarie.minecraft.OrigamiMarieMod.ORIGAMIMARIE_MOD;
-
+import static net.origamimarie.minecraft.util.RegistrationMethods.registerBlock;
 
 public class RainbowCrystalClusterBlock extends AmethystBlock
         implements Waterloggable {
@@ -63,14 +60,6 @@ public class RainbowCrystalClusterBlock extends AmethystBlock
 
     public MapCodec<RainbowCrystalClusterBlock> CODEC = createCodec(RainbowCrystalClusterBlock::new);
 
-    public static final String MAGENTA = "magenta_";
-    public static final String RED = "red_";
-    public static final String ORANGE = "orange_";
-    public static final String YELLOW = "yellow_";
-    public static final String LIME = "lime_";
-    public static final String CYAN = "cyan_";
-    public static final String BLUE = "blue_";
-    public static final String PURPLE = "purple_";
     public static final String WAXED = "waxed_";
     public static final String UNWAXED = "";
     public static final String BRIGHT = "";
@@ -79,49 +68,74 @@ public class RainbowCrystalClusterBlock extends AmethystBlock
     public static final String MEDIUM = "medium_rainbow_crystal_bud";
     public static final String LARGE = "large_rainbow_crystal_bud";
     public static final String CLUSTER = "rainbow_crystal_cluster";
-    public static final DirectionProperty FACING = Properties.FACING;
+    public static final EnumProperty<Direction> FACING = Properties.FACING;
 
     // This map is needed for starting crystal growth from bud blocks
-    public static final Map<String, RainbowCrystalClusterBlock> SMALL_RAINBOW_CRYSTAL_BUD_MAP = new HashMap<>();
-    public static final Map<String, RainbowCrystalClusterBlock> DIM_SMALL_RAINBOW_CRYSTAL_BUD_MAP = new HashMap<>();
-    private static final Map<String, Map<String, Map<String, Map<String, RainbowCrystalClusterBlock>>>> ALL_CRYSTALS_MAP = new HashMap<>();
+    public static final Map<UnderscoreColors, RainbowCrystalClusterBlock> SMALL_RAINBOW_CRYSTAL_BUD_MAP = new HashMap<>();
+    public static final Map<UnderscoreColors, RainbowCrystalClusterBlock> DIM_SMALL_RAINBOW_CRYSTAL_BUD_MAP = new HashMap<>();
+    private static final Map<UnderscoreColors, Map<String, Map<String, Map<String, RainbowCrystalClusterBlock>>>> ALL_CRYSTALS_MAP = new HashMap<>();
 
     public static final Map<Block, RainbowCrystalClusterBlock> RAINBOW_CRYSTAL_GROW_MAP = new HashMap<>();
     private static final Map<Block, RainbowCrystalClusterBlock> RAINBOW_CRYSTAL_WAX_ON_MAP = new HashMap<>();
     private static final Map<Block, RainbowCrystalClusterBlock> RAINBOW_CRYSTAL_WAX_OFF_MAP = new HashMap<>();
 
+    private static final Map<String, Pair<BlockSoundGroup, Integer>> BRIGHT_SETTINGS = Map.of(
+            SMALL, Pair.of(BlockSoundGroup.SMALL_AMETHYST_BUD, 1),
+            MEDIUM, Pair.of(BlockSoundGroup.MEDIUM_AMETHYST_BUD, 2),
+            LARGE, Pair.of(BlockSoundGroup.LARGE_AMETHYST_BUD, 4),
+            CLUSTER, Pair.of(BlockSoundGroup.AMETHYST_CLUSTER, 5)
+    );
+    private static final Map<String, BlockSoundGroup> DIM_SETTINGS = Map.of(
+            SMALL, BlockSoundGroup.SMALL_AMETHYST_BUD,
+            MEDIUM, BlockSoundGroup.MEDIUM_AMETHYST_BUD,
+            LARGE, BlockSoundGroup.LARGE_AMETHYST_BUD,
+            CLUSTER, BlockSoundGroup.AMETHYST_CLUSTER
+    );
 
-    public static final List<String> COLOR_PREFIXES = List.of(MAGENTA, RED, ORANGE, YELLOW, LIME, CYAN, BLUE, PURPLE);
-    static {
+    protected VoxelShape northShape;
+    protected VoxelShape southShape;
+    protected VoxelShape eastShape;
+    protected VoxelShape westShape;
+    protected VoxelShape upShape;
+    protected VoxelShape downShape;
+
+    public RainbowCrystalClusterBlock(boolean waxed, float height, float xzOffset, Settings settings) {
+        super(settings);
+        this.waxed = waxed;
+        this.setDefaultState(this.getDefaultState().with(WATERLOGGED, false).with(FACING, Direction.UP));
+        this.upShape = Block.createCuboidShape(xzOffset, 0.0, xzOffset, 16.0f - xzOffset, height, 16.0f - xzOffset);
+        this.downShape = Block.createCuboidShape(xzOffset, 16.0f - height, xzOffset, 16.0f - xzOffset, 16.0, 16.0f - xzOffset);
+        this.northShape = Block.createCuboidShape(xzOffset, xzOffset, 16.0f - height, 16.0f - xzOffset, 16.0f - xzOffset, 16.0);
+        this.southShape = Block.createCuboidShape(xzOffset, xzOffset, 0.0, 16.0f - xzOffset, 16.0f - xzOffset, height);
+        this.eastShape = Block.createCuboidShape(0.0, xzOffset, xzOffset, height, 16.0f - xzOffset, 16.0f - xzOffset);
+        this.westShape = Block.createCuboidShape(16.0f - height, xzOffset, xzOffset, 16.0, 16.0f - xzOffset, 16.0f - xzOffset);
+    }
+
+    public static void registerAll() {
         List<String> coatings = List.of(UNWAXED, WAXED);
         List<String> brightnesses = List.of(BRIGHT, DIM);
         List<String> sizes = List.of(SMALL, MEDIUM, LARGE, CLUSTER);
 
         Map<String, Float> sizeHeight = Map.of(SMALL, 3.0f, MEDIUM, 4.0f, LARGE, 5.0f, CLUSTER, 7.0f);
         Map<String, Float> sizeXzOffset = Map.of(SMALL, 4.0f, MEDIUM, 3.0f, LARGE, 3.0f, CLUSTER, 3.0f);
-        Map<String, AbstractBlock.Settings> brightSizeSettings = Map.of(
-                SMALL, AbstractBlock.Settings.create().mapColor(MapColor.MAGENTA).solid().nonOpaque().sounds(BlockSoundGroup.SMALL_AMETHYST_BUD).strength(0.0f, 0.0f).luminance(state -> 1).pistonBehavior(PistonBehavior.DESTROY),
-                MEDIUM, AbstractBlock.Settings.create().mapColor(MapColor.MAGENTA).solid().nonOpaque().sounds(BlockSoundGroup.MEDIUM_AMETHYST_BUD).strength(0.0f, 0.0f).luminance(state -> 2).pistonBehavior(PistonBehavior.DESTROY),
-                LARGE, AbstractBlock.Settings.create().mapColor(MapColor.MAGENTA).solid().nonOpaque().sounds(BlockSoundGroup.LARGE_AMETHYST_BUD).strength(0.0f, 0.0f).luminance(state -> 4).pistonBehavior(PistonBehavior.DESTROY),
-                CLUSTER, AbstractBlock.Settings.create().mapColor(MapColor.MAGENTA).solid().nonOpaque().sounds(BlockSoundGroup.AMETHYST_CLUSTER).strength(0.0f, 0.0f).luminance(state -> 5).pistonBehavior(PistonBehavior.DESTROY)
-        );
-        Map<String, AbstractBlock.Settings> dimSizeSettings = Map.of(
-                SMALL, AbstractBlock.Settings.create().mapColor(MapColor.MAGENTA).solid().nonOpaque().sounds(BlockSoundGroup.SMALL_AMETHYST_BUD).strength(0.0f, 0.0f).pistonBehavior(PistonBehavior.DESTROY),
-                MEDIUM, AbstractBlock.Settings.create().mapColor(MapColor.MAGENTA).solid().nonOpaque().sounds(BlockSoundGroup.MEDIUM_AMETHYST_BUD).strength(0.0f, 0.0f).pistonBehavior(PistonBehavior.DESTROY),
-                LARGE, AbstractBlock.Settings.create().mapColor(MapColor.MAGENTA).solid().nonOpaque().sounds(BlockSoundGroup.LARGE_AMETHYST_BUD).strength(0.0f, 0.0f).pistonBehavior(PistonBehavior.DESTROY),
-                CLUSTER, AbstractBlock.Settings.create().mapColor(MapColor.MAGENTA).solid().nonOpaque().sounds(BlockSoundGroup.AMETHYST_CLUSTER).strength(0.0f, 0.0f).pistonBehavior(PistonBehavior.DESTROY)
-        );
-        Map<String, Map<String, AbstractBlock.Settings>> brightnessSizeSettings = Map.of(BRIGHT, brightSizeSettings, DIM, dimSizeSettings);
-        for (String color : COLOR_PREFIXES) {
+
+        boolean isBright;
+        for (UnderscoreColors color : UnderscoreColors.RAINBOW_EIGHT) {
             for (String coating : coatings) {
                 for (String brightness : brightnesses) {
+                    isBright = brightness.equals(BRIGHT);
                     for (String size : sizes) {
-                        addToAllCrystals(color, coating, brightness, size, new RainbowCrystalClusterBlock(coating.equals(WAXED), sizeHeight.get(size), sizeXzOffset.get(size), brightnessSizeSettings.get(brightness).get(size)));
+                        Settings colorSettings = isBright ? makeBrightSettings(size, color.dyeColor) : makeDimSettings(size, color.dyeColor);
+                        RainbowCrystalClusterBlock clusterBlock = registerBlock(color + coating + brightness + size,
+                                s -> new RainbowCrystalClusterBlock(coating.equals(WAXED), sizeHeight.get(size), sizeXzOffset.get(size), s),
+                                colorSettings, true);
+                        BlockRenderLayerMap.putBlock(clusterBlock, BlockRenderLayer.CUTOUT);
+                        addToAllCrystals(color, coating, brightness, size, clusterBlock);
                     }
                 }
             }
         }
-        for (String color : COLOR_PREFIXES) {
+        for (UnderscoreColors color : UnderscoreColors.RAINBOW_EIGHT) {
             SMALL_RAINBOW_CRYSTAL_BUD_MAP.put(color, getCrystal(color, UNWAXED, BRIGHT, SMALL));
             DIM_SMALL_RAINBOW_CRYSTAL_BUD_MAP.put(color, getCrystal(color, UNWAXED, DIM, SMALL));
 
@@ -139,57 +153,32 @@ public class RainbowCrystalClusterBlock extends AmethystBlock
             }
         }
     }
-    protected VoxelShape northShape;
-    protected VoxelShape southShape;
-    protected VoxelShape eastShape;
-    protected VoxelShape westShape;
-    protected VoxelShape upShape;
-    protected VoxelShape downShape;
 
-    public RainbowCrystalClusterBlock(boolean waxed, float height, float xzOffset, AbstractBlock.Settings settings) {
-        super(settings);
-        this.waxed = waxed;
-        this.setDefaultState(this.getDefaultState().with(WATERLOGGED, false).with(FACING, Direction.UP));
-        this.upShape = Block.createCuboidShape(xzOffset, 0.0, xzOffset, 16.0f - xzOffset, height, 16.0f - xzOffset);
-        this.downShape = Block.createCuboidShape(xzOffset, 16.0f - height, xzOffset, 16.0f - xzOffset, 16.0, 16.0f - xzOffset);
-        this.northShape = Block.createCuboidShape(xzOffset, xzOffset, 16.0f - height, 16.0f - xzOffset, 16.0f - xzOffset, 16.0);
-        this.southShape = Block.createCuboidShape(xzOffset, xzOffset, 0.0, 16.0f - xzOffset, 16.0f - xzOffset, height);
-        this.eastShape = Block.createCuboidShape(0.0, xzOffset, xzOffset, height, 16.0f - xzOffset, 16.0f - xzOffset);
-        this.westShape = Block.createCuboidShape(16.0f - height, xzOffset, xzOffset, 16.0, 16.0f - xzOffset, 16.0f - xzOffset);
+    protected BlockState getStateForNeighborUpdate(BlockState state, WorldView world, ScheduledTickView tickView, BlockPos pos, Direction direction, BlockPos neighborPos, BlockState neighborState, Random random) {
+        return !waxed && direction == (state.get(FACING)).getOpposite() && !state.canPlaceAt(world, pos) ?
+                Blocks.AIR.getDefaultState() :
+                super.getStateForNeighborUpdate(state, world, tickView, pos, direction, neighborPos, neighborState, random);
     }
 
-    public static void registerAll() {
-        for (String color : ALL_CRYSTALS_MAP.keySet()) {
-            Map<String, Map<String, Map<String, RainbowCrystalClusterBlock>>> singleColorMap = ALL_CRYSTALS_MAP.get(color);
-            for (String coating : singleColorMap.keySet()) {
-                Map<String, Map<String, RainbowCrystalClusterBlock>> singleCoatingMap = singleColorMap.get(coating);
-                for (String brightness : singleCoatingMap.keySet()) {
-                    Map<String, RainbowCrystalClusterBlock> singleBrightnessMap = singleCoatingMap.get(brightness);
-                    for (String size : singleBrightnessMap.keySet()) {
-                        registerCluster(singleBrightnessMap.get(size), color + coating + brightness + size);
-                    }
-                }
-            }
-        }
+
+    private static Settings makeBrightSettings(String size, DyeColor color) {
+        Pair<BlockSoundGroup, Integer> pair = BRIGHT_SETTINGS.get(size);
+        return Settings.create().solid().nonOpaque().sounds(pair.getLeft()).strength(0.0f, 0.0f).luminance(state -> pair.getRight()).pistonBehavior(PistonBehavior.DESTROY).mapColor(color);
     }
 
-    private static void addToAllCrystals(String color, String coating, String brightness, String size, RainbowCrystalClusterBlock block) {
+    private static Settings makeDimSettings(String size, DyeColor color) {
+        return Settings.create().solid().nonOpaque().sounds(DIM_SETTINGS.get(size)).strength(0.0f, 0.0f).pistonBehavior(PistonBehavior.DESTROY).mapColor(color);
+    }
+
+    private static void addToAllCrystals(UnderscoreColors color, String coating, String brightness, String size, RainbowCrystalClusterBlock block) {
         ALL_CRYSTALS_MAP.computeIfAbsent(color, k -> new HashMap<>()).computeIfAbsent(coating, k -> new HashMap<>()).computeIfAbsent(brightness, k -> new HashMap<>()).put(size, block);
     }
 
-    public static RainbowCrystalClusterBlock getCrystal(String color, String coating, String brightness, String size) {
+    public static RainbowCrystalClusterBlock getCrystal(UnderscoreColors color, String coating, String brightness, String size) {
         return ALL_CRYSTALS_MAP.get(color).get(coating).get(brightness).get(size);
     }
 
-    private static void registerCluster(Block block, String id) {
-        Registry.register(Registries.BLOCK, new Identifier(ORIGAMIMARIE_MOD, id), block);
-        BlockRenderLayerMap.INSTANCE.putBlock(block, RenderLayer.getCutout());
-        Item item = new BlockItem(block, new FabricItemSettings());
-        Registry.register(Registries.ITEM, new Identifier(ORIGAMIMARIE_MOD, id), item);
-    }
-
-    // This is just to make codec happy, might never get called
-    public RainbowCrystalClusterBlock(AbstractBlock.Settings settings) {
+    public RainbowCrystalClusterBlock(Settings settings) {
         super(settings);
     }
 
@@ -198,7 +187,7 @@ public class RainbowCrystalClusterBlock extends AmethystBlock
     }
 
     @Override
-    public ActionResult onUse(BlockState state, World world, BlockPos pos, PlayerEntity player, Hand hand, BlockHitResult hit) {
+    protected ActionResult onUseWithItem(ItemStack stack, BlockState state, World world, BlockPos pos, PlayerEntity player, Hand hand, BlockHitResult hit) {
         ItemStack itemStack = player.getStackInHand(hand);
         Item item = itemStack.getItem();
         if (itemStack.isOf(Items.HONEYCOMB) && RAINBOW_CRYSTAL_WAX_ON_MAP.containsKey(this)) {
@@ -211,17 +200,15 @@ public class RainbowCrystalClusterBlock extends AmethystBlock
             player.incrementStat(Stats.USED.getOrCreateStat(Items.HONEYCOMB));
             return ActionResult.SUCCESS;
         } else if (item instanceof AxeItem && RAINBOW_CRYSTAL_WAX_OFF_MAP.containsKey(this)) {
-            if (!player.isCreative()) {
-                itemStack.damage(1, player, (p) -> {
-                    p.sendToolBreakStatus(hand);
-                });
-            }
             world.playSound(null, pos, SoundEvents.ITEM_AXE_WAX_OFF, SoundCategory.BLOCKS, 1.0F, 1.0F);
             world.setBlockState(pos, RAINBOW_CRYSTAL_WAX_OFF_MAP.get(this).getDefaultState().with(RainbowCrystalClusterBlock.FACING, state.get(RainbowCrystalClusterBlock.FACING)).with(RainbowCrystalClusterBlock.WATERLOGGED, state.getFluidState().getFluid() == Fluids.WATER));
             world.emitGameEvent(player, GameEvent.BLOCK_CHANGE, pos);
+            if (!player.isCreative()) {
+                itemStack.damage(1, player, Hand.MAIN_HAND);
+            }
             return ActionResult.SUCCESS;
         }
-        return ActionResult.PASS;
+        return ActionResult.PASS_TO_DEFAULT_BLOCK_ACTION;
     }
 
     @Override
@@ -252,17 +239,6 @@ public class RainbowCrystalClusterBlock extends AmethystBlock
         Direction direction = state.get(FACING);
         BlockPos blockPos = pos.offset(direction.getOpposite());
         return world.getBlockState(blockPos).isSideSolidFullSquare(world, blockPos, direction);
-    }
-
-    @Override
-    public BlockState getStateForNeighborUpdate(BlockState state, Direction direction, BlockState neighborState, WorldAccess world, BlockPos pos, BlockPos neighborPos) {
-        if (state.get(WATERLOGGED)) {
-            world.scheduleFluidTick(pos, Fluids.WATER, Fluids.WATER.getTickRate(world));
-        }
-        if (direction == state.get(FACING).getOpposite() && !state.canPlaceAt(world, pos)) {
-            return Blocks.AIR.getDefaultState();
-        }
-        return super.getStateForNeighborUpdate(state, direction, neighborState, world, pos, neighborPos);
     }
 
     @Override

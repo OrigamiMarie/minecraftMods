@@ -20,12 +20,12 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
 import net.minecraft.world.BlockView;
 import net.minecraft.world.World;
+import net.origamimarie.minecraft.rainbow_crystal.RainbowCrystalClusterBlock;
 import org.apache.commons.lang3.tuple.Pair;
 
 import java.util.List;
 
 import static net.minecraft.block.StairsBlock.*;
-import static net.origamimarie.minecraft.rainbow_crystal.RainbowCrystalClusterBlock.FACING;
 
 public class WrenchItem extends Item {
     private static final List<SlabType> SLAB_TYPES = List.of(SlabType.TOP, SlabType.BOTTOM, SlabType.TOP);
@@ -54,29 +54,33 @@ public class WrenchItem extends Item {
         Block block = blockState.getBlock();
         boolean modified = true;
 
-        if (block instanceof PillarBlock) {
-            blockState = blockState.cycle(PillarBlock.AXIS);
-        } else if (block instanceof HorizontalFacingBlock) {
-            blockState = blockState.with(HorizontalFacingBlock.FACING, getNext(blockState.get(HorizontalFacingBlock.FACING), HORIZONTAL_DIRECTIONS));
-        } else if (block instanceof FacingBlock) {
-            blockState = blockState.cycle(FacingBlock.FACING);
-        } else if (block instanceof DoorBlock) {
-            blockState = blockState.cycle(DoorBlock.FACING);
-        } else if (block instanceof AmethystClusterBlock) {
-            blockState = blockState.cycle(AmethystClusterBlock.FACING);
-        } else if (block instanceof HopperBlock) {
-            blockState = blockState.cycle(HopperBlock.FACING);
-        } else if (block instanceof SlabBlock) {
-            SlabType currentSlabType = blockState.get(SlabBlock.TYPE);
-            if (currentSlabType != SlabType.DOUBLE) {
-                blockState = blockState.with(SlabBlock.TYPE, getNext(currentSlabType, SLAB_TYPES));
+        switch (block) {
+            // logs
+            case PillarBlock pillarBlock -> blockState = blockState.cycle(PillarBlock.AXIS);
+            // cocoa pods
+            case HorizontalFacingBlock horizontalFacingBlock ->
+                    blockState = blockState.with(HorizontalFacingBlock.FACING, getNext(blockState.get(HorizontalFacingBlock.FACING), HORIZONTAL_DIRECTIONS));
+            // end rod / lightning rod
+            case FacingBlock facingBlock -> blockState = blockState.cycle(FacingBlock.FACING);
+            // door (shift-click to operate wrench)
+            case DoorBlock doorBlock -> blockState = blockState.cycle(DoorBlock.FACING);
+            case AmethystClusterBlock amethystClusterBlock ->
+                    blockState = blockState.cycle(AmethystClusterBlock.FACING);
+            case RainbowCrystalClusterBlock rainbowCrystalClusterBlock ->
+                    blockState = blockState.cycle(RainbowCrystalClusterBlock.FACING);
+            case HopperBlock hopperBlock -> blockState = blockState.cycle(HopperBlock.FACING);
+            case SlabBlock slabBlock -> {
+                SlabType currentSlabType = blockState.get(SlabBlock.TYPE);
+                if (currentSlabType != SlabType.DOUBLE) {
+                    blockState = blockState.with(SlabBlock.TYPE, getNext(currentSlabType, SLAB_TYPES));
+                }
             }
-        } else if (block instanceof StairsBlock) {
-            Pair<Direction, BlockHalf> newPair = getNext(Pair.of(blockState.get(StairsBlock.FACING), blockState.get(StairsBlock.HALF)), STAIR_BLOCK_STATES);
-            blockState = blockState.with(StairsBlock.FACING, newPair.getLeft()).with(StairsBlock.HALF, newPair.getRight());
-            blockState = blockState.with(SHAPE, getStairShape(blockState, world, blockPos));
-        } else {
-            modified = false;
+            case StairsBlock stairsBlock -> {
+                Pair<Direction, BlockHalf> newPair = getNext(Pair.of(blockState.get(StairsBlock.FACING), blockState.get(StairsBlock.HALF)), STAIR_BLOCK_STATES);
+                blockState = blockState.with(StairsBlock.FACING, newPair.getLeft()).with(StairsBlock.HALF, newPair.getRight());
+                blockState = blockState.with(SHAPE, getStairShape(blockState, world, blockPos));
+            }
+            case null, default -> modified = false;
         }
         if (modified) {
             world.setBlockState(blockPos, blockState);
@@ -92,11 +96,11 @@ public class WrenchItem extends Item {
     }
 
     private static StairShape getStairShape(BlockState state, BlockView world, BlockPos pos) {
-        Direction direction = state.get(FACING);
+        Direction direction = state.get(StairsBlock.FACING);
         BlockState blockState = world.getBlockState(pos.offset(direction));
         if (isStairs(blockState) && state.get(HALF) == blockState.get(HALF)) {
-            Direction direction2 = blockState.get(FACING);
-            if (direction2.getAxis() != state.get(FACING).getAxis() && isDifferentOrientation(state, world, pos, direction2.getOpposite())) {
+            Direction direction2 = blockState.get(StairsBlock.FACING);
+            if (direction2.getAxis() != state.get(StairsBlock.FACING).getAxis() && isStairsBlockDifferentOrientation(state, world, pos, direction2.getOpposite())) {
                 if (direction2 == direction.rotateYCounterclockwise()) {
                     return StairShape.OUTER_LEFT;
                 }
@@ -107,8 +111,8 @@ public class WrenchItem extends Item {
 
         BlockState blockState2 = world.getBlockState(pos.offset(direction.getOpposite()));
         if (isStairs(blockState2) && state.get(HALF) == blockState2.get(HALF)) {
-            Direction direction3 = blockState2.get(FACING);
-            if (direction3.getAxis() != state.get(FACING).getAxis() && isDifferentOrientation(state, world, pos, direction3)) {
+            Direction direction3 = blockState2.get(StairsBlock.FACING);
+            if (direction3.getAxis() != state.get(StairsBlock.FACING).getAxis() && isStairsBlockDifferentOrientation(state, world, pos, direction3)) {
                 if (direction3 == direction.rotateYCounterclockwise()) {
                     return StairShape.INNER_LEFT;
                 }
@@ -121,8 +125,8 @@ public class WrenchItem extends Item {
     }
 
 
-    private static boolean isDifferentOrientation(BlockState state, BlockView world, BlockPos pos, Direction dir) {
+    private static boolean isStairsBlockDifferentOrientation(BlockState state, BlockView world, BlockPos pos, Direction dir) {
         BlockState blockState = world.getBlockState(pos.offset(dir));
-        return !isStairs(blockState) || blockState.get(FACING) != state.get(FACING) || blockState.get(HALF) != state.get(HALF);
+        return !isStairs(blockState) || blockState.get(StairsBlock.FACING) != state.get(StairsBlock.FACING) || blockState.get(HALF) != state.get(HALF);
     }
 }

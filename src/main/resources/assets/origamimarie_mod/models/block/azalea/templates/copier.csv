@@ -1,0 +1,9 @@
+color_flowering_azalea_leaves_number.json; ../
+color_; ; purple_; white_; yellow_
+number; 1; 2; 3; 4
+
+color_flowering_azalea.json; ../
+color; purple; white; yellow
+
+potted_color_flowering_azalea_bush.json; ../
+color; purple; white; yellow

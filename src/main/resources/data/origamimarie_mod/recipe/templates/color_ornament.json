@@ -1,0 +1,12 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "ingredients": [
+    "minecraft:gold_nugget",
+    "minecraft:glass_bottle",
+    "minecraft:color_dye"
+  ],
+  "result": {
+    "count": 1,
+    "id": "origamimarie_mod:color_ornament"
+  }
+}

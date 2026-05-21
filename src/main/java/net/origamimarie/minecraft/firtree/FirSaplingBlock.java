@@ -1,18 +1,16 @@
 package net.origamimarie.minecraft.firtree;
 
 import com.mojang.serialization.MapCodec;
-import net.minecraft.block.AbstractBlock;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
-import net.minecraft.block.Blocks;
 import net.minecraft.block.PlantBlock;
 import net.minecraft.block.ShapeContext;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.server.world.ServerWorld;
-import net.minecraft.util.ActionResult;
 import net.minecraft.util.Hand;
+import net.minecraft.util.ActionResult;
 import net.minecraft.util.hit.BlockHitResult;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.random.Random;
@@ -21,23 +19,18 @@ import net.minecraft.world.BlockView;
 import net.minecraft.world.World;
 
 public class FirSaplingBlock extends PlantBlock {
-    private static final VoxelShape SHAPE = Block.createCuboidShape(2.0, 0.0, 2.0, 14.0, 12.0, 14.0);;
+    private static final VoxelShape SHAPE = Block.createCuboidShape(2.0, 0.0, 2.0, 14.0, 12.0, 14.0);
     public MapCodec<FirSaplingBlock> codec = createCodec(FirSaplingBlock::new);
 
     protected int candleCount;
 
-    public FirSaplingBlock() {
-        this(0);
-    }
-
-    public FirSaplingBlock(int lightLevel) {
-        super(AbstractBlock.Settings.copy(Blocks.SPRUCE_SAPLING).luminance((state) -> lightLevel));
-        candleCount = 0;
-    }
-
-    // Makes codec happy
     public FirSaplingBlock(Settings settings) {
-        this(0);
+        this(settings, 0);
+    }
+
+    public FirSaplingBlock(Settings settings, int lightLevel) {
+        super(settings.luminance((state) -> lightLevel));
+        candleCount = 0;
     }
 
     public MapCodec<FirSaplingBlock> getCodec() {
@@ -45,7 +38,7 @@ public class FirSaplingBlock extends PlantBlock {
     }
 
     @Override
-    public ActionResult onUse(BlockState state, World world, BlockPos pos, PlayerEntity player, Hand hand, BlockHitResult hit) {
+    protected ActionResult onUseWithItem(ItemStack stack, BlockState state, World world, BlockPos pos, PlayerEntity player, Hand hand, BlockHitResult hit) {
         ItemStack itemStack = player.getStackInHand(hand);
         if (itemStack.isOf(Items.BONE_MEAL)) {
             boolean madeTree = FirTree.makeTree(world, pos, candleCount);
@@ -55,10 +48,10 @@ public class FirSaplingBlock extends PlantBlock {
                 }
                 return ActionResult.SUCCESS;
             } else {
-                return ActionResult.PASS;
+                return ActionResult.PASS_TO_DEFAULT_BLOCK_ACTION;
             }
         }
-        return ActionResult.PASS;
+        return ActionResult.PASS_TO_DEFAULT_BLOCK_ACTION;
     }
 
     public VoxelShape getOutlineShape(BlockState state, BlockView world, BlockPos pos, ShapeContext context) {
@@ -74,8 +67,8 @@ public class FirSaplingBlock extends PlantBlock {
 
     public static class FirOneCandleSaplingBlock extends FirSaplingBlock {
 
-        public FirOneCandleSaplingBlock() {
-            super(3);
+        public FirOneCandleSaplingBlock(Settings settings) {
+            super(settings, 3);
             candleCount = 1;
         }
     }
@@ -83,8 +76,8 @@ public class FirSaplingBlock extends PlantBlock {
 
     public static class FirTwoCandleSaplingBlock extends FirSaplingBlock {
 
-        public FirTwoCandleSaplingBlock() {
-            super(6);
+        public FirTwoCandleSaplingBlock(Settings settings) {
+            super(settings, 6);
             candleCount = 2;
         }
     }
@@ -92,8 +85,8 @@ public class FirSaplingBlock extends PlantBlock {
 
     public static class FirThreeCandleSaplingBlock extends FirSaplingBlock {
 
-        public FirThreeCandleSaplingBlock() {
-            super(9);
+        public FirThreeCandleSaplingBlock(Settings settings) {
+            super(settings, 9);
             candleCount = 3;
         }
     }
@@ -101,8 +94,8 @@ public class FirSaplingBlock extends PlantBlock {
 
     public static class FirFourCandleSaplingBlock extends FirSaplingBlock {
 
-        public FirFourCandleSaplingBlock() {
-            super(12);
+        public FirFourCandleSaplingBlock(Settings settings) {
+            super(settings, 12);
             candleCount = 4;
         }
     }

@@ -16,7 +16,13 @@ import java.util.List;
 
 import static net.minecraft.server.command.CommandManager.*;
 
+/**
+ * Hi there!  This thing was for doing large-territory replacement of biomes.
+ * Give it a set of coordinates, and Before biome, and an After biome, and it'll perform the replacement.
+ * It uses stuff that isn't available in 1.21, and I can't be bothered to fix it right now.  Sorry!
+ */
 public class BigBiomeReplacerCommand {
+    /*
     public static void register(CommandDispatcher<ServerCommandSource> dispatcher, CommandRegistryAccess commandRegistryAccess) {
         dispatcher.register(literal("bigBiomeReplace")
                 .then(argument("pointA", BlockPosArgumentType.blockPos())
@@ -71,5 +77,5 @@ public class BigBiomeReplacerCommand {
         } else {
             return n + 1 - (n + 1) % mod + mod;
         }
-    }
+    }*/
 }

@@ -1,0 +1,7 @@
+{
+  "parent": "origamimarie_mod:block/candles/template/template_pad_with_count",
+  "textures": {
+    "candle_texture": "minecraft:block/color_candle_state",
+    "pad_texture": "origamimarie_mod:block/lily_pad_pad_angle"
+  }
+}

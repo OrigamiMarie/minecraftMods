@@ -1,0 +1,16 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "key": {
+    "X": "minecraft:orange_concrete_powder",
+    "D": "minecraft:white_dye"
+  },
+  "pattern": [
+    "XXX",
+    "XDX",
+    "XXX"
+  ],
+  "result": {
+    "count": 8,
+    "id": "origamimarie_mod:pastel_orange_concrete_powder"
+  }
+}
